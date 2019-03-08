@@ -80,7 +80,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="三维重建,纹理渲染,深度学习,">
+  <meta name="keywords" content="三维重建，纹理渲染，深度学习,">
 
 
 
@@ -97,21 +97,21 @@
 
 
 <meta name="description" content="论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法">
-<meta name="keywords" content="三维重建,纹理渲染,深度学习">
+<meta name="keywords" content="三维重建，纹理渲染，深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="&lt;论文阅读&gt;(一)Learning Category-Specific Mesh Reconstruction From Image Collections">
 <meta property="og:url" content="https://hideoninternet.github.io/2019/03/08/ed6ad9d5/index.html">
 <meta property="og:site_name" content="Diver">
 <meta property="og:description" content="论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://hideoninternet.github.io/images/paper/Net_Arch.jpg">
-<meta property="og:image" content="https://hideoninternet.github.io/images/paper/rendering.png">
-<meta property="og:image" content="https://hideoninternet.github.io/images/paper/exp.png">
-<meta property="og:updated_time" content="2019-03-08T12:53:15.527Z">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/Net_Arch.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/rendering.png">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/exp.png">
+<meta property="og:updated_time" content="2019-03-08T13:06:21.601Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(一)Learning Category-Specific Mesh Reconstruction From Image Collections">
 <meta name="twitter:description" content="论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法">
-<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/Net_Arch.jpg">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/bird_net/Net_Arch.jpg">
 
 
 
@@ -479,7 +479,7 @@
 <ul>
 <li>论文中所用网络简介</li>
 </ul>
-<p><img src="/images/paper/Net_Arch.jpg" alt></p>
+<p><img src="/images/paper/bird_net/Net_Arch.jpg" alt></p>
 <p>首先网络接受一张图片，经过encoder之后变为了一个200d的shape feature <code>f</code>（注：encoder是一个经过imagenet预训练的resnet-18接上两个全连接层）。之后将得到的<code>f</code>送入三个网络,分别是<code>ShapePredictor</code>,<code>CameraPredictor</code>和<code>UVMapPredictor</code>. 其中<code>ShapePredictor</code>是预测形状变化$\Delta{V}$,最后的形状预测结果就是$V = \hat{V} + \Delta{V}$。<code>CameraPredictor</code>是预测<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数的。值得一提的是<code>rot</code>参数,它与以前见到的旋转矩阵不同，<code>rot</code>$\in \mathbb{R}^4$,是一个<a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC" target="_blank" rel="noopener"><strong>四元数</strong></a>,可以用来表示三维空间中点的旋转。</p>
 <ul>
 <li>TexturePredictor</li>
@@ -487,7 +487,7 @@
 <p>作者提出的纹理预测思路比较巧妙。首先在数据预处理过程中的$\hat{S}$与网络训练过程的$\hat{V}$并不一致，实际上$\hat{V} =\mathcal{P}(\hat{S})$，$\mathcal{P}$表示将一个点数为642，面片数为1280的二十面体投影至$\hat{S}$。此前为了利用动物左右身体对称的特性，将上面提到的二十面体做了一个对称处理。使得二十面体的面片种类可以分为两种：1、左右对称 2、中间独立（保持拓扑结构）。而投影操作$\mathcal{P}$作者在代码注释中写了这么一句话：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">triangle_direction_intersection</span><span class="params">(tri, trg)</span>:</span></span><br><span class="line">    Finds where an origin-centered ray going <span class="keyword">in</span> direction trg intersects a triangle.</span><br><span class="line">    Args:</span><br><span class="line">        tri: <span class="number">3</span> X <span class="number">3</span> vertex locations. tri[<span class="number">0</span>, :] <span class="keyword">is</span> <span class="number">0</span>th vertex.</span><br></pre></td></tr></table></figure>
 <p>有了上面的基础，作者就认为由于所有的预测3D模型都是从同一个平均模型在保持拓扑变化的基础上变化得到的原因，所以每个所预测3D模型的点语义都是一致，即编号为1的点若代表嘴巴，则所有预测模型中编号为1的点就是所预测的嘴巴那个点。那么对于所预测的纹理图片来说，只要知道了最原始的那个二十面体的UV图，便可以对预测3D模型进行渲染(rendering)。</p>
-<p><img src="/images/paper/rendering.png" alt></p>
+<p><img src="/images/paper/bird_net/rendering.png" alt></p>
 <ul>
 <li>Loss函数介绍</li>
 </ul>
@@ -504,7 +504,7 @@
 <p>$L_{texture} = \sum_{i}dist(\mathcal{S_{i}}\bigodot\mathcal{I_{i}},\mathcal{S_{i}}\bigodot\mathcal{R}(V_{i},F,\tilde{\pi_{i}},I^{uv}))$</p>
 <p>$L_{dt} = \sum_{i}\sum_{u,v}G(\mathcal{D_{S_{i}};F_{i}}(u,v)$， $\mathcal{D_{S_{i}}}$表示对于每一个Mask的distance transform。</p>
 <p>TexturePredictor会输出一个<code>texture flow</code>，也就是$\mathcal{F} \in \mathbb{R}^{H_{uv} * W_{uv} * 2}$,其中$H_{uv}*W_{uv}$分别表示UVmap的长和宽，而$\mathcal{F}(x,y)$对应的就是input image(x,y)。最后的UVmap就是$I^{uv} = G(I;\mathcal{F})$。而这个<code>texture flow</code>不是神经网络的直接输出产物，而神经网络直接输出的是一个表示体现了UV图和Img的对应位置的关系，而其还是会与另一个<code>UVsample</code>进行取样。而<code>UVsample</code>表示的是UV图与$\hat{V}$上各个点的一个对应关系。这两个东西结合在一起后就可以体现UVmap、$\hat{V}$、img三者之间的关系。</p>
-<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/exp.png" alt></p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/bird_net/exp.png" alt></p>
 
       
     </div>
@@ -522,11 +522,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/3d-reconstruction/" rel="tag"># 三维重建</a>
-          
-            <a href="/tags/render/" rel="tag"># 纹理渲染</a>
-          
-            <a href="/tags/dl/" rel="tag"># 深度学习</a>
+            <a href="/tags/三维重建，纹理渲染，深度学习/" rel="tag"># 三维重建，纹理渲染，深度学习</a>
           
         </div>
       
@@ -548,6 +544,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/08/e6413cd/" rel="prev" title="<论文阅读>(二)End-to-End Recovery of Human Shape and Pose">
+                <论文阅读>(二)End-to-End Recovery of Human Shape and Pose <i class="fa fa-chevron-right"></i>
+              </论文阅读></a>
             
           </div>
         </div>
@@ -622,7 +622,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

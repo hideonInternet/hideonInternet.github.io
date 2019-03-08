@@ -80,7 +80,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="三维重建,深度学习,">
 
 
 
@@ -96,14 +96,20 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Categories">
-<meta property="og:url" content="https://hideoninternet.github.io/categories/index.html">
+<meta name="description" content="作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta name="keywords" content="三维重建,深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/03/08/e6413cd/index.html">
 <meta property="og:site_name" content="Diver">
+<meta property="og:description" content="作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-08T04:35:53.004Z">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/Net_Arc.jpg">
+<meta property="og:updated_time" content="2019-03-08T13:35:38.696Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Categories">
+<meta name="twitter:title" content="&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose">
+<meta name="twitter:description" content="作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/Net_Arc.jpg">
 
 
 
@@ -132,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="https://hideoninternet.github.io/categories/">
+  <link rel="canonical" href="https://hideoninternet.github.io/2019/03/08/e6413cd/">
 
 
 
 
 
-  <title>Categories | Diver</title>
+  <title><论文阅读>(二)End-to-End Recovery of Human Shape and Pose | Diver</论文阅读></title>
   
 
 
@@ -301,40 +307,245 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/03/08/e6413cd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">Categories</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
-                目前共计 3 个分类
+          <h1 class="post-title" itemprop="name headline"><论文阅读>(二)End-to-End Recovery of Human Shape and Pose</论文阅读></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-08T20:16:53+08:00">
+                2019-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index">
+                    <span itemprop="name">论文阅读</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/三维人体重建/" itemprop="url" rel="index">
+                    <span itemprop="name">三维人体重建</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/08/e6413cd/" class="leancloud_visitors" data-flag-title="<论文阅读>(二)End-to-End Recovery of Human Shape and Pose">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  227 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
             </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/paper/">论文阅读</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/paper/三维人体重建/">三维人体重建</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/paper/三维动物重建/">三维动物重建</a><span class="category-list-count">1</span></li></ul></li></ul>
-            </div>
-          </div>
-        
-      </div>
+          
+
+          
+              <div class="post-description">
+                  作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h2 id="lt-论文阅读-gt-End-to-end-Recovery-of-Human-Shape-and-Pose"><a href="#lt-论文阅读-gt-End-to-end-Recovery-of-Human-Shape-and-Pose" class="headerlink" title="&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose"></a>&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose</h2><p><a href="https://arxiv.org/pdf/1712.06584.pdf" title="Learning Category-Specific Mesh Reconstruction" target="_blank" rel="noopener"><strong>论文链接</strong></a></p>
+<p><a href="https://github.com/akanazawa/hmr" target="_blank" rel="noopener"><strong>Github链接</strong></a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
+<li>单图重建</li>
+<li>利用SMPL进行重建，并且达到real-time效果</li>
+<li>训练过程无需3d ground truth数据</li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><h4 id="网络训练"><a href="#网络训练" class="headerlink" title="网络训练"></a>网络训练</h4><ul>
+<li>网络结构</li>
+</ul>
+<p><img src="/images/paper/SMPL_net/Net_Arc.jpg" alt></p>
+<ul>
+<li>loss函数</li>
+</ul>
+<p>$L = \lambda(L_{reproj} + \mathbb{1}L_{3D}) + L_{adv} $，$\lambda$是用来控制两个目标函数的相对权重的。若输入的2D图像有对应的ground truth 3D数据时，$\mathbb{1}$的值就为1,否则就是0。</p>
+<p>$L_{reproj} = \sum_{i}||v_{i}(x_{i}-\hat{x_{i}})||_{1}$,其中$\hat{x_{i}} = s\Pi(RX(\theta,\beta)) + t$。 $R$表示旋转操作，$\Pi$表示正交投影，$s，t$分别表示Scale和translation。</p>
+<p>$L_{3D} = L_{3D joints} + L_{3D smpl}$</p>
+<p>$L_{joints} = ||(X_i-\hat{X_i})||_2^2$</p>
+<p>$L_{smpl} = ||[\beta_i,\theta_i]-[\hat{\beta_i},\hat{\theta_i}]||_2^2$</p>
+<p>$minL_{abv}(E) = \sum_i\mathbb{E}_{\Theta ~ pE}[(D_i(E(I)-1)^2]$</p>
+<p>$minL(D_i) = \mathbb{E}_{\Theta~pdata}[(D_i(\Theta)-1)^2]+\mathbb{E}_{\Theta ~ pE}[D_i(E(I)^2]$</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3>
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/3d-reconstruction/" rel="tag"># 三维重建</a>
+          
+            <a href="/tags/dl/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/08/ed6ad9d5/" rel="next" title="<论文阅读>(一)Learning Category-Specific Mesh Reconstruction From Image Collections">
+                <i class="fa fa-chevron-left"></i> <论文阅读>(一)Learning Category-Specific Mesh Reconstruction From Image Collections
+              </论文阅读></a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -367,8 +578,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="diver">
           <p class="site-author-name" itemprop="name">diver</p>
@@ -452,6 +672,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lt-论文阅读-gt-End-to-end-Recovery-of-Human-Shape-and-Pose"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method"><span class="nav-number">1.2.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网络训练"><span class="nav-number">1.2.1.</span> <span class="nav-text">网络训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.3.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -570,10 +806,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
