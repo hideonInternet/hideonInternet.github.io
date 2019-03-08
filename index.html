@@ -208,6 +208,26 @@
         </li>
       
         
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -260,12 +280,12 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/论文笔记(一）/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/08/论文笔记(一）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="diver">
       <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -279,7 +299,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/07/论文笔记(一）/" itemprop="url">Untitled</a></h1>
+                <a class="post-title-link" href="/2019/03/08/论文笔记(一）/" itemprop="url"><论文阅读>Learning Category-Specific Mesh Reconstruction From Image Collections</论文阅读></a></h1>
         
 
         <div class="post-meta">
@@ -291,8 +311,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-07T23:29:21+08:00">
-                2019-03-07
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-08T12:17:53+08:00">
+                2019-03-08
               </time>
             
 
@@ -301,6 +321,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index">
+                    <span itemprop="name">论文阅读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -330,34 +372,25 @@
 
       
         
-          
-            <p>##&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections##</p>
-<p><a href="https://arxiv.org/abs/1803.07549" title="Learning Category-Specific Mesh Reconstruction" target="_blank" rel="noopener"><strong>论文链接</strong></a></p>
+          <h2 id="lt-论文阅读-gt-Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><a href="#lt-论文阅读-gt-Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections" class="headerlink" title="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections"></a>&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</h2><p><a href="https://arxiv.org/abs/1803.07549" title="Learning Category-Specific Mesh Reconstruction" target="_blank" rel="noopener"><strong>论文链接</strong></a></p>
 <p><a href="https://github.com/akanazawa/cmr" target="_blank" rel="noopener"><strong>Github链接</strong></a></p>
-<p>论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法</p>
-<p>###1.Contribution###</p>
-<ul>
+<blockquote>
+<p><strong>论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法</strong></p>
+</blockquote>
+<h3 id="1-Contribution"><a href="#1-Contribution" class="headerlink" title="1.Contribution"></a>1.Contribution</h3><ul>
 <li>单图重建</li>
 <li>纹理渲染</li>
-<li>训练过程无需3d ground truth数据</li>
-</ul>
-<p>###2.Method</p>
-<p>####2.1 训练数据预处理<br>本次实验用到的数据集是<code>CUB-200-2011</code>,提供了200种鸟类，共计11788张图片。每张图片附含了15个关键点的标记（头部，背部，脚等）、一张Mask和Bounding box。<br>作者首先将这些数据导入Matlab当中，首先对每组关键点进行零均值处理，接着计算平均模型\(\hat S\)。 接着利用所有关键点进行<code>Struct From Motion</code>变换，得到每张图片相对于平均模型\(\hat S\)的<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数。</p>
-<p>####2.2 网络训练<br>作者用到了三个网络来达到重建效果，分别是<code>文中所用主体网络</code>,<a href="https://arxiv.org/abs/1711.07566" target="_blank" rel="noopener"><strong>Neural Mesh Render</strong></a><br>和<a href="https://arxiv.org/abs/1801.03924" target="_blank" rel="noopener"><strong>Perceptual loss</strong></a>。</p>
-<ul>
-<li>论文中所用网络简介</li>
-</ul>
-<p><img src="Net_Arch.jpg" alt></p>
-<p>首先网络接受一张图片，经过encoder之后变为了一个200d的shape feature <code>f</code>（注：encoder是一个经过imagenet预训练的resnet-18接上两个全连接层）。之后将得到的<code>f</code>送入三个网络,分别是<code>ShapePredictor</code>,<code>CameraPredictor</code>和<code>UVMapPredictor</code>. 其中<code>ShapePredictor</code>是预测形状变化\(\Delta V\),最后的形状预测结果就是\(V = \hat V + \Delta V\)。<code>CameraPredictor</code>是预测<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数的。值得一提的是<code>rot</code>参数,它与以前见到的旋转矩阵不同，<code>rot</code>\( \in \mathbb{R}^4\),是一个<a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC" target="_blank" rel="noopener"><strong>四元数</strong></a>,可以用来表示三维空间中点的旋转。</p>
-<ul>
-<li>Loss函数介绍</li>
-</ul>
-<p>###3.Experiments</p>
-
-          
+<li>训练过程无需3d ground truth数据
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/03/08/论文笔记(一）/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
-    </div>
+    </li></ul></div>
     
     
     
@@ -406,7 +439,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="diver">
       <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -549,7 +582,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="diver">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="diver">
           <p class="site-author-name" itemprop="name">diver</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -566,6 +599,15 @@
             </div>
           
 
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
           
 
           
