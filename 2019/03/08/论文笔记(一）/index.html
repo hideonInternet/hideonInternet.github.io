@@ -105,7 +105,7 @@
 <meta property="og:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/Net_Arch.jpg">
 <meta property="og:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/rendering.png">
 <meta property="og:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/exp.png">
-<meta property="og:updated_time" content="2019-03-08T05:36:15.265Z">
+<meta property="og:updated_time" content="2019-03-08T05:43:05.373Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction From Image Collections">
 <meta name="twitter:description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  Co">
@@ -406,7 +406,7 @@
 <p><strong> 注1：$\mathcal{R}$（<em>）和$G$（</em>）分别表示渲染(rendering)和双线性取样(bilinear sampling),其中$\mathcal{R}$（*）引用自</strong><a href="https://arxiv.org/abs/1711.07566" target="_blank" rel="noopener">Hiroharu Kato, etc. Neural 3D Mesh Renderer</a></p>
 <p><strong> 注2：$L_{texture}$函数表示的percetual loss,较传统的pixel loss相比更能从人的感知角度来评价两幅图像的相似度 引用自</strong><a href="https://arxiv.org/abs/1801.03924" target="_blank" rel="noopener">Zhang,R etc. The unreasonable effectiveness of deep networks as a perceptual metric. In CVPR 2018</a></p>
 <p>$L_1 = L_{reproj} + L_{mask} + L_{cam} + L_{smooth} + L_{def} + L_{vert2kp}$</p>
-<p>$L_{reproj} = \sum_{i}^{}||x_{i}-\tilde{\pi}<em>{i}(AV</em>{i})||_{2} $，其中$\tilde{\pi}（*）$表示投影操作，其值是从<code>structure-from-motion</code>中获得参数</p>
+<p>$L_{reproj} = \sum_{i}^{}||x_{i}-\tilde{\pi}<em>{i}(AV</em>{i})||_{2}$，其中$\tilde{\pi}（*）$表示投影操作，其值是从<code>structure-from-motion</code>中获得参数</p>
 <p>$L_{mask} = \sum_i||S_{i}-\mathcal{R}(V_{i},F,\tilde{\pi}<em>{i})||</em>{2}$，$S_{i}$表示ground-truth的Mask。</p>
 <p>$L_{cam} = \sum_{i}||\tilde{\pi}<em>{i}-{\pi}</em>{i}||<em>{2}$, $\pi</em>{i}$表示估计的相机旋转参数，由于旋转参数是由四元数表示，那么就是利用hamilton_product来求解估计与实际的误差</p>
 <p>$L_{smooth} = ||LV||_{2}$，$L$表示Laplacian光滑，其目的是为了最小化平均曲率</p>
