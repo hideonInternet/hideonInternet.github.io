@@ -94,21 +94,21 @@
 
 
 
-<meta name="description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  1.">
+<meta name="description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  Co">
 <meta name="keywords" content="三维重建,纹理渲染，深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction From Image Collections">
 <meta property="og:url" content="http://yoursite.com/2019/03/08/论文笔记(一）/index.html">
 <meta property="og:site_name" content="Diver">
-<meta property="og:description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  1.">
+<meta property="og:description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  Co">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/Net_Arch.jpg">
 <meta property="og:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/rendering.png">
 <meta property="og:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/exp.png">
-<meta property="og:updated_time" content="2019-03-08T05:26:29.470Z">
+<meta property="og:updated_time" content="2019-03-08T05:36:15.265Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction From Image Collections">
-<meta name="twitter:description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  1.">
+<meta name="twitter:description" content="&amp;lt;论文阅读&amp;gt;Learning Category-Specific Mesh Reconstruction from Image Collections论文链接 Github链接  论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法  Co">
 <meta name="twitter:image" content="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/Net_Arch.jpg">
 
 
@@ -381,13 +381,13 @@
 <blockquote>
 <p><strong>论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法</strong></p>
 </blockquote>
-<h3 id="1-Contribution"><a href="#1-Contribution" class="headerlink" title="1.Contribution"></a>1.Contribution</h3><ul>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
 <li>单图重建</li>
 <li>纹理渲染</li>
 <li>训练过程无需3d ground truth数据<a id="more"></a>
-<h3 id="2-Method"><a href="#2-Method" class="headerlink" title="2.Method"></a>2.Method</h3><h4 id="2-1-训练数据预处理"><a href="#2-1-训练数据预处理" class="headerlink" title="2.1 训练数据预处理"></a>2.1 训练数据预处理</h4>本次实验用到的数据集是<code>CUB-200-2011</code>,提供了200种鸟类，共计11788张图片。每张图片附含了15个关键点的标记（头部，背部，脚等）、一张Mask和Bounding box。<br>作者首先将这些数据导入Matlab当中，首先对每组关键点进行零均值处理，接着计算平均模型$\hat{S}$。 接着利用所有关键点进行<code>structure from motion</code>变换，得到每张图片相对于平均模型$\hat{S}$的<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数。</li>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><h4 id="训练数据预处理"><a href="#训练数据预处理" class="headerlink" title="训练数据预处理"></a>训练数据预处理</h4>本次实验用到的数据集是<code>CUB-200-2011</code>,提供了200种鸟类，共计11788张图片。每张图片附含了15个关键点的标记（头部，背部，脚等）、一张Mask和Bounding box。<br>作者首先将这些数据导入Matlab当中，首先对每组关键点进行零均值处理，接着计算平均模型$\hat{S}$。 接着利用所有关键点进行<code>structure from motion</code>变换，得到每张图片相对于平均模型$\hat{S}$的<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数。</li>
 </ul>
-<h4 id="2-2-网络训练"><a href="#2-2-网络训练" class="headerlink" title="2.2 网络训练"></a>2.2 网络训练</h4><p>作者用到了三个网络来达到重建效果，分别是<code>文中所用主体网络</code>,<a href="https://arxiv.org/abs/1711.07566" target="_blank" rel="noopener"><strong>Neural Mesh Render</strong></a><br>和<a href="https://arxiv.org/abs/1801.03924" target="_blank" rel="noopener"><strong>Perceptual loss</strong></a>。</p>
+<h4 id="网络训练"><a href="#网络训练" class="headerlink" title="网络训练"></a>网络训练</h4><p>作者用到了三个网络来达到重建效果，分别是<code>文中所用主体网络</code>,<a href="https://arxiv.org/abs/1711.07566" target="_blank" rel="noopener"><strong>Neural Mesh Render</strong></a><br>和<a href="https://arxiv.org/abs/1801.03924" target="_blank" rel="noopener"><strong>Perceptual loss</strong></a>。</p>
 <ul>
 <li>论文中所用网络简介</li>
 </ul>
@@ -416,7 +416,7 @@
 <p>$L_{texture} = \sum_{i}dist(\mathcal{S_{i}}\bigodot\mathcal{I_{i}},\mathcal{S_{i}}\bigodot\mathcal{R}(V_{i},F,\tilde{\pi_{i}},I^{uv}))$</p>
 <p>$L_{dt} = \sum_{i}\sum_{u,v}G(\mathcal{D_{S_{i}};F_{i}}(u,v)$， $\mathcal{D_{S_{i}}}$表示对于每一个Mask的distance transform。</p>
 <p>TexturePredictor会输出一个<code>texture flow</code>，也就是$\mathcal{F} \in \mathbb{R}^{H_{uv}<em>W_{uv}</em>2}$,其中$H_{uv}*W_{uv}$分别表示UVmap的长和宽，而$\mathcal{F}(x,y)$对应的就是input image(x,y)。最后的UVmap就是$I^{uv} = G(I;\mathcal{F})$。而这个<code>texture flow</code>不是神经网络的直接输出产物，而神经网络直接输出的是一个表示体现了UV图和Img的对应位置的关系，而其还是会与另一个<code>UVsample</code>进行取样。而<code>UVsample</code>表示的是UV图与$\hat{V}$上各个点的一个对应关系。这两个东西结合在一起后就可以体现UVmap、$\hat{V}$、img三者之间的关系。</p>
-<h3 id="3-Experiments"><a href="#3-Experiments" class="headerlink" title="3.Experiments"></a>3.Experiments</h3><p><img src="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/exp.png" alt></p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="file:///media/brl/1499e246-2bcf-487c-9e0d-6cf34025d1a9/brl/markdown_repo/exp.png" alt></p>
 
       
     </div>
@@ -434,7 +434,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/三维重建/" rel="tag"># 三维重建</a>
+            <a href="/tags/3d-reconstruction/" rel="tag"># 三维重建</a>
           
             <a href="/tags/纹理渲染，深度学习/" rel="tag"># 纹理渲染，深度学习</a>
           
@@ -589,7 +589,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lt-论文阅读-gt-Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">1.Contribution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Method"><span class="nav-number">1.2.</span> <span class="nav-text">2.Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-训练数据预处理"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 训练数据预处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-网络训练"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 网络训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Experiments"><span class="nav-number">1.3.</span> <span class="nav-text">3.Experiments</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lt-论文阅读-gt-Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method"><span class="nav-number">1.2.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#训练数据预处理"><span class="nav-number">1.2.1.</span> <span class="nav-text">训练数据预处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络训练"><span class="nav-number">1.2.2.</span> <span class="nav-text">网络训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.3.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -760,6 +760,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
