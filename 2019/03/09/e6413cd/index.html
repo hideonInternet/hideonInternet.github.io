@@ -80,7 +80,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="三维重建,深度学习,">
+  <meta name="keywords" content="三维重建,深度学习,SMPL,">
 
 
 
@@ -96,13 +96,13 @@
 
 
 
-<meta name="description" content="作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
-<meta name="keywords" content="三维重建,深度学习">
+<meta name="description" content="作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta name="keywords" content="三维重建,深度学习,SMPL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose">
 <meta property="og:url" content="https://hideoninternet.github.io/2019/03/09/e6413cd/index.html">
 <meta property="og:site_name" content="Diver">
-<meta property="og:description" content="作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta property="og:description" content="作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/method.png">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/Net_Arc.jpg">
@@ -110,10 +110,10 @@
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/evaluation2.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/h_error_b_reasonable.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/evaluation3.jpg">
-<meta property="og:updated_time" content="2019-03-09T08:45:19.133Z">
+<meta property="og:updated_time" content="2019-03-09T08:58:42.281Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose">
-<meta name="twitter:description" content="作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta name="twitter:description" content="作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
 <meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/method.png">
 
 
@@ -429,7 +429,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1.2k 字
+                  1.3k 字
                 </span>
               
 
@@ -453,7 +453,7 @@
 
           
               <div class="post-description">
-                  作者利用SMPL和数据训练了一个有单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。
+                  作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。
               </div>
           
 
@@ -503,8 +503,8 @@
 <p>$L_{smpl} = ||[\beta_i,\theta_i]-[\hat{\beta_i},\hat{\theta_i}]||_2^2$</p>
 <p>$minL_{abv}(E) = \sum_i\mathbb{E}_{\Theta ~ pE}[(D_i(E(I)-1)^2]$</p>
 <p>$minL(D_i) = \mathbb{E}_{\Theta~pdata}[(D_i(\Theta)-1)^2]+\mathbb{E}_{\Theta ~ pE}[D_i(E(I)^2]$</p>
-<p>很典型的GANs网络结构的Loss函数，其中$\Theta$表示真实的smpl参数。</p>
-<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p>对于2D image dataset,作者使用了<code>LSP</code>,<code>LSP-extended</code>,<code>MPII</code>和<code>MS COCO</code>。2D image和3D dataset作者使用了<code>Human 3.6M</code>和<code>MPI-INF-3DHP</code>。而用作训练<code>discriminator</code>的<code>SMPL</code>真实数据是: <code>CMU</code>, <code>Human3.6M training set</code> 和<br><code>the PosePrior dataset</code>。</p>
+<p>很典型的GANs网络结构的Loss函数，其中$\Theta$表示真实的smpl参数。（这个loss函数真的能够限制每个关节的旋转角度和整体关节的分布情况么？？表示很难理解,欢迎提出新的见解~)</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p>对于2D image dataset,作者使用了<code>LSP</code>,<code>LSP-extended</code>,<code>MPII</code>和<code>MS COCO</code>，训练数据量分别是1k,10k,20k和80k。2D image和3D dataset作者使用了<code>Human 3.6M</code>和<code>MPI-INF-3DHP</code>。而用作训练<code>discriminator</code>的<code>SMPL</code>真实数据是: <code>CMU</code>, <code>Human3.6M training set</code> 和<br><code>the PosePrior dataset</code>,训练数据量分别是390k,150k,180k。</p>
 <p>作者在<code>Human 3.6M</code>上采用了两种评价标准：</p>
 <ul>
 <li>mean per joint position error (MPJPE)</li>
@@ -540,6 +540,8 @@
             <a href="/tags/3d-reconstruction/" rel="tag"># 三维重建</a>
           
             <a href="/tags/dl/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/SMPL/" rel="tag"># SMPL</a>
           
         </div>
       
@@ -657,7 +659,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1203,113 +1205,6 @@
 
 
   
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("fU4MoDkNezrpkCqNqoqot4of-gzGzoHsz", "X3FpjEwzHdj1uEA0ibsgNJ1I");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
 
   
 
