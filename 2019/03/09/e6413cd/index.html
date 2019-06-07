@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/evaluation2.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/h_error_b_reasonable.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/evaluation3.jpg">
-<meta property="og:updated_time" content="2019-03-09T10:51:41.694Z">
+<meta property="og:updated_time" content="2019-06-06T15:01:57.823Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose">
 <meta name="twitter:description" content="作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
@@ -427,12 +427,24 @@
                 
               
 
-              <time title="创建时间：2019-03-09 16:45:53 / 修改时间：18:51:41" itemprop="dateCreated datePublished" datetime="2019-03-09T16:45:53+08:00">2019-03-09</time>
+              <time title="创建时间：2019-03-09 16:45:53" itemprop="dateCreated datePublished" datetime="2019-03-09T16:45:53+08:00">2019-03-09</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-06 23:01:57" itemprop="dateModified" datetime="2019-06-06T23:01:57+08:00">2019-06-06</time>
               
             
           </span>
@@ -533,7 +545,7 @@
 <li>loss函数</li>
 </ul>
 <p>$L = \lambda(L_{reproj} + \mathbb{1}L_{3D}) + L_{adv} $，$\lambda$是用来控制两个目标函数的相对权重的。若输入的2D图像有对应的ground truth 3D数据时，$\mathbb{1}$的值就为1,否则就是0。</p>
-<p>$L_{reproj} = \sum_{i}||v_{i}(x_{i}-\hat{x_{i}})||_{1}$,其中$\hat{x_{i}} = s\Pi(RX(\theta,\beta)) + t$。 $R$表示旋转操作，$\Pi$表示正交投影，$s，t$分别表示Scale和translation。</p>
+<p>$L_{reproj} = \sum \limits_{i}||v_{i}(x_{i}-\hat{x_{i}})||_{1}$,其中$\hat{x_{i}} = s\Pi(RX(\theta,\beta)) + t$。 $R$表示旋转操作，$\Pi$表示正交投影，$s，t$分别表示Scale和translation。</p>
 <p>$L_{3D} = L_{3D joints} + L_{3D smpl}$</p>
 <p>$L_{joints} = ||(X_i-\hat{X_i})||_2^2$</p>
 <p>$L_{smpl} = ||[\beta_i,\theta_i]-[\hat{\beta_i},\hat{\theta_i}]||_2^2$</p>
@@ -683,7 +695,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -708,7 +720,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">4</span>
+                      
+                    
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -735,7 +749,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">5</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="OH_kg0FJ4dcbHRtj2668C_GEmcR_EGgMJixBGr3LT7g">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/safari-pinned-tab.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在最近的研究中想对重建的3D Shape进行特征抽取，并以此来帮助重建任务，所有研究了最近几年的有关point cloud, mesh的特征抽取相关工作论文，在这里作为一个合集记录一下。">
+<meta name="keywords" content="点云,网格">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文阅读&gt;(三)Paperset:how to Extract Geometric Features From Spatial Layout of Points">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/06/06/a24b1b46/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="在最近的研究中想对重建的3D Shape进行特征抽取，并以此来帮助重建任务，所有研究了最近几年的有关point cloud, mesh的特征抽取相关工作论文，在这里作为一个合集记录一下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/DGCNN_overview.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/EdgeConv.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/DGCNN_Net_Arc.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/KCNet_arc.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/KCnet_exp.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/MeshNet_Arc.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/face_rotate%20convolution.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/meshconv.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/meshnet_exp.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/meshnet_exp2.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/SRN.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/srn_arc.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/srn_exp.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/srn_exp2.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/RS_CNN.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/rscnn_exp1.jpg">
+<meta property="og:updated_time" content="2019-06-07T15:20:14.728Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="&lt;论文阅读&gt;(三)Paperset:how to Extract Geometric Features From Spatial Layout of Points">
+<meta name="twitter:description" content="在最近的研究中想对重建的3D Shape进行特征抽取，并以此来帮助重建任务，所有研究了最近几年的有关point cloud, mesh的特征抽取相关工作论文，在这里作为一个合集记录一下。">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/paperAna_3/DGCNN_overview.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="https://hideoninternet.github.io/2019/06/06/a24b1b46/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title><论文阅读>(三)Paperset:how to Extract Geometric Features From Spatial Layout of Points | Diver</论文阅读></title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Diver</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">A coder in kindergarten</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/06/06/a24b1b46/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"><论文阅读>(三)Paperset:how to Extract Geometric Features From Spatial Layout of Points
+
+              
+            
+          </论文阅读></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-06 14:54:09" itemprop="dateCreated datePublished" datetime="2019-06-06T14:54:09+08:00">2019-06-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-07 23:20:14" itemprop="dateModified" datetime="2019-06-07T23:20:14+08:00">2019-06-07</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/paper/特征抽取/" itemprop="url" rel="index"><span itemprop="name">特征抽取</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/06/06/a24b1b46/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/06/a24b1b46/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">在最近的研究中想对重建的3D Shape进行特征抽取，并以此来帮助重建任务，所有研究了最近几年的有关point cloud, mesh的特征抽取相关工作论文，在这里作为一个合集记录一下。</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="lt-论文阅读-gt-Paper-set-how-to-extract-geometric-features-from-spatial-layout-of-points"><a href="#lt-论文阅读-gt-Paper-set-how-to-extract-geometric-features-from-spatial-layout-of-points" class="headerlink" title="&lt;论文阅读&gt;Paper set: how to extract geometric features from spatial layout of points"></a>&lt;论文阅读&gt;Paper set: how to extract geometric features from spatial layout of points</h2><ul>
+<li>[1]<a href="https://arxiv.org/pdf/1801.07829.pdf" target="_blank" rel="noopener">TOG2018 Dynamic Graph CNN for Learning on Point Clouds</a></li>
+<li>[2]<a href="https://arxiv.org/pdf/1712.06760.pdf" target="_blank" rel="noopener">CVPR2018Mining Point Cloud Local Structures by Kernel Correlation and Graph Pooling</a></li>
+<li>[3]<a href="https://arxiv.org/pdf/1811.11424.pdf" target="_blank" rel="noopener">AAAI2019MeshNet: Mesh Neural Network for 3D Shape Representation</a></li>
+<li>[4]<a href="http://ivg.au.tsinghua.edu.cn/people/Yueqi_Duan/CVPR19_Structural%20Relational%20Reasoning%20of%20Point%20Clouds.pdf" target="_blank" rel="noopener">CVPR2019Structural Relational Reasoning of Point Clouds</a></li>
+<li>[5]<a href="https://arxiv.org/pdf/1904.07601.pdf" target="_blank" rel="noopener">CVPR2019Relation-Shape Convolutional Neural Network for Point Cloud Analysis</a></li>
+</ul>
+<h3 id="Dynamic-Graph-CNN-for-Learning-on-Point-Clouds"><a href="#Dynamic-Graph-CNN-for-Learning-on-Point-Clouds" class="headerlink" title="Dynamic Graph CNN for Learning on Point Clouds"></a>Dynamic Graph CNN for Learning on Point Clouds</h3><h4 id="Description"><a href="#Description" class="headerlink" title="Description:"></a>Description:</h4><p>作者认为<a href>Pointnet</a>和<a href>Pointnet++</a>均只是探究了点云局部的独立的，本身的几何结构（Pointnet尽管是将一个完整点云分割为若干子点云来分别计算几何结构，但其还是处于<strong>local sacle</strong>的程度），并没有得到自己与其他点，其他子点云之间的关系。作者利用图神经网络在处理不规则数据上的优势，在抽取<strong>点云</strong>中各个点之间的几何关系，从而弥补了之前方法的不足</p>
+<p><img src="/images/paper/paperAna_3/DGCNN_overview.jpg" alt></p>
+<h4 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution:"></a>Contribution:</h4><p>作者提出了一种可以在点云处理中使用的操作：EdgeConv。并且通过大量的实验证明了改操作可以更好的在提取点云局部几何特征的同时保持排列不变性。</p>
+<h4 id="Method"><a href="#Method" class="headerlink" title="Method:"></a>Method:</h4><p>作者在relate work-&gt;Geometric Deep learning中提到<code>A key difficulty,however,is that the Laplacian eigenbasis is domain-dependent;thus, a filter learned on one shape may not generalize to others.</code> 就是对于图卷积网络来说，基于频域的卷积其泛化性不如在空域中的卷积。</p>
+<p><img src="/images/paper/paperAna_3/EdgeConv.jpg" alt></p>
+<ul>
+<li>EdgeConv</li>
+</ul>
+<p>假设点云点数为N,同时每个点上的特征维度为F,那么就有$X = {x_{1},…,x_{n}} \subseteq R^{F}$ 。对于每个点上的特征向量的计算，选取在特征空间上与<code>中心点</code>最近的K近邻点(k-nearest neighbor) 表示为$\mathcal G = (\mathcal V, \varepsilon)$ 其中$\mathcal V={1,…,n }$代表点，$\varepsilon$表示<code>中心点</code>与其K近邻的边。那么<code>EdgeConv</code>的公式可以表示为：</p>
+<p>$ x_{i}^{‘} = \square h_{\theta} (x_{i},x_{j})$ &emsp;&emsp;$s.t. j:(i,j) \in \varepsilon$  $x_{i}$表示在i th点上的特征向量</p>
+<p>其中$\square$ 代表channel-wise的对称aggregation操作，例如叠加或求最大值（to keep permutaion invariance)，<strong>每层EdgeConv对每个点$x_{i}$都会更新其特征向量<br>本文采用的<code>Max</code> Aggregation方法</strong></p>
+<ul>
+<li><p>Choice of $h_{\theta}$</p>
+<ul>
+<li>$h_{\theta}(x_{i},x_{j}) = \theta_{j}x_{j}$ 这就相当于普通的CNN卷积了，$x_{i}$就相当于卷积核中间的那个点，$x_{j}$是其周围的点，$\theta$是可学习参数</li>
+<li>$h_{\theta}(x_{i},x_{j}) =h_{\theta}(x_{i})$ 这就是<code>Pointnet</code>的处理方式，只独立的考虑一个点</li>
+<li>$h_{\theta}(x_{i},x_{j}) =h_{\theta}(x_{i}-x_{j})$ 该方法作者认为只考虑了编码局部信息，失去了全局形状结构</li>
+<li>$h_{\theta}(x_{i},x_{j}) =h_{\theta}(x_{i},x_{i}-x_{j})$ 弥补了上一个方法的不足，也是本文所采取的方法</li>
+</ul>
+</li>
+<li><p>Dynamic graph update</p>
+</li>
+</ul>
+<p>在每一层EdgeConv之后，作者都会计算一个根据新得到的每个点的特征向量，计算一次KNN,并用这个新的KNN Graph来计算下一层的特征向量。</p>
+<ul>
+<li>Implementation</li>
+</ul>
+<p><img src="/images/paper/paperAna_3/DGCNN_Net_Arc.jpg" alt></p>
+<p>注意EdgeConv层的维度</p>
+<ul>
+<li>Experiment</li>
+</ul>
+<p>首先当然是取得了state-of-art的成绩。有趣的，作者发现对于近邻K的选取，不是越大越好，对于不同的任务，都有一个峰值K使得效果最好，作者认为过大的K会使得欧式距离不能很好的估计测地距离（geodesic distace)会摧毁几何信息。同时作者发现K的选取跟点的密度有关</p>
+<hr>
+<h3 id="Mining-Point-Cloud-Local-Structures-by-Kernel-Correlation-and-Graph-Pooling"><a href="#Mining-Point-Cloud-Local-Structures-by-Kernel-Correlation-and-Graph-Pooling" class="headerlink" title="Mining Point Cloud Local Structures by Kernel Correlation and Graph Pooling"></a>Mining Point Cloud Local Structures by Kernel Correlation and Graph Pooling</h3><h4 id="Description-1"><a href="#Description-1" class="headerlink" title="Description:"></a>Description:</h4><p>这篇文章与[1]是同一时期的论文，但是在ModelNet40上的分类和ShapeNet上的分割都略微不如[1],但其思想是值得借鉴的。</p>
+<p>作者利用在04年ECCV上的一篇关于<code>point cloud registration</code>工作上的技术<code>kernel Correlation</code>来对局部几何信息进行编码，可以理解为2D CNN中卷积核(kernel)的一种特殊的3D变种，其会对具有不同结构信息的点产生不同程度的响应(response)。同时作者也提出了一种利用K nearest neighbor graphs(KNNG)的新的特征聚合方法（feature aggregation)来利用高维结构特征推断集合信息。</p>
+<h4 id="Contribution-1"><a href="#Contribution-1" class="headerlink" title="Contribution:"></a>Contribution:</h4><p>作者提出了借用<code>kernel correlation</code>的思想来简化求解local structural feature</p>
+<h4 id="Method-1"><a href="#Method-1" class="headerlink" title="Method:"></a>Method:</h4><p><img src="/images/paper/paperAna_3/KCNet_arc.jpg" alt></p>
+<ul>
+<li><p>Local Geometric Properties</p>
+<ul>
+<li>Surface Normal: 作者在论文中提到可以用PCA求解的minimum variance direction作为局部的法向量，原话是:<code>surface normal can be estimated by principal component analysis on data covariance matrix of neighboring points as the minimum variance direction</code></li>
+<li>Covariance Matrix(协方差矩阵): 作为二阶局部描述子，它能提供比normal更加多的信息量。但是作者认为<code>normal</code>与<code>Covariance Matrix</code>作为手工设定的特征，其描述局部结构特征的能力有限，因为不同形状的几何结构可能产生相似的<code>normal</code>或者<code>covariance matrix</code>，这就给后续工作带来巨大的噪音。</li>
+<li>Kernel Correlation: <code>Kernel Correlation</code>可以帮助用来判断两个<code>Point cloud</code>之间的相似度（similarity)。在<code>point cloud registraion</code>当中，一个<code>point cloud</code>作为reference,另一个作为source。source要不断的进行刚性/非刚性变换以使得<code>kernel correlation</code>的响应达到最大。也就是说，<strong>响应大的时候，两者的几何结构是非常相似的</strong>，那么这种性质就可以用来构造卷积核。</li>
+</ul>
+</li>
+<li><p>Learning on Local Geometric Structure</p>
+</li>
+</ul>
+<p><code>point cloud registration</code> 中的<code>kernel corelation</code>是固定一个template(reference),试图找到一个变换（transformation)使得source+transformation的结果与refrence的响应最大。而本文作者对此进行了改进，在整个训练过程中，template(reference）不再被固定，而是通过反传误差，不断学习到一个合适的reference(这里可以看成不断调整初始reference中点的位置），从而使reference与source的响应达到一个水准，这个水准能与网络其余结构一起产生预期的预测效果。论文原话是：</p>
+<pre><code>Under this setting, the learning process can be viewed as finding a
+set of reference/template points encoding the most effective and
+useful local geometric structures that lead to the best learning 
+performance jointly with other parameters in the network.
+</code></pre><p><code>kernel corelation</code>的计算公式：</p>
+<p>$KC(\mathcal k,x_{i} ) = \cfrac{1}{\mathcal N(i)}\sum\limits_{m=1}^{M}\sum\limits_{n \in \mathcal N(i)}K_{\sigma}(\mathcal k_{m},x_{n}-x_{i}) \tag {1} $</p>
+<p>$\mathcal k_{m}$表示kernel中的m个可学习的点，$\mathcal N(i)$ 表示anchor point $x_{i}$的周围K近邻，而$K_{\sigma}(*,*)$表示核函数，也就是公式$(2)$所示。公式$(1)$大体就是对于某个<code>corelation kernel</code>来说，其中每个点$\mathcal k_{m}$都会与$\mathcal N(i)$中包括的点一起作为公式$(1)$的输入，也就是会计算m*k次。<br>$K_{\sigma}(k,\delta) = exp(-\cfrac{||k-\delta||^2}{2\delta^2}) \tag {2}$</p>
+<p>分子表示欧式距离，分母$\delta$表示核的宽度，它控制点之间距离的影响（这里我也不是太懂）。文中的$\delta$被设置为<code>the average neighbor distance in the neighborhood graphs over all training point clouds</code>。</p>
+<p>可以设置$L$个<code>kernel corelation</code>,这个$L$与卷积网络中的output channel类似。</p>
+<ul>
+<li>Learning on Local Feature Structure</li>
+</ul>
+<p>核心思想就是每个点预期近邻点的几何结构是一致，将各个点与其自身的近邻点做特征向量的aggregation有利于使得网络具有更好的效果和鲁棒性。作者采用了<code>average pooling</code>和<code>max pooling</code>， 其中<code>max pooling</code>为</p>
+<p>$\mathcal Y(i,k) = \max\limits_{n \in \mathcal N(i)} X(n,k) \tag{3}$ </p>
+<p>k表示第i个点的特征向量的第k个维度，特征向量维度与<code>kernel corelation</code>的核数量一致</p>
+<p><code>average pooling</code>为：<br>$Y=D^{-1}WX \tag{4}$<br>$W$为邻接矩阵，$D$为度矩阵(degree matrix)</p>
+<p>本文采用的是Max pooling作为Aggregation方法</p>
+<ul>
+<li>Experiment:</li>
+</ul>
+<p>作者通过Ablation study从<code>Effectiveness of Kernel Correlation</code>,<code>Symmetric Functions</code>,<code>Effectiveness of Local Structures</code>三个方面证明了本文所提方法的有效性：</p>
+<p><img src="/images/paper/paperAna_3/KCnet_exp.jpg" alt></p>
+<p><strong>但我觉得存在一个问题:</strong>在<code>Effectiveness of Kernel Correlation</code>试验中，每个点的<code>Normal</code>是使用PCA方法求出的，然后再与坐标Catenate.那么所求的<code>Normal</code>与真实的值相差多少呢?这个误差是否会影响实验结果呢？如果改用更加准确的<code>Normal</code>求解方法，是否能提高，甚至超过<code>Kernel Correlation</code>方法呢？</p>
+<h4 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion:"></a>Conclusion:</h4><p>这篇工作的根本目的在于探究一种较<code>PointNet++</code>更为简单的局部几何计算子，从而在节省算力的同时，还能提高准确度。但是其本质上是以一种更加简单的方式回答<strong>what type of the point</strong>，其没有解决点与点之间是什么关系，换句话说，<code>PointNet++</code>与<code>KC-Net</code>的本质与[1]中的<code>DG-CNN</code>是不同的，这可能也是造成他们效果差异的原因。</p>
+<hr>
+<h3 id="MeshNet-Mesh-Neural-Network-for-3D-Shape-Representation"><a href="#MeshNet-Mesh-Neural-Network-for-3D-Shape-Representation" class="headerlink" title="MeshNet: Mesh Neural Network for 3D Shape Representation"></a>MeshNet: Mesh Neural Network for 3D Shape Representation</h3><h4 id="Description-2"><a href="#Description-2" class="headerlink" title="Description:"></a>Description:</h4><p><img src="/images/paper/paperAna_3/MeshNet_Arc.jpg" alt></p>
+<p>本文提出一种基于<strong>Mesh</strong>的3D shape特征抽取方法,直接将对于Mesh-based 3D shape的分类准确率从68.3%提升到91.9%。作者将单独的一个<code>Face</code>视为一个<code>Unit</code>,这样做可以消除Mesh固有的irregular，因为每一个face有且只有3个面与其相邻（作者这里用的是no more than，我认为不对)。其次，作者将一个Face的Feature分为<code>spatial feature</code>和<code>structural feature</code>,这样做有利于是Face Feature具有更加明确的指向性，使网络更容易学习到有用的Feature</p>
+<h4 id="Method-2"><a href="#Method-2" class="headerlink" title="Method:"></a>Method:</h4><ul>
+<li><p>Input:  作者将<code>Face-unit</code>进行了如下分解：</p>
+<ul>
+<li><p>Face Information:</p>
+<ul>
+<li>Center:coordinate of center point</li>
+<li>Corner:<strong>vectors</strong> from the center point to three vertices</li>
+<li>Normal: the unit normal vector</li>
+</ul>
+</li>
+<li><p>Neighbor Information:</p>
+<ul>
+<li>Neighbor Index: indexes of the connected faces(filled with the index of itself if the face connects with less than three faces) 如果面片形成的是一个闭集，那么必然是一个面片有三个相邻面的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Spatial and Structural Descriptor</p>
+</li>
+</ul>
+<p>spatial descriptor: 输入只是Center坐标，简单的经过MLP得到结果</p>
+<p>Structural descriptor:face rotate convolution</p>
+<p><img src="/images/paper/paperAna_3/face_rotate convolution.jpg" alt></p>
+<p>$g(\cfrac{1}{3}(f(v_{1},v_{2})+f(v_{2},v_{3})+f(v_{3},v_{1})) \tag{1}$</p>
+<p>$f(*,*) : \mathbb R^3 * \mathbb R^3 \rightarrow \mathbb R^{K_1}$</p>
+<p>$g(*,*) : \mathbb K^1 \rightarrow \mathbb K^2$可以是任何合法函数（大多都是MLP)</p>
+<p>作者将这个操作类比到卷积操作，$f(*,*)$看作卷积核，每次对两个向量做卷积，然后用旋转代替平移，步长为1。$K_1$表示<code>output channel</code>。这个$\cfrac{1}{3}$可以当做对称函数(average pooling)用来消除disorder，保证了permutation invariance。</p>
+<p>Structural descriptor: face kernel correlation:</p>
+<p>作者利用[2]的<code>kernel corelation</code>将其改为针对<code>face-unit</code>的形式，利用面片的<code>normal</code>代替[2]中点的坐标。由于所有的<code>normal</code>都是单位向量所以作者用$(\theta,\phi)$ 来代替单位向量$(x,y,z)$ 所以有</p>
+<p>$\begin{cases}<br>         &amp; x=sin \theta cos \phi \\<br>         &amp; y=sin \theta sin \phi \\<br>         &amp; z=cos \phi \tag{2} \\<br>\end{cases}$</p>
+<p>其中：$\theta \in [0,\pi], \phi \in [0,2\pi)$(其实就是仰角和旋转角)</p>
+<p>$KC(\mathcal k,x_{i} ) = \cfrac{1}{\mathcal |N(i)| \mathcal |M_k|)}\sum\limits_{n \in \mathcal N_i}\sum\limits_{m \in \mathcal M_k}K_{\sigma}(n,m) \tag {3} $</p>
+<p>$K_{\sigma}(n,m) = exp(-\cfrac{||n-m||^2}{2\delta^2}) \tag {4}$</p>
+<p>这些都与[2]中的含义一致</p>
+<ul>
+<li>Mesh Convolution</li>
+</ul>
+<p><img src="/images/paper/paperAna_3/meshconv.jpg" alt></p>
+<p>如图所示，作者将<code>spatial Feature</code>，<code>structral Feature</code>和<code>Neighbor Index</code>，作为输入送进<code>Combination</code>和<code>Aggregation</code>中，得到新的<code>spatial Feature</code>和<code>structral Feature</code>。 作者在文中提到，之所以不将<code>spatial Feature</code>一起送进<code>Aggregation</code>是因为不想让<code>structral Feature</code>受到点所在空间信息的影响，就如2维卷积的过程中，不会显示的告知卷积核该像素的绝对坐标一样。</p>
+<p>图中标识了三种Aggregation方法：<code>Concatenation</code>,<code>Max pooling</code>和<code>Average pooling</code> 作者认为Average pooling是很多强响应被忽略了，从而损失了很多的有用信息。实验表明Concatenation效果最好。</p>
+<p><img src="/images/paper/paperAna_3/meshnet_exp.jpg" alt></p>
+<h4 id="Conclusion-1"><a href="#Conclusion-1" class="headerlink" title="Conclusion:"></a>Conclusion:</h4><ul>
+<li>将Feature拆分为多个更加明确的子特征，可能有助于网络学习</li>
+<li>本文有个缺点就是没有考虑显示的考虑面片之间的结构关系，每个面片的特征都只与其本身有关，但不排除在之后了MLP层之后学习到了。</li>
+</ul>
+<p><img src="/images/paper/paperAna_3/meshnet_exp2.jpg" alt></p>
+<p>结果显示在移除了MeshConv之后，准确度下降的比重不是最大的</p>
+<hr>
+<h3 id="Structural-Relational-Reasoning-of-Point-Clouds"><a href="#Structural-Relational-Reasoning-of-Point-Clouds" class="headerlink" title="Structural Relational Reasoning of Point Clouds"></a>Structural Relational Reasoning of Point Clouds</h3><h4 id="Description-3"><a href="#Description-3" class="headerlink" title="Description"></a>Description</h4><p>作者首先阐述了<code>Pointnet++</code>的缺点，与[1]中提到的一致–只是探究了局部的结构特征，没有探究这些局部之间的结构也就是依赖关系。但是与[1]不同的是，本文所提出的<code>structural relation network(SRN)</code>探究的是局部与局部的依赖关系(structural<br>dependencies of local regions)，而[1]是以点为单位的。作者以人类识别物体为例，认为对物体局部之间关系的认知对于理解物体本身具有很大作用</p>
+<h4 id="Method-3"><a href="#Method-3" class="headerlink" title="Method"></a>Method</h4><p><img src="/images/paper/paperAna_3/SRN.jpg" alt></p>
+<p>$P_i$代表子点云,$u_i \in \mathbb R^d$代表该子点云的局部几何特征，$v_i \in \mathbb R^3$表示该子点云的平均位置用来表示位置信息。作者认为$u_i$对发现重复的局部模式(repetitive local patterns)有帮助，而$u_i$对发现各个局部之间的连接关系(linkage relations)起到关键作用。所有$P_i$的结构关系特征表示为：</p>
+<p>$y_i = f(\sum \limits_{\forall j}h(g_u(u_i,u_j),g_v(v_i,v_j)) \tag{1}$</p>
+<p>$j$表示除了$i$以外的所有子点云。<strong>在实现方面，$g_u(·，·),g_v(·，·)$都是由多层感知机(MLP)实现,$f(·，·),h(·，·)$都是由1 $\times$ 1卷积实现</strong>。由上面那张图可以看出每个$u_i$都会与其他的所有$u_j$做一次concatenating操作（应该是在channel维度进行拼接）</p>
+<p><img src="/images/paper/paperAna_3/srn_arc.jpg" alt></p>
+<p><strong>注意到标黄部分，采用了不同比例的局部特征</strong>,作者认为<code>SRN</code>对于不同的子点云获取方法都是鲁棒的。同时红框表示文中提到的<code>residual connection</code>$y$是作为对$u$的补充(complement)</p>
+<h4 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h4><p>为了证明<code>SRN</code>对3D Shape的局部关系学习具有很好的泛化性，作者在<code>ModelNet40（3D objects)</code>和<code>Scannet(indoor scenes)</code>上做了跨库实验</p>
+<p><img src="/images/paper/paperAna_3/srn_exp.jpg" alt></p>
+<p>作者提取分布在两个库上训练的网络所产生的特征向量(feature)之后用线性SVM做分类</p>
+<p><img src="/images/paper/paperAna_3/srn_exp2.jpg" alt></p>
+<p>作者为了进一步阐述<code>SRN</code>对特征提取的帮助，利用<code>t-SNE</code>(一种对高维数据降维可视化的方法）将所提取的特征进行可视化。发现大多数类别的类间差异都很小。</p>
+<hr>
+<h3 id="Relation-Shape-Convolutional-Neural-Network-for-Point-Cloud-Analysis"><a href="#Relation-Shape-Convolutional-Neural-Network-for-Point-Cloud-Analysis" class="headerlink" title="Relation-Shape Convolutional Neural Network for Point Cloud Analysis"></a>Relation-Shape Convolutional Neural Network for Point Cloud Analysis</h3><h4 id="Description-4"><a href="#Description-4" class="headerlink" title="Description:"></a>Description:</h4><p>作者依旧是从探究点与点之间的关系来入手，作者认为从点学习特征具有三点挑战：</p>
+<ul>
+<li>需要具备排列不变性(permutation invariant)</li>
+<li>对于刚性形变鲁棒，也就是即使点的绝对位置发生改变，只要其结构未变，其特征应该是一致的</li>
+<li>效果好</li>
+</ul>
+<h4 id="Method-4"><a href="#Method-4" class="headerlink" title="Method"></a>Method</h4><p><img src="/images/paper/paperAna_3/RS_CNN.jpg" alt></p>
+<p>$x_i$表示采样点,$x_j \in \mathcal N(x_i)$表示周围邻域点，则该$x_i$上的特征向量$f_{P_{sub}}$可以用来表示这个邻域的结构</p>
+<p>$f_{P_{sub}} = \sigma(\mathcal A(\lbrace \tau(f_{x_j}), \forall x_j \rbrace)), d_{ij} &lt;r  \forall x_j \in \mathcal N(x_i) \tag{1}$ </p>
+<p>$\tau(f_{x_j}) = w_{ij} · f_{x_j} = \mathcal M(h_{ij} · f_{x_j}) \tag{2}$</p>
+<p>$d_{ij}$是$x_i,x_j$之间的欧式距离。对于上面这个公式，论文的解释是:<em>Here $f_{P_{sub}}$ is obtained by first transforming the features of all the points in $\mathcal N(i)$ with function $\tau$ , and then aggregating them with function $\mathcal A$ followed by a nonlinear activator $\sigma$.</em></p>
+<p>公式(1)相对于论文[1]多了一个$\tau$函数，其余操作一致，$\mathcal A$也是<code>max pooling</code> $\mathcal M$为<strong>三</strong>层<code>MLP</code>作者之后在试验中证明了3层是较好的选择</p>
+<h5 id="Conclusion-2"><a href="#Conclusion-2" class="headerlink" title="Conclusion"></a>Conclusion</h5><p>这篇文章是被录用为CVPR2019的oral.但是其最核心的思想我认为跟[1]是差不多的，作者在文中也用一句话评价了两者的区别<code>DGCNN captures similar local shapes by learning point relation in a high-dimensional feature space, yet this relation could be unreliable in some cases.</code> 我刚看到简直吐血，真·不要碧莲。我认为之所以能被接受为oral原因如下：</p>
+<ul>
+<li>优秀的写作，论文从问题到解决办法的提出一气呵成，非常漂亮，很多地方的写作技巧都很微妙，比如上面这句。</li>
+<li>实验做得很充分，几乎论证了所有文中提出的tricks。同时效果确实有不小的提升。</li>
+<li>具体用到的tricks如下：<ul>
+<li>利用了<code>hierarchical architecture</code>,在相同的权重下，对不同数量的neighborhoods进行学习，这与[4]是一致的，但文中没有提出这点</li>
+<li>$\tau$函数的提出，新学习到的特征向量与老的特征向量做一次点乘,这与<a href="https://arxiv.org/pdf/1901.11461.pdf" target="_blank" rel="noopener">ICML2019GEOMetrics: Exploiting Geometric Structure for Graph-Encoded Objects</a>类似。</li>
+<li>相对[1]对每个点求其邻域的特征向量，本文对每个选取的领域求特征</li>
+<li>论文采取的对邻域的选取方法也与其他不相同<img src="/images/paper/paperAna_3/rscnn_exp1.jpg" alt>可以看到，在scale=1的情况下，用<code>K-NN</code>选取邻域只有90.5%的准确率，而转为<code>random-PIB</code>之后就提升到了92.2%，这与<code>DGCNN</code>对每个点都求一个结构特征所得到的准确率是一致，但计算量却大大减少了</li>
+</ul>
+</li>
+</ul>
+<p>很可惜，对于核心方法的修改，作者没有给出消融实验的结果，不能看出新增的$\tau$函数对效果的提升有什么帮助。同时对于输入<code>h</code>是否会变也没有给出明确的说明，就符号一致性来说，是不会改变的,[1]中是会改变的</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/点云/" rel="tag"># 点云</a>
+          
+            <a href="/tags/网格/" rel="tag"># 网格</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/24/30a4c30f/" rel="next" title="Ubuntu18.04装机">
+                <i class="fa fa-chevron-left"></i> Ubuntu18.04装机
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="diver">
+            
+              <p class="site-author-name" itemprop="name">diver</p>
+              <div class="site-description motion-element" itemprop="description">Dive into deeper and deeper</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/hideoninternet" title="GitHub &rarr; https://github.com/hideoninternet" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto://shichen_sun@163.com" title="E-Mail &rarr; mailto://shichen_sun@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lt-论文阅读-gt-Paper-set-how-to-extract-geometric-features-from-spatial-layout-of-points"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;Paper set: how to extract geometric features from spatial layout of points</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dynamic-Graph-CNN-for-Learning-on-Point-Clouds"><span class="nav-number">1.1.</span> <span class="nav-text">Dynamic Graph CNN for Learning on Point Clouds</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description"><span class="nav-number">1.1.1.</span> <span class="nav-text">Description:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.2.</span> <span class="nav-text">Contribution:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Method"><span class="nav-number">1.1.3.</span> <span class="nav-text">Method:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mining-Point-Cloud-Local-Structures-by-Kernel-Correlation-and-Graph-Pooling"><span class="nav-number">1.2.</span> <span class="nav-text">Mining Point Cloud Local Structures by Kernel Correlation and Graph Pooling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">Description:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Contribution-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">Contribution:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Method-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">Method:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusion"><span class="nav-number">1.2.4.</span> <span class="nav-text">Conclusion:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeshNet-Mesh-Neural-Network-for-3D-Shape-Representation"><span class="nav-number">1.3.</span> <span class="nav-text">MeshNet: Mesh Neural Network for 3D Shape Representation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">Description:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Method-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">Method:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conclusion-1"><span class="nav-number">1.3.3.</span> <span class="nav-text">Conclusion:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Structural-Relational-Reasoning-of-Point-Clouds"><span class="nav-number">1.4.</span> <span class="nav-text">Structural Relational Reasoning of Point Clouds</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Method-3"><span class="nav-number">1.4.2.</span> <span class="nav-text">Method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Experiment"><span class="nav-number">1.4.3.</span> <span class="nav-text">Experiment</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Relation-Shape-Convolutional-Neural-Network-for-Point-Cloud-Analysis"><span class="nav-number">1.5.</span> <span class="nav-text">Relation-Shape Convolutional Neural Network for Point Cloud Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Description-4"><span class="nav-number">1.5.1.</span> <span class="nav-text">Description:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Method-4"><span class="nav-number">1.5.2.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Conclusion-2"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">Conclusion</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+  <script src="/js/src/js.cookie.js?v=7.0.1"></script>
+  <script src="/js/src/scroll-cookie.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'fU4MoDkNezrpkCqNqoqot4of-gzGzoHsz',
+    appKey: 'X3FpjEwzHdj1uEA0ibsgNJ1I',
+    placeholder: 'Um...I wanna say something',
+    avatar: 'identicon',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<style>
+  .copy-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+    
+    user-select: none;
+    outline: 0;
+  }
+
+  .highlight-wrap .copy-btn {
+    transition: opacity .3s ease-in-out;
+    opacity: 0;
+    padding: 2px 6px;
+    position: absolute;
+    
+      right: 4px;
+      top: 8px;
+    
+  }
+
+  .highlight-wrap:hover .copy-btn,
+  .highlight-wrap .copy-btn:focus {
+    opacity: 1;
+  }
+
+  .highlight-wrap {
+    position: relative;
+  }
+</style>
+<script>
+  $('.highlight').each(function(i, e) {
+    var $wrap = $('<div>').addClass('highlight-wrap');
+    $(e).after($wrap);
+    $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+      var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+        return $(e).text();
+      }).toArray().join('\n');
+      var ta = document.createElement('textarea');
+      var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+      ta.style.top = yPosition + 'px'; // Prevent page scroll
+      ta.style.position = 'absolute';
+      ta.style.opacity = '0';
+      ta.readOnly = true;
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, code.length);
+      ta.readOnly = false;
+      var result = document.execCommand('copy');
+      
+      ta.blur(); // For iOS
+      $(this).blur();
+    })).on('mouseleave', function(e) {
+      var $b = $(this).find('.copy-btn');
+      setTimeout(function() {
+        $b.text('复制');
+      }, 300);
+    }).append(e);
+  })
+</script>
+
+
+</body>
+</html>
