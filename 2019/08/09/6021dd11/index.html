@@ -100,22 +100,22 @@
 
 
 
-  <meta name="description" content="论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体时属于同一类的，同时该映射是像素级的大致映射">
+  <meta name="description" content="论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体是属于同一类的，同时该映射是像素级的大致映射">
 <meta name="keywords" content="深度学习,CSM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="&lt;论文阅读&gt;(四)Canonical Surface Mapping via Geometric Cycle Consistency">
 <meta property="og:url" content="https://hideoninternet.github.io/2019/08/09/6021dd11/index.html">
 <meta property="og:site_name" content="Diver">
-<meta property="og:description" content="论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体时属于同一类的，同时该映射是像素级的大致映射">
+<meta property="og:description" content="论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体是属于同一类的，同时该映射是像素级的大致映射">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/CSM/example.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/CSM/net.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/CSM/exp1.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/CSM/exp2.jpg">
-<meta property="og:updated_time" content="2019-08-09T11:22:59.133Z">
+<meta property="og:updated_time" content="2019-08-10T14:50:45.688Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(四)Canonical Surface Mapping via Geometric Cycle Consistency">
-<meta name="twitter:description" content="论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体时属于同一类的，同时该映射是像素级的大致映射">
+<meta name="twitter:description" content="论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体是属于同一类的，同时该映射是像素级的大致映射">
 <meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/CSM/example.jpg">
 
 
@@ -425,12 +425,24 @@
                 
               
 
-              <time title="创建时间：2019-08-09 16:17:20 / 修改时间：19:22:59" itemprop="dateCreated datePublished" datetime="2019-08-09T16:17:20+08:00">2019-08-09</time>
+              <time title="创建时间：2019-08-09 16:17:20" itemprop="dateCreated datePublished" datetime="2019-08-09T16:17:20+08:00">2019-08-09</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-10 22:50:45" itemprop="dateModified" datetime="2019-08-10T22:50:45+08:00">2019-08-10</time>
               
             
           </span>
@@ -488,7 +500,7 @@
           
 
           
-            <div class="post-description">论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体时属于同一类的，同时该映射是像素级的大致映射</div>
+            <div class="post-description">论文在无对应关系约束的情况下，利用循环一致性解决了如何将图片中的物体映射至一个3维模板上，值得一提的是3维模板与图片上的物体是属于同一类的，同时该映射是像素级的大致映射</div>
           
 
         </div>
@@ -518,7 +530,7 @@
 <li>Geometric Cycle Consistency Loss</li>
 </ul>
 <p>$ \mathcal L_{cyc} = \sum_{p\in I_f} ||\overline p - p ||_{2}^{2} \quad;\quad \overline p = \pi(\phi(\mathcal {C}[p])) \tag{1}$</p>
-<p>上面这个就是作者提出的一致性Loss,很好理解，就是像素$p$先经过网络映射在三维template上，接着投影会原图，两者之间的距离要尽可能小</p>
+<p>上面这个就是作者提出的一致性Loss,很好理解，就是像素$p$先经过网络映射在三维template上，接着投影回原图，两者之间的距离要尽可能小</p>
 <ul>
 <li>Incorporating Visibility Constraints</li>
 </ul>
@@ -530,9 +542,10 @@
 </ul>
 <p>作者为了彻底摆脱对基准相机参数的需求，又新增了一个网络$g_{\theta^{‘}}$ 这个网络是用来预测相机，并且为了避免<code>局部最小解(local minima)</code>，作者利用预测多个相机参数来达到这个目的。最后，作者使用一个约束来指导相机参数$\pi$的预测</p>
 <p>$ \mathcal L_{mask} = ||f_{render}(S,\pi) - I_f||^2 \tag{3}$</p>
-<p>其中$f_{render}$是在预测相机参数下，三维template投影至二维的Mask。 正如上面提到，作者会一次性预测多个相机参数，所以有${ (\pi_i,c_i)} \equiv g_{\theta’}(I) \quad i=1..8 $,其中$\c_i$表示每个预测结果的概率是多少 。</p>
+<p>其中$f_{render}$是在预测相机参数下，三维template投影至二维的Mask。 正如上面提到，作者会一次性预测多个相机参数，所以有${ (\pi_i,c_i)} \equiv g_{\theta’}(I) \quad i=1..8 $,其中$c_{i}$表示每个预测结果的概率是多少 。</p>
 <p>最后，总的约束函数为：<br>$\mathcal L_{tot} = \mathcal L_{div}(g_{\theta’}(I)) + \sum_{i=1}^{N_c}c_i(\mathcal L_{cyc}^i + \mathcal L_{vis}^i + \mathcal L_{mask}^i) \tag{4}$</p>
 <p><img src="/images/paper/CSM/net.jpg" alt></p>
+<p>网络结构如图所示，对于2D-3D的映射关系预测，作者是利用一个U-Net结构（红色标注），输出为$B<em>4</em>H*W$的特征图，其中<code>[:,:3,:,:]</code>表示的是预测的三维坐标。<code>[:,3,:,:]</code>表示的是预测的<code>mask</code>。$H,W$分布代表输入图像的长和宽。$g_{\theta’}$表示相机参数预测网络，具体上，作者首先用<code>ResNet18</code>提取图片特征，接着送入<code>FC</code>层预测相关相机参数。作者在相机参数的预测网络上，有很多设定还是十分有趣的，有兴趣可以找来看下。</p>
 <h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/CSM/exp1.jpg" alt><br><img src="/images/paper/CSM/exp2.jpg" alt></p>
 <p>咋一看结果挺好，但是不知道作者为什么没有把CMR带基准相机参数的评测结果放出来，从消融实验的结果来看，在不利用预测相机参数的情况下，CSM结果并没有比不使用预测相机参数的CMR好太多，甚至在<code>cars</code>类别上的评分还低些</p>
 
