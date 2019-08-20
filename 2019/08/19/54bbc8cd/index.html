@@ -111,7 +111,7 @@
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/view_prior/sigle_net.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/view_prior/example.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/view_prior/exp1.jpg">
-<meta property="og:updated_time" content="2019-08-20T03:18:22.558Z">
+<meta property="og:updated_time" content="2019-08-20T03:26:18.591Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(五)Learning View Priors for Single-View 3D Reconstruction">
 <meta name="twitter:description" content="这篇文章是少有的，无需3D监督信号的单图重建任务。论文提出了模拟人对于待重建物体的先验知识，即对于不可见视角的物体来说，人可以通过先验知识来“想象”其重建形状是怎样的。">
@@ -441,7 +441,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-08-20 11:18:22" itemprop="dateModified" datetime="2019-08-20T11:18:22+08:00">2019-08-20</time>
+                <time title="修改时间：2019-08-20 11:26:18" itemprop="dateModified" datetime="2019-08-20T11:26:18+08:00">2019-08-20</time>
               
             
           </span>
@@ -519,8 +519,7 @@
 <li>View prior</li>
 </ul>
 <p>其核心Loss函数为：</p>
-<p>$\mathcal L_{r}(x,v) = \sum_{i=1}^{N_0} \mathcal L_{v}(P(R(x_{i1}),v_{i1}),x_{i1}) \tag{1}$</p>
-<p>其中$R(<em>)$为重建函数，$P(</em>)$为将重建好的三维物体按照$v_{i1}$视角投影会二维平面。而$\mathcal L_{v}$为衡量$x_{i1}$和$v_{i1}$视角下的重投影结果之间的误差（<code>a function that measures the difference between two views</code>）。</p>
+<p>$\mathcal L_{r}(x,v) = \sum_{i=1}^{N_0} \mathcal L_{v}(P(R(x_{i1}),v_{i1}),x_{i1}) \tag{1}$<br>其中$R(<em>)$表示为重建函数，$P(</em>)$表示将重建好的三维物体按照$v_{i1}$视角投影会二维平面。而$\mathcal L_{v}$为衡量$x_{i1}$和$v_{i1}$视角下的重投影结果之间的误差（<code>a function that measures the difference between two views</code>）。</p>
 <p>$\mathcal L_{s_1}(x_s,\hat x_s) = \sum_{i=1}^{N_s}\left( 1- \frac{x^i_s \cdot \hat x^i_s}{|x^i_s||\hat x^i_s|}\right) \tag{2}$</p>
 <p>$\mathcal L_{s_2}(x_s,\hat x_s) = 1 - \frac{|x_s \bigodot \hat x_s|_1}{|x_s+\hat x_s + x_s \bigodot \hat x_s|_1} \tag{3}$</p>
 <p>$\mathcal L_v = \mathcal L_s + \lambda_c \mathcal L_c \tag{4}$</p>
@@ -528,7 +527,7 @@
 <p><img src="/images/paper/view_prior/example.jpg" alt></p>
 <p>可以看到，对于椅子，使用作者提出<code>视角先验</code>的方法，重建的结果从各个视角看上去都更加符合实际情况。 基于这种情况，作者使用判别器来给生成器提供不同视角的重建信息。</p>
 <p>$\mathcal L_d(x_{ij},v_{ij}) = -log(Dis(P(R(x_{ij}),v_{ij}),v_{ij}))-\sum_{v_u \in \mathcal V ,, v_u \neq v_{ij}} \frac{ log(1- Dis(P(R(x_{ij}),v_{u}),v_{u}))}{|\mathcal V -1|}  \tag{5}$</p>
-<p>整个网络的输入为单张RGB的图片，生成器首先依据图片重建出一个对应的三维模型，再根据这张图片所对应的<code>相机视角</code>反投影回二维平面，获得的图片可以记为$x_{gt}$。接着，在从$\mathcal V$中选取任一与之前的<code>相机视角</code>不一致的的<code>相机视角</code>，并依据此相机视角，再一次投影会二维平面。这是，第一次投影所得的$x_{gt}$就可以当做真实数据，第二次投影所得就可以当做加数据，一同送入判别器进行判断。作者在文中提到，所有的视角都是存在于训练集中的（$\mathcal V$ be the set of all viewpoints<br>in the training dataset）。<strong>这是否意味着对于一些在训练集中不存在的视角，该网络还是难以学习到其形状？</strong></p>
+<p>整个网络的输入为单张RGB的图片，生成器首先依据图片重建出一个对应的三维模型，再根据这张图片所对应的<code>相机视角</code>反投影回二维平面，获得的图片可以记为$x_{gt}$。接着，在从$\mathcal V$中选取任一与之前的<code>相机视角</code>不一致的的<code>相机视角</code>，并依据此相机视角，再一次投影会二维平面。这是，第一次投影所得的$x_{gt}$就可以当做真实数据，第二次投影所得就可以当做加数据，一同送入判别器进行判断。作者在文中提到，所有的视角都是存在于训练集中的（$\mathcal V$ be the set of all viewpoints in the training dataset）。<strong>这是否意味着对于一些在训练集中不存在的视角，该网络还是难以学习到其形状？</strong></p>
 <ul>
 <li>Internal Pressure</li>
 </ul>
