@@ -112,9 +112,9 @@
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/latent_space.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/mise.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/mise_capture.jpg">
-<meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/epx1.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/exp1.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/Ablation.jpg">
-<meta property="og:updated_time" content="2019-12-24T05:10:50.197Z">
+<meta property="og:updated_time" content="2019-12-24T05:25:20.361Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(八)Occupancy Networks Learning 3D Reconstruction in Function Sapce">
 <meta name="twitter:description" content="作者通过将输入的图片映射到函数空间，然后在对于空间中采样若干点，对后通过marching cubes生成最后的重建结果。这种新的3维表示方法克服了已有方法（point cloud, voxel, mesh）的若干缺点。">
@@ -444,7 +444,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-12-24 13:10:50" itemprop="dateModified" datetime="2019-12-24T13:10:50+08:00">2019-12-24</time>
+                <time title="修改时间：2019-12-24 13:25:20" itemprop="dateModified" datetime="2019-12-24T13:25:20+08:00">2019-12-24</time>
               
             
           </span>
@@ -555,7 +555,7 @@
 <p><img src="/images/paper/onet/mise.jpg" alt><img src="/images/paper/onet/mise_capture.jpg" alt></p>
 <h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><h4 id="Upper-bound"><a href="#Upper-bound" class="headerlink" title="Upper bound"></a>Upper bound</h4><p>作者首先评估了在函数空间中表示一个三维物体的可能性和其准确值，该准确值可以作为一个upper-bound来比较接下来的实验结果。由于是找到一个upper-bound，所以这个实验的训练个测试都是在训练集上进行的。实验步骤如下：</p>
 <p>一： 将训练集中的所有图片（4746张）映射为一个长度为512维的特征向量，表征为latent space中的一个点，在训练过程中，图片-&gt;特征向量的映射关系保持不变。<br>二： 用一个decoder将512维的特征向量转换为一个1维的<code>pred-occupancy value</code>, 然后进行重建。</p>
-<p><img src="/images/paper/onet/epx1.jpg" alt></p>
+<p><img src="/images/paper/onet/exp1.jpg" alt></p>
 <p>可以看到，本文所提出的表征方法，其重建精读（IoU）并不会随着分辨率的提高有太大的波动，始终保持在一个很高的水平(0.89)。同时，其网络参数也不会发生变化。反观基于Voxel的方法，虽然重建精度随着分辨率的提高有较大提升，但是其网络参数的增加量却是cubic。</p>
 <h4 id="Completion-and-Super-Resolution"><a href="#Completion-and-Super-Resolution" class="headerlink" title="Completion and Super-Resolution"></a>Completion and Super-Resolution</h4><p>正如前面提到的，网络Encoder的输入并不一定要是图片，还可以体素(Voxel), 点云(point cloud)。除了对图片所进行的单图重建任务（有3D监督）外，还对点云的补全和体素的超分都做了相应的实验。</p>
 <h4 id="Ablation-Study"><a href="#Ablation-Study" class="headerlink" title="Ablation Study"></a>Ablation Study</h4><p><img src="/images/paper/onet/Ablation.jpg" alt></p>
