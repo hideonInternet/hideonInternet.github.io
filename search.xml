@@ -4,6 +4,16 @@
     <title><![CDATA[树的遍历算法]]></title>
     <url>%2F2019%2F12%2F25%2Fcb9a2247%2F</url>
     <content type="text"></content>
+      <categories>
+        <category>数据结构与算法</category>
+        <category>遍历算法</category>
+      </categories>
+      <tags>
+        <tag>中序</tag>
+        <tag>后序</tag>
+        <tag>先序</tag>
+        <tag>层次</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[C++中浅拷贝和深拷贝]]></title>
@@ -158,8 +168,8 @@
         <category>三维人体重建</category>
       </categories>
       <tags>
-        <tag>三维重建</tag>
         <tag>深度学习</tag>
+        <tag>三维重建</tag>
         <tag>SMPL</tag>
       </tags>
   </entry>
@@ -172,9 +182,9 @@
         <category>三维动物重建</category>
       </categories>
       <tags>
+        <tag>深度学习</tag>
         <tag>三维重建</tag>
         <tag>纹理渲染</tag>
-        <tag>深度学习</tag>
       </tags>
   </entry>
   <entry>
