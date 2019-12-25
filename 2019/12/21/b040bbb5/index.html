@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/mise_capture.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/exp1.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/images/paper/onet/Ablation.jpg">
-<meta property="og:updated_time" content="2019-12-24T15:33:46.549Z">
+<meta property="og:updated_time" content="2019-12-25T13:33:20.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="&lt;论文阅读&gt;(八)Occupancy Networks Learning 3D Reconstruction in Function Sapce">
 <meta name="twitter:description" content="作者通过将输入的图片映射到函数空间，然后在对于空间中采样若干点，对后通过marching cubes生成最后的重建结果。这种新的3维表示方法克服了已有方法（point cloud, voxel, mesh）的若干缺点。">
@@ -444,7 +444,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-12-24 23:33:46" itemprop="dateModified" datetime="2019-12-24T23:33:46+08:00">2019-12-24</time>
+                <time title="修改时间：2019-12-25 21:33:20" itemprop="dateModified" datetime="2019-12-25T21:33:20+08:00">2019-12-25</time>
               
             
           </span>
@@ -539,7 +539,7 @@
 <p>从作者开源的代码来看，网络的<a href="https://github.com/autonomousvision/occupancy_networks/blob/master/im2mesh/onet/models/decoder.py#L45" target="_blank" rel="noopener">decoder</a>是一个输出维度为1的全连接层，我们将这个输出记为<code>logits</code>。在计算loss的时候，这个<code>logits</code>就与真实的<code>occupancy value</code>进行比较。</p>
 <p>但是在评测IoU或者进行可视化的时候，就要用<code>sigmoid(logits)</code>来求得一个介于[0,1]之间的概率值，最后利用marching cubes进行可视化。</p>
 <p>损失函数的定义也十分简单，就是一个交叉熵函数:</p>
-<p>$\cal L_{\cal B}(\theta) = \frac{1}{|\cal B|}\sum^{|\cal B|}<em>{i=1}\sum^{K}</em>{j=1}\cal L(f_{\theta}(p_{ij},x_{i}),o_{ij}) \tag{2}$</p>
+<p>$\cal L_{\cal B}(\theta) = \frac{1}{|\cal B|}\sum^{|\cal B|}\sum^{K}\cal L(f_{\theta}(p_{ij},x_{i}),o_{ij}) \tag{2}$</p>
 <p>其中$o_{ij}$表示真实的<code>occupancy value</code></p>
 <h3 id="Occupancy-Network-Architecture"><a href="#Occupancy-Network-Architecture" class="headerlink" title="Occupancy Network Architecture"></a>Occupancy Network Architecture</h3><p><img src="/images/paper/onet/architecture.jpg" alt></p>
 <p>作者没有直接将encoder出来的特征向量<code>c</code>与输入的三维(x,y,z)坐标进行concat然后直接送入MLP进行映射，而是通过<code>c</code>来计算出batchnorm是denormalization所需要的<code>scale</code>和<code>bias</code>，以这种方式来影响最后<code>pred-occupancy value</code>的预测。作者在试验中也给出是否使用Conditional batch normalization的对比结果。</p>
@@ -694,7 +694,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-count">15</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
