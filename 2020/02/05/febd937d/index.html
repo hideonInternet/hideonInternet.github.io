@@ -108,7 +108,7 @@
 <meta property="og:description" content="看过多篇论文都涉及到了利用拉普拉斯算子对重建网格模型进行光滑处理，但一直不清楚其背后的物理逻辑是什么，这里记录一下">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://hideoninternet.github.io/images/others/laplacian/fig1.png">
-<meta property="og:updated_time" content="2020-02-07T04:34:38.312Z">
+<meta property="og:updated_time" content="2020-02-07T05:11:12.375Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="拉普拉斯矩阵与拉普拉斯算子的关系">
 <meta name="twitter:description" content="看过多篇论文都涉及到了利用拉普拉斯算子对重建网格模型进行光滑处理，但一直不清楚其背后的物理逻辑是什么，这里记录一下">
@@ -438,7 +438,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-02-07 12:34:38" itemprop="dateModified" datetime="2020-02-07T12:34:38+08:00">2020-02-07</time>
+                <time title="修改时间：2020-02-07 13:11:12" itemprop="dateModified" datetime="2020-02-07T13:11:12+08:00">2020-02-07</time>
               
             
           </span>
@@ -506,15 +506,19 @@
 <p>$\Delta = \sum \limits_{i} \frac{\partial^2f}{\partial x^2_i} \tag{3}$</p>
 <p>如果将其推导到离散的形式下：</p>
 <p><img src="\images\others\laplacian\fig1.png" alt></p>
-<p>$\Delta f = \frac{\partial^2f}{\partial x^2} + \frac{\partial^2f}{\partial y^2} \ =f(x+1, y) + f(x-1,y) - 2f(x,y) + f(x,y+1) - 2f(x,y) \<br>=f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4f(x,y) \tag{4}$</p>
+<p>$\Delta f = \frac{\partial^2f}{\partial x^2} + \frac{\partial^2f}{\partial y^2} \\ =f(x+1, y) + f(x-1,y) - 2f(x,y) + f(x,y+1) - 2f(x,y) \\<br>=f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4f(x,y) \tag{4}$</p>
 <p>现在用<strong>散度</strong>的概念解读一下：</p>
 <p>如果 $\Delta f = 0$ ，可以近似认为中心点 $f(x,y)$ 的势和其周围点的势是相等的， $f(x,y)$局部范围内不存在势差。所以该点无源<br>$\Delta f &gt; 0$ ，可以近似认为中心点 $f(x,y)$ 的势低于周围点，可以想象成中心点如恒星一样发出能量，补给周围的点，所以该点是正源<br>$\Delta f &lt; 0$ ,可以近似认为中心点 $f(x,y)$ 的势高于周围点，可以想象成中心点如吸引子一样在吸收能量，所以该点是负源<br>另一个角度，拉普拉斯算子计算了周围点与中心点的梯度差。当 $f(x,y)$ 受到扰动之后，其可能变为相邻的 $f(x+1,y), f(x-1,y), f(x,y+1), f(x,y-1)$ 之一，拉普拉斯算子得到的是对该点进行微小扰动后可能获得的总增益 （或者说是总变化）。</p>
 <p><strong>我们现在将这个结论推广到图</strong>： 假设具有 $N$ 个节点的图 $G$ ，此时以上定义的函数 $f$ 不再是二维，而是 $N$ 维向量： $f=(f_1,f_2,…,f_n)$ ，其中 $f_i$ 为函数 $f$ 在图中节点 $i$ 处的函数值(<strong>注意：在实际中这个‘函数值’通常不是一个标量，而是一个高维向量，表征某个特征信息</strong>)。类比于 $f(x,y)$ 在节点 $(x_i,y_i)$ 处的值。对 $i$ 节点进行扰动，它可能变为任意一个与它相邻的节点 $j \in N_i$ , $N_i$ 表示节点 $i$ 的一环邻域节点。</p>
 <p>通过公式(4)，可以推广得到下面公式</p>
 <p>$\Delta f_i = \sum \limits_{j \in N_i}W_{ij}(f_i - f_j) \tag{5}$</p>
 <p>其中， $W_{ij}$表示的边的权重， $N_i$表示节点$i$的一环邻域。继续化简公式，我们可以得到：</p>
-<p>$\Delta f_i = \sum \limits_{j \in N_i}W_{ij}(f_i - f_j) \<br>=\sum \limits_{j \in N_i}W_{ij}f_i - \sum \limits_{j \in N_i}W_{ij}f_j \<br>= Df - Wf \ =(D-W)f \<br>= \left(\begin{bmatrix} d_1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\ 0 &amp; d_2 &amp; \cdots &amp; 0 &amp; 0\ \vdots &amp; 0 &amp; \cdots &amp; d_{n-1}&amp; 0 \ 0 &amp; 0 &amp; \cdots\ &amp; 0 &amp; d_{n}\end{bmatrix} - \begin{bmatrix} 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 \ 0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0 \ 1 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \ 0 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \end{bmatrix}\right) f\<br>= Lf$</p>
-<p>其中，$D,W$分别为关于网（graph)的度矩阵和邻接矩阵。</p>
+<p>$\Delta f_i = \sum \limits_{j \in N_i}(f_i - W_{ij}f_j) \\<br>=\sum \limits_{j \in N_i}f_i - \sum \limits_{j \in N_i}W_{ij}f_j \\<br>=d_if_i - \sum \limits_{j \in N_i}W_{ij}f_j \tag{6}$</p>
+<p>我们把$d_i$记为节点$i$的度，那么我们可以得到对于$f=(f_1, f_2, \cdots,f_n)$的拉普拉斯矩阵为：</p>
+<p>$\Delta f = Df - Wf \\<br>=(D-W)f \\<br>= \left(\begin{bmatrix} d_1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\ 0 &amp; d_2 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; 0 &amp; \cdots &amp; d_{n-1}&amp; 0 \\ 0 &amp; 0 &amp; \cdots\ &amp; 0 &amp; d_{n}\end{bmatrix} - \begin{bmatrix} 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \end{bmatrix}\right) f \\<br>= Lf \tag{7}$</p>
+<p>其中，当边的权重$W_{ij}$均为1时，$D,W$分别为关于网（graph)的度矩阵和邻接矩阵。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>拉普拉斯矩阵$L$其实质就是拉普拉斯算子的离散化表示方式，通过这个方式，可以求得以图表示的，非规则结构的，点与点之间的二阶微分（某点曲率与该点关于函数的二阶导有关）。我们可以利用求得的曲率，来使平面变得光滑。</p>
+<p>公式(7)中的$W_{ij}$有不同的选择，比较常见的有常数1，度的倒数$\frac{1}{d_i}$, 余切权重 $\frac{\cot \alpha_{ij} + \cot \beta_{ij}}{2}$, $\alpha$和$\beta$为空间四边形$aibj$的相对角</p>
 
       
     </div>
@@ -812,7 +816,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目的"><span class="nav-number">1.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拉普拉斯算子和拉普拉斯矩阵"><span class="nav-number">2.</span> <span class="nav-text">拉普拉斯算子和拉普拉斯矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#符号定义"><span class="nav-number">2.1.</span> <span class="nav-text">符号定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理论推导"><span class="nav-number">2.2.</span> <span class="nav-text">理论推导</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目的"><span class="nav-number">1.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拉普拉斯算子和拉普拉斯矩阵"><span class="nav-number">2.</span> <span class="nav-text">拉普拉斯算子和拉普拉斯矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#符号定义"><span class="nav-number">2.1.</span> <span class="nav-text">符号定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理论推导"><span class="nav-number">2.2.</span> <span class="nav-text">理论推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
             
 
           </div>
