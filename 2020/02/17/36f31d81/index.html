@@ -100,23 +100,28 @@
 
 
 
-  <meta name="description" content="Dive into deeper and deeper">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Diver">
-<meta property="og:url" content="https://hideoninternet.github.io/tags/冒泡/index.html">
+  <meta name="description" content="本文主要介绍欧拉角的基本概念及万向锁（gimbal lock)，本文默认使用右手坐标系，ZYX顺规">
+<meta name="keywords" content="欧拉角">
+<meta property="og:type" content="article">
+<meta property="og:title" content="欧式空间的旋转表示(二）-欧拉角">
+<meta property="og:url" content="https://hideoninternet.github.io/2020/02/17/36f31d81/index.html">
 <meta property="og:site_name" content="Diver">
-<meta property="og:description" content="Dive into deeper and deeper">
+<meta property="og:description" content="本文主要介绍欧拉角的基本概念及万向锁（gimbal lock)，本文默认使用右手坐标系，ZYX顺规">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/gimbal_lock.png">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/e2r.jpg">
+<meta property="og:updated_time" content="2020-02-17T13:37:37.429Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Diver">
-<meta name="twitter:description" content="Dive into deeper and deeper">
+<meta name="twitter:title" content="欧式空间的旋转表示(二）-欧拉角">
+<meta name="twitter:description" content="本文主要介绍欧拉角的基本概念及万向锁（gimbal lock)，本文默认使用右手坐标系，ZYX顺规">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/others/rotation/gimbal_lock.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://hideoninternet.github.io/tags/冒泡/">
+  <link rel="canonical" href="https://hideoninternet.github.io/2020/02/17/36f31d81/">
 
 
 
@@ -126,7 +131,7 @@
   };
 </script>
 
-  <title>标签: 冒泡 | Diver</title>
+  <title>欧式空间的旋转表示(二）-欧拉角 | Diver</title>
   
 
 
@@ -174,7 +179,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -250,7 +255,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -314,28 +319,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -381,57 +364,254 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>冒泡<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2020/02/17/36f31d81/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2019/12/05/ec44b182/" itemprop="url">
-            
-              <span itemprop="name">常见排序算法</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">欧式空间的旋转表示(二）-欧拉角
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-05T22:28:25+08:00" content="2019-12-05">
-          12-05
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-17 11:10:28 / 修改时间：21:37:37" itemprop="dateCreated datePublished" datetime="2020-02-17T11:10:28+08:00">2020-02-17</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/三维基础/" itemprop="url" rel="index"><span itemprop="name">三维基础</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/三维基础/旋转表征/" itemprop="url" rel="index"><span itemprop="name">旋转表征</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2020/02/17/36f31d81/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/02/17/36f31d81/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">本文主要介绍欧拉角的基本概念及万向锁（gimbal lock)，本文默认使用右手坐标系，ZYX顺规</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="什么是欧拉角"><a href="#什么是欧拉角" class="headerlink" title="什么是欧拉角"></a>什么是欧拉角</h3><p>欧拉角被用来描述一个物体绕某个坐标系旋转的角度，坐标系可以分解为三个相互正交的坐标轴构造。欧拉角的定义由三个部分组成：</p>
+<ul>
+<li><p><strong>顺规</strong>：欧拉角具有两大类的顺规表示方式：1）Proper Euler angles: (z-x-z, x-y-x, y-z-y, z-y-z, x-z-x, y-x-y); 2) Tait-Bryan angles：(x-y-z, y-z-x, z-x-y, x-z-y, <strong>z-y-x</strong>, y-x-z)。一般，我们也可以用yaw, pitch, roll来分别指代$z$轴，$y$轴, $x$轴的旋转。我们将其简称为$rpy$角</p>
+</li>
+<li><p><strong>旋转角度</strong>：常用$(\gamma ,\beta ,\alpha)$来描述绕三个坐标轴旋转的角度, 若以ZYX顺规来解释，既先绕$z$轴旋转$\gamma$度，再绕$y$轴旋转$\beta$度,最后绕$x$轴旋转$\alpha$度。</p>
+</li>
+<li><p><strong>内旋or外旋</strong>：根据每次旋转是绕<strong>旋转之后的轴</strong>旋转，还是<strong>固定轴</strong>旋转，我们将欧拉角分为<strong>内旋（intrisic roatation）</strong>和<strong>外旋(extrinsic rotation)</strong>。也有称内旋为动态旋转，绕物体坐标系旋转；将外旋称为静态旋转，绕世界坐标系旋转。<strong>事实上，如果将12种顺规中的一种的第一次旋转轴和第三次旋转轴互换顺序，那么可以使得外旋，内旋两者造成的姿态变化是等价的</strong>。比如外旋（<strong>z</strong>,y,<strong>x</strong>）就等价于内旋（<strong>x</strong>,y,<strong>z</strong>)，证明如下：</p>
+</li>
+</ul>
+<p>根据题目可得如下定义：</p>
+<p>$R_{外} = R(Z)R(Y)R(X)$ 和 $R_{内} = R(\alpha)R(\beta)R(\gamma)$。其中对于外旋来说，也是绕固定Z轴旋转$\gamma$度，绕固定Y轴旋转$\beta$度，绕固定X轴旋转$\alpha$度。</p>
+<p>$R(\alpha) = R(X)$这是显然的，而$R(\beta)$可以写为$R(\beta) = R(\alpha)^{-1}R(Y)R(\alpha)$（可以用三支笔模拟一下）。同理我们可得$R(\gamma) = (R(\alpha)R(\beta))^{-1}R(Z)(R(\alpha)R(\beta))$。由此：</p>
+<p>$R_{外} = R(\alpha)R(\beta)R(\gamma) \\<br>= R(\alpha)R(\beta)*(R(\alpha)R(\beta))^{-1}R(Z)(R(\alpha)R(\beta)) \\<br>= R(Z)(R(\alpha)R(\beta)) \\<br>= R(Z)(R(\alpha)R(\alpha)^{-1}R(Y)R(\alpha)) \\<br>= R(Z)R(Y)R(\alpha) \\<br>= R(Z)R(Y)R(X)$</p>
+<p>我们可以从以上三个方面确定一次用欧拉角定义的旋转，当任意一个因素发生改变时，都可能形成另一种不一样的旋转。</p>
+<h3 id="什么是万向锁-Gimbal-Lock"><a href="#什么是万向锁-Gimbal-Lock" class="headerlink" title="什么是万向锁(Gimbal Lock)"></a>什么是万向锁(Gimbal Lock)</h3><p>假设我们的<strong>顺规为zyx, 内旋，旋转角度为$(\gamma ,\beta ,\alpha)$</strong>，当$\beta$为$\pm90$度时，就会产生万向锁。下面我们以内旋，顺规为(z,y,x)为例。</p>
+<p><img src="\images\others\rotation\gimbal_lock.png" alt="gimbal lock示意图"></p>
+<p>我们将起始地坐标轴定义为$(X_1, Y_1, Z_1)$首先我们绕$Z_1$轴旋转任意$\gamma$角，易得此时$X_1$轴和$Y_1$轴的方向已经发生了改变，记为$(X_2, Y_2, Z_1)$。我们再绕$Y_2$轴旋转90度，得到$(X_3, Y_2, Z_3)$。我们可以发现$X_3$轴与$Z_1$轴处以同一条水平线上。那么当我们按照<code>顺规</code>第三次绕$X_3$轴旋转时，<strong>本质上就是重复了第一次绕$Z_1$轴的旋转</strong>。此时就称发生了万向锁（Gimbal Lock)。</p>
+<p>任何<code>顺规</code>都有可能发生万向锁，<strong>只要第二次旋转的角度为$\pm 90$度</strong>，就会发生万向锁。</p>
+<iframe width="975" height="731" src="https://www.youtube.com/embed/zc8b2Jo7mno" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>视频在2分56秒的地方介绍了万向锁的本质，<strong>其实就是objects没有安装期望的轨迹运动到规定的位置</strong>。而不是真正意义上的“锁”住某个维度。或者可以这样理解（不确定，没经过数学推导），我们已知任何选择都可以分解为三次基本旋转矩阵，当我们规定顺规为(z,y,x)时，若分解得y的旋转度数为90度时，我们<strong>预想</strong>的$X$轴的旋转度数$\alpha$就变得”无效”了，（X轴此时抑郁第一次旋转绕的Z轴重复）。解决方法就是使用其他的顺规，从而规避的第二次旋转度数为$\pm 90$度</p>
+<h3 id="欧拉角与其他旋转表征的转换"><a href="#欧拉角与其他旋转表征的转换" class="headerlink" title="欧拉角与其他旋转表征的转换"></a>欧拉角与其他旋转表征的转换</h3><h4 id="欧拉角与旋转矩阵"><a href="#欧拉角与旋转矩阵" class="headerlink" title="欧拉角与旋转矩阵"></a>欧拉角与旋转矩阵</h4><p>由上边的定义可以，欧拉角可以分解为三个基本旋转的复合变换。所谓基本旋转是指以$X$轴，$Y$轴，$Z$轴。采用<strong>右手法则</strong>，设$\theta$为转角，我们可得三个基本旋转矩阵为：</p>
+<p>$R_{X}(\theta) = \begin{bmatrix} 1 &amp; 0 &amp; 0 \\<br>                                 0 &amp; \cos{\theta} &amp; -\sin{\theta} \\<br>                                 0 &amp; \sin{\theta} &amp; \cos{\theta}<br>                \end{bmatrix}$</p>
+<p>$R_{Y}(\theta) = \begin{bmatrix} \cos{\theta} &amp; 0 &amp; \sin{\theta} \\<br>                                 0 &amp; 0 &amp; 0 \\<br>                                 -\sin{\theta} &amp; 0 &amp; \cos{\theta}<br>                \end{bmatrix}$</p>
+<p>$R_{Z}(\theta) = \begin{bmatrix} \cos{\theta} &amp; -\sin{\theta} &amp; 0 \\<br>                                 \sin{\theta} &amp; \cos{\theta} &amp; 0 \\<br>                                 0 &amp; 0 &amp; 1<br>                \end{bmatrix}$</p>
+<p>若顺规为(z,y,x），则$R = R_{Z}(\theta)R_{Y}(\theta)R_{X}(\theta)$。具体结果参照下图：</p>
+<p><img src="\images\others\rotation\e2r.jpg" alt></p>
+<h4 id="欧拉角与四元数"><a href="#欧拉角与四元数" class="headerlink" title="欧拉角与四元数"></a>欧拉角与四元数</h4><p>对于四元数$q = (w,x,y,z) = \cos{\theta} + \sin{\theta}x + \sin{\theta}y + \sin{\theta}z$。其中$\cos{\theta}$是表示旋转度数为$2\theta$，而$(x, y, z)$表明旋转轴。</p>
+<p>而欧拉角转四元数就是，与欧拉角构造旋转矩阵一样，把三个基础旋转Elemental Rotation组合在一起。</p>
+<p>$q(\gamma,\beta,\alpha) = q_{z}(\gamma)q_{y}(\beta)q_{x}(\alpha) \\<br>                        = \begin{bmatrix} \cos{\frac{\gamma}{2}} \\ 0 \\ 0 \\ \sin{\frac{\gamma}{2}} \end{bmatrix}<br>                        \begin{bmatrix} \cos{\frac{\beta}{2}} \\ 0 \\ \sin{\frac{\beta}{2}} \\ 0 \end{bmatrix}<br>                        \begin{bmatrix} \cos{\frac{\alpha}{2}} \\ \sin{\frac{\alpha}{2}} \\ 0 \\ 0 \end{bmatrix}                \\<br>                        = \begin{bmatrix}<br>                        \cos{\frac{\gamma}{2}}\cos{\frac{\beta}{2}} \\                         \sin{\frac{\gamma}{2}}\sin{\frac{\beta}{2}}  \\<br>                        \cos{\frac{\gamma}{2}}\sin{\frac{\beta}{2}} \\                         \sin{\frac{\gamma}{2}}\cos{\frac{\beta}{2}}<br>                        \end{bmatrix}<br>                        \begin{bmatrix} \cos{\frac{\alpha}{2}} \\ \sin{\frac{\alpha}{2}} \\ 0 \\ 0 \end{bmatrix} \\<br>                        = \begin{bmatrix}<br>                        \cos{\frac{\gamma}{2}}\cos{\frac{\beta}{2}}\cos{\frac{\alpha}{2}} - \sin{\frac{\gamma}{2}}\sin{\frac{\beta}{2}}\sin{\frac{\alpha}{2}} \\<br>                        \sin{\frac{\gamma}{2}}\sin{\frac{\beta}{2}}\cos{\frac{\alpha}{2}} + \cos{\frac{\gamma}{2}}\cos{\frac{\beta}{2}}\sin{\frac{\alpha}{2}} \\<br>                        \cos{\frac{\gamma}{2}}\sin{\frac{\beta}{2}}\cos{\frac{\alpha}{2}} - \sin{\frac{\gamma}{2}}\cos{\frac{\beta}{2}}\sin{\frac{\alpha}{2}} \\<br>                        \sin{\frac{\gamma}{2}}\cos{\frac{\beta}{2}}\cos{\frac{\alpha}{2}} - \cos{\frac{\gamma}{2}}\sin{\frac{\beta}{2}}\sin{\frac{\alpha}{2}}<br>                        \end{bmatrix}$</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://blog.csdn.net/hy3316597/article/details/50966633" target="_blank" rel="noopener">外旋内旋转化</a></p>
+<p><a href="https://ccjou.wordpress.com/2014/04/29/%E4%B8%89%E7%B6%AD%E7%A9%BA%E9%96%93%E7%9A%84%E6%97%8B%E8%BD%89%E7%9F%A9%E9%99%A3/" target="_blank" rel="noopener">三维空间的旋转矩阵</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Euler_angles" target="_blank" rel="noopener">Euler_angles</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/45404840" target="_blank" rel="noopener">三维旋转：欧拉角、四元数、旋转矩阵、轴角之间的转换</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/85108850" target="_blank" rel="noopener">欧拉角细节/旋转顺序/内旋外旋</a></p>
+<p><a href="https://blog.csdn.net/huazai434/article/details/6458257" target="_blank" rel="noopener">游戏动画中欧拉角与万向锁的理解</a></p>
+<p><a href="https://blog.csdn.net/HappyKocola/article/details/72788588" target="_blank" rel="noopener">欧拉角万向节锁问题</a></p>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/欧拉角/" rel="tag"># 欧拉角</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/05/febd937d/" rel="next" title="拉普拉斯矩阵与拉普拉斯算子的关系">
+                <i class="fa fa-chevron-left"></i> 拉普拉斯矩阵与拉普拉斯算子的关系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
 
         </div>
         
@@ -451,8 +631,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -645,6 +834,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是欧拉角"><span class="nav-number">1.</span> <span class="nav-text">什么是欧拉角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是万向锁-Gimbal-Lock"><span class="nav-number">2.</span> <span class="nav-text">什么是万向锁(Gimbal Lock)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#欧拉角与其他旋转表征的转换"><span class="nav-number">3.</span> <span class="nav-text">欧拉角与其他旋转表征的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#欧拉角与旋转矩阵"><span class="nav-number">3.1.</span> <span class="nav-text">欧拉角与旋转矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#欧拉角与四元数"><span class="nav-number">3.2.</span> <span class="nav-text">欧拉角与四元数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -778,6 +984,10 @@
 
 
   
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
 
   
 
@@ -825,6 +1035,8 @@
 
 
 
+
+  
 
 
   
@@ -1162,6 +1374,53 @@
   
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+</style>
+
+    
   
 
 
