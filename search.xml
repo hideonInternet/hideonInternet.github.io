@@ -208,8 +208,8 @@
         <category>三维人体重建</category>
       </categories>
       <tags>
-        <tag>深度学习</tag>
         <tag>三维重建</tag>
+        <tag>深度学习</tag>
         <tag>SMPL</tag>
       </tags>
   </entry>
@@ -222,9 +222,9 @@
         <category>三维动物重建</category>
       </categories>
       <tags>
-        <tag>深度学习</tag>
         <tag>三维重建</tag>
         <tag>纹理渲染</tag>
+        <tag>深度学习</tag>
       </tags>
   </entry>
   <entry>
