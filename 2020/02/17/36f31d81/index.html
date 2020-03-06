@@ -110,7 +110,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/gimbal_lock.png">
 <meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/e2r.jpg">
-<meta property="og:updated_time" content="2020-02-17T13:38:31.171Z">
+<meta property="og:updated_time" content="2020-02-19T14:07:31.083Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="欧式空间的旋转表示(二）-欧拉角">
 <meta name="twitter:description" content="本文主要介绍欧拉角的基本概念及万向锁（gimbal lock)，本文默认使用右手坐标系，ZYX顺规">
@@ -423,12 +423,24 @@
                 
               
 
-              <time title="创建时间：2020-02-17 11:10:28 / 修改时间：21:38:31" itemprop="dateCreated datePublished" datetime="2020-02-17T11:10:28+08:00">2020-02-17</time>
+              <time title="创建时间：2020-02-17 11:10:28" itemprop="dateCreated datePublished" datetime="2020-02-17T11:10:28+08:00">2020-02-17</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-02-19 22:07:31" itemprop="dateModified" datetime="2020-02-19T22:07:31+08:00">2020-02-19</time>
               
             
           </span>
@@ -523,6 +535,9 @@
 <iframe width="975" height="731" src="https://www.youtube.com/embed/zc8b2Jo7mno" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <p>视频在2分56秒的地方介绍了万向锁的本质，<strong>其实就是objects没有安装期望的轨迹运动到规定的位置</strong>。而不是真正意义上的“锁”住某个维度。或者可以这样理解（不确定，没经过数学推导），我们已知任何选择都可以分解为三次基本旋转矩阵，当我们规定顺规为(z,y,x)时，若分解得y的旋转度数为90度时，我们<strong>预想</strong>的$X$轴的旋转度数$\alpha$就变得”无效”了，（X轴此时抑郁第一次旋转绕的Z轴重复）。解决方法就是使用其他的顺规，从而规避的第二次旋转度数为$\pm 90$度</p>
+<h4 id="从矩阵角度看万向锁"><a href="#从矩阵角度看万向锁" class="headerlink" title="从矩阵角度看万向锁"></a>从矩阵角度看万向锁</h4><p>当我们以顺规(z,y,z)对物体进行旋转时，我们可以将三个基本旋转矩阵写成一个$R = \begin{bmatrix} c_1c_2 &amp; c_1s_2s_3 - c_3s_1 &amp; s_1s_3 + c_1c_3s_2 \\ c_2s_1 &amp; c_1c_3 + s_1s_2s_3 &amp; c_3s_1s_2 - c_1s_3 \\ -s_2 &amp; c_2s_3 &amp; c_2c_3 \end{bmatrix} $</p>
+<p>当第二次旋转角度为$\pm 90$度时，我们有$c2=0$和$s2=\pm 1$。于是矩阵就可以简化为$R = \begin{bmatrix} 0 &amp; \pm c_1s_3 - c_3s_1 &amp; s_1s_3 \pm c_1c_3 \\ 0 &amp; c_1c_3 \pm s_1s_3 &amp; \pm c_3s_1 - c_1s_3 \\ \pm 1 &amp; 0 &amp; 0 \end{bmatrix} = \begin{bmatrix} 0 &amp; -\sin(\alpha \pm \gamma) &amp; \cos(\alpha \pm \gamma) \\ 0 &amp; \cos(\alpha \pm \gamma) &amp; \sin(\alpha \pm \gamma) \\ \pm 1 &amp; 0 &amp; 0 \end{bmatrix} $</p>
+<p>我们可以看出，当对$\alpha$进行选择操作时，就相当于在$\gamma$上施加了一个反方向的旋律，两者效果是等价的。这就是造成万向锁的原因，我们在三维空间中，只能进行两个维度的变化。</p>
 <h3 id="欧拉角与其他旋转表征的转换"><a href="#欧拉角与其他旋转表征的转换" class="headerlink" title="欧拉角与其他旋转表征的转换"></a>欧拉角与其他旋转表征的转换</h3><h4 id="欧拉角与旋转矩阵"><a href="#欧拉角与旋转矩阵" class="headerlink" title="欧拉角与旋转矩阵"></a>欧拉角与旋转矩阵</h4><p>由上边的定义可以，欧拉角可以分解为三个基本旋转的复合变换。所谓基本旋转是指以$X$轴，$Y$轴，$Z$轴。采用<strong>右手法则</strong>，设$\theta$为转角，我们可得三个基本旋转矩阵为：</p>
 <p>$R_{X}(\theta) = \begin{bmatrix} 1 &amp; 0 &amp; 0 \\<br>                                 0 &amp; \cos{\theta} &amp; -\sin{\theta} \\<br>                                 0 &amp; \sin{\theta} &amp; \cos{\theta}<br>                \end{bmatrix}$</p>
 <p>$R_{Y}(\theta) = \begin{bmatrix} \cos{\theta} &amp; 0 &amp; \sin{\theta} \\<br>                                 0 &amp; 0 &amp; 0 \\<br>                                 -\sin{\theta} &amp; 0 &amp; \cos{\theta}<br>                \end{bmatrix}$</p>
@@ -584,6 +599,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/18/ca04af5a/" rel="prev" title="欧式空间的旋转表示(三)-旋转矩阵">
+                欧式空间的旋转表示(三)-旋转矩阵 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -658,7 +677,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -703,7 +722,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                    <span class="site-state-item-count">15</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -782,7 +803,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">31</span>
+                      
+                    
+                    <span class="site-state-item-count">32</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -844,7 +867,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是欧拉角"><span class="nav-number">1.</span> <span class="nav-text">什么是欧拉角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是万向锁-Gimbal-Lock"><span class="nav-number">2.</span> <span class="nav-text">什么是万向锁(Gimbal Lock)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#欧拉角与其他旋转表征的转换"><span class="nav-number">3.</span> <span class="nav-text">欧拉角与其他旋转表征的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#欧拉角与旋转矩阵"><span class="nav-number">3.1.</span> <span class="nav-text">欧拉角与旋转矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#欧拉角与四元数"><span class="nav-number">3.2.</span> <span class="nav-text">欧拉角与四元数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是欧拉角"><span class="nav-number">1.</span> <span class="nav-text">什么是欧拉角</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是万向锁-Gimbal-Lock"><span class="nav-number">2.</span> <span class="nav-text">什么是万向锁(Gimbal Lock)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从矩阵角度看万向锁"><span class="nav-number">2.1.</span> <span class="nav-text">从矩阵角度看万向锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#欧拉角与其他旋转表征的转换"><span class="nav-number">3.</span> <span class="nav-text">欧拉角与其他旋转表征的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#欧拉角与旋转矩阵"><span class="nav-number">3.1.</span> <span class="nav-text">欧拉角与旋转矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#欧拉角与四元数"><span class="nav-number">3.2.</span> <span class="nav-text">欧拉角与四元数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
