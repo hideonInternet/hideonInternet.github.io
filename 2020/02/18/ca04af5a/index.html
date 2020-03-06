@@ -108,12 +108,12 @@
 <meta property="og:site_name" content="Diver">
 <meta property="og:description" content="本文主要介绍旋转矩阵的基本概念，本文默认使用右手坐标系">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="E:\\blog\\source\\images\\others\\rotation\\rota_demo1.png">
-<meta property="og:updated_time" content="2020-03-06T13:46:21.152Z">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/rota_demo1.png">
+<meta property="og:updated_time" content="2020-03-06T14:43:13.953Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="欧式空间的旋转表示(三)-旋转矩阵">
 <meta name="twitter:description" content="本文主要介绍旋转矩阵的基本概念，本文默认使用右手坐标系">
-<meta name="twitter:image" content="E:\\blog\\source\\images\\others\\rotation\\rota_demo1.png">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/others/rotation/rota_demo1.png">
 
 
 
@@ -439,7 +439,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-03-06 21:46:21" itemprop="dateModified" datetime="2020-03-06T21:46:21+08:00">2020-03-06</time>
+                <time title="修改时间：2020-03-06 22:43:13" itemprop="dateModified" datetime="2020-03-06T22:43:13+08:00">2020-03-06</time>
               
             
           </span>
@@ -515,7 +515,7 @@
       
         <h3 id="什么是旋转矩阵"><a href="#什么是旋转矩阵" class="headerlink" title="什么是旋转矩阵"></a>什么是旋转矩阵</h3><p>旋转矩阵被用来在欧式空间进行旋转变换. 例如矩阵$R = \begin{bmatrix} \cos{\theta} &amp; -\sin{\theta} \\ \sin{\theta} &amp; \cos{\theta}\end{bmatrix}$，就是将二维平面上的<strong>某点逆时针</strong>旋转$\theta$度。</p>
 <p>如果将向量（为了方便计算，这里将点表示为向量）和坐标系两者分离开，向量是独立于坐标系存在的。我们就可以将选择单独看作是坐标系的旋转，而旋转矩阵$R=[X_1, Y_1, Z_1]$中的<strong>每一列就表示原始坐标系的坐标轴在新坐标系下的投影长度</strong>。我们有两个坐标系$C_{new}$和$C_{old}$，且$X_{1} = \begin{bmatrix} \cos{\theta} &amp; \sin{\theta} &amp; 0 \end{bmatrix}^{T}$，则如下图所示：</p>
-<p><img src="E:\\blog\\source\\images\\others\\rotation\\rota_demo1.png" alt></p>
+<p><img src="\images\others\rotation\rota_demo1.png" alt></p>
 <p>$X_{old}$在新坐标系下的投影分别是$X_{new}$：$\cos{\theta}$，$Y_{new}$：$\sin{\theta}$，$Z_{new}$：$0$，从而就得到了旋转矩阵的第一列$X_1$。其他列也是相同求解方法。</p>
 <h4 id="旋转矩阵的特性"><a href="#旋转矩阵的特性" class="headerlink" title="旋转矩阵的特性"></a>旋转矩阵的特性</h4><p>根据<a href="https://en.wikipedia.org/wiki/Rotation_matrix" target="_blank" rel="noopener">WiKi</a>上的定义:<strong>当且仅当方阵$R$满足$det(R)=1$，且$R^{-1} = R^{T}$，我们就称它为旋转矩阵。</strong> 而所有满足$det(R)=1$的正交矩阵所组成的集合被称为特殊正交群$SO(n)$(Sepcial Orthogonal Group), 而旋转就是属于$SO(3)$。而所有满足$det(R) = \pm1$的正交阵所形成的群被称为正交群$O(n)$</p>
 <h5 id="为什么旋转矩阵的行列式值必须为1"><a href="#为什么旋转矩阵的行列式值必须为1" class="headerlink" title="为什么旋转矩阵的行列式值必须为1"></a>为什么旋转矩阵的行列式值必须为1</h5><p>旋转是一种线性变换，而<strong>行列式就是线性变换的尺度因子，它会改变被变换向量的模长</strong>。如前边所讲，旋转操作是对坐标系的旋转操作，<strong>旋转是不会改变独立于坐标系客观存在的向量</strong>，我们所看到的“变化”仅仅是向量在某个坐标系下的表征方式，也就是我们常说的<strong>坐标</strong>。如果旋转矩阵的$det(R) \neq 1$，由于坐标系的基依旧是为单位向量，使得目标向量的模长发生了改变，那么这个操作就不能被称为旋转操作。</p>
