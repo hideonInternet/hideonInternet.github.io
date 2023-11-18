@@ -27,18 +27,18 @@
 <meta property="og:site_name" content="Diver">
 <meta property="og:description" content="本文总结了欧式空间中的旋转表征方式：轴角式(Axis and angle), 欧拉角（Euler angles), 四元数（Quaterions), 旋转矩阵（rotation matrix)之间的联系。本文所用坐标系均为右手坐标系">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Caxis_angle.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/axis_angle.jpg">
 <meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Cgimbal_lock.jpg">
-<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Cquat_mul.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/rotation/quat_mul.jpg">
 <meta property="article:published_time" content="2019-09-28T07:36:22.000Z">
-<meta property="article:modified_time" content="2020-02-17T03:16:52.000Z">
+<meta property="article:modified_time" content="2023-11-18T14:46:05.088Z">
 <meta property="article:author" content="diver">
 <meta property="article:tag" content="旋转矩阵">
 <meta property="article:tag" content="欧拉角">
 <meta property="article:tag" content="四元数">
 <meta property="article:tag" content="轴角">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Caxis_angle.jpg">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/others/rotation/axis_angle.jpg">
 
 <link rel="canonical" href="https://hideoninternet.github.io/2019/09/28/4767f891/">
 
@@ -209,7 +209,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-17 11:16:52" itemprop="dateModified" datetime="2020-02-17T11:16:52+08:00">2020-02-17</time>
+                <time title="修改时间：2023-11-18 22:46:05" itemprop="dateModified" datetime="2023-11-18T22:46:05+08:00">2023-11-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -264,7 +264,7 @@
 <p>$\begin{align}a \times b &#x3D; \begin{bmatrix} i&amp;j&amp;k\\a_1&amp;a_2&amp;a_3\\b_1&amp;b_2&amp;b_3 \end{bmatrix} &#x3D; \begin{bmatrix} a_2b_3 - a_3b_2\\a_3b_1 - a_1b_3\\a_1b_2 - a_2b_1\end{bmatrix} &#x3D; \begin{bmatrix} 0&amp;-a_3&amp;a_2\\a_3&amp;0&amp;-a_1\\-a_2&amp;-a_1&amp;0 \end{bmatrix}b \triangleq a^ b \end{align}$</p>
 <p>这里将$\overrightarrow{a}^$记为将向量$\overrightarrow a$变为反对称。外积的大小为$|a||b|\sin&lt;a,b&gt;$,是两个向量张成的四边形的有向面积。</p>
 <h2 id="欧拉角和旋转向量"><a href="#欧拉角和旋转向量" class="headerlink" title="欧拉角和旋转向量"></a>欧拉角和旋转向量</h2><p>假设我们有一个经过原点的旋转轴$\overrightarrow{u} &#x3D; (x,y,z)^T$,我们希望将一个向量$\overrightarrow{v}$，以$\overrightarrow u$为旋转轴，旋转$\theta$度之后，变换到$\overrightarrow{v \prime }$</p>
-<p><img src="/%5Cimages%5Cothers%5Crotation%5Caxis_angle.jpg"></p>
+<p><img src="/images/others/rotation/axis_angle.jpg"></p>
 <p>这时，我们就可以用一个<strong>旋转向量$\overrightarrow u$和角度$\theta$来表示一次旋转</strong>。由于以这种方式表示旋转需要四个自由度(向量三个，角度一个)，而刻画一次选择只需要三个自由度（x,y,z)这就导致了冗余。所以，我们额外规定向量的模长为一，$|\overrightarrow u| &#x3D; \sqrt{x^2 + y^2 + z^2} &#x3D;1$。</p>
 <p>欧拉角其实与旋转向量十分类似，但是却更加符合人们思考旋转的方式。欧拉角使用三个分离的转角，把一个旋转分解为三次绕不同轴的旋转。分解方式可以是多种多样的，但通常是分解为X轴，Y轴，Z轴。</p>
 <ul>
@@ -292,7 +292,7 @@
 <p>$\begin{align}q&#x3D;[s,\bf{v}]&amp;&amp;(\bf{v}&#x3D;\begin{bmatrix}x\\y\\z\end{bmatrix},s,x,y,z \in \mathbb R) \end{align}$</p>
 <p>如果一个四元数的$s&#x3D;&#x3D;0$,即$q_0&#x3D;[0,{\bf{v}}]$。那么我们就称$q_0$为纯四元数。两个纯四元数相乘:<br>$\begin{align}vu &#x3D; [\bf -v \cdot u,v \times u]\end{align}$</p>
 <p>四元数的加减法与复数保持一致，乘法可以总结为下表：</p>
-<p><img src="/%5Cimages%5Cothers%5Crotation%5Cquat_mul.jpg"></p>
+<p><img src="/images/others/rotation/quat_mul.jpg"></p>
 <p>与复数一致，四元数的乘法也能写成矩阵乘向量的形式：</p>
 <p>$\begin{align}q_1q_2 &amp;&#x3D; \begin{bmatrix}<br>a&amp;-b&amp;-c&amp;-d\\<br>b&amp;a&amp;d&amp;-c\\<br>c&amp;-d&amp;a&amp;b\\<br>d&amp;c&amp;-b&amp;a<br>\end{bmatrix}<br>\begin{bmatrix}<br>e\\f\\g\\h<br>\end{bmatrix}\\<br>&amp;&#x3D;(ae-(bf+cg+dh))+ \\<br>&amp;(be+af+ch-dg)i+ \\<br>&amp;(ce+ag+df-bh)j+ \\<br>&amp;(de+ah+bg-cf)k \\<br>&amp;&#x3D;[ae-{\bf{u}} \cdot {\bf{v}}, a {\bf{u}}+e {\bf{v}}+{\bf{v}} \times \bf{u}]<br>\end{align}<br>$</p>
 <p>其中：${\bf{v}} &#x3D; \begin{bmatrix}b\\c\\d\end{bmatrix},{\bf{u}} &#x3D; \begin{bmatrix}f\\g\\h\end{bmatrix}$</p>
