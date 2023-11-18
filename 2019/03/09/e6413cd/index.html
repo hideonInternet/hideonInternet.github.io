@@ -1,23 +1,516 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/03/09/e6413cd/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/method.png">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/Net_Arc.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cpaper%5CSMPL_net%5Cevaluation1.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cpaper%5CSMPL_net%5Cevaluation2.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cpaper%5CSMPL_net%5Ch_error_b_reasonable.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cpaper%5CSMPL_net%5Cevaluation3.jpg">
+<meta property="article:published_time" content="2019-03-09T08:45:53.000Z">
+<meta property="article:modified_time" content="2019-06-06T15:01:58.000Z">
+<meta property="article:author" content="diver">
+<meta property="article:tag" content="三维重建">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="SMPL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/SMPL_net/method.png">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2019/03/09/e6413cd/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文阅读>(二)End-to-End Recovery of Human Shape and Pose | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/03/09/e6413cd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文阅读>(二)End-to-End Recovery of Human Shape and Pose
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-09 16:45:53" itemprop="dateCreated datePublished" datetime="2019-03-09T16:45:53+08:00">2019-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-06-06 23:01:58" itemprop="dateModified" datetime="2019-06-06T23:01:58+08:00">2019-06-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/%E4%B8%89%E7%BB%B4%E4%BA%BA%E4%BD%93%E9%87%8D%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">三维人体重建</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">作者利用SMPL和2d，3d数据训练了一个由单图生成人体三维Mesh的神经网络。在训练该网络时，对三维ground-truth的要求并不是很苛刻。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="End-to-end-Recovery-of-Human-Shape-and-Pose"><a href="#End-to-end-Recovery-of-Human-Shape-and-Pose" class="headerlink" title="&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose"></a>&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose</h2><p><a href="https://arxiv.org/pdf/1712.06584.pdf" title="Learning Category-Specific Mesh Reconstruction"><strong>论文链接</strong></a></p>
+<p><a href="https://github.com/akanazawa/hmr"><strong>Github链接</strong></a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
+<li>单图重建</li>
+<li>利用SMPL进行重建，并且达到real-time效果</li>
+<li>不要求每一个训练的image都要有其对应的3D ground truth</li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><p><img src="/images/paper/SMPL_net/method.png"></p>
+<p>作者提出了一个end-to-end的网络来从单张RGB人像恢复其3D形状。作者利用已有的<code>SMPL</code>模型，<code>SMPL</code>模型可由<code>3D relative joint rotation</code>和<code>Shape</code> 来刻画一个人的<code>3D shape</code>。作者认为在以往的人体建模工作当中，有<code>3D joint location</code>来估计一个完整的<code>3D shape</code> 是不鲁棒的。原因有二：1、<code>3D joint location</code> alone do not constrain the full DoF at each joint. <a href="https://zh.wikipedia.org/wiki/%E6%99%AF%E6%B7%B1">DoF</a>意思就是景深，这个跟相机的参数有关。对这个参数的估计错误，可能会导致所估计的<code>3D shape</code>在图像中的显示位置有区别（我自己想的，不一定正确）2、Joints are sparse, whereas the human body is defined by a surface in 3D space. 这个就是Joints的点数过少，不足以约束一个完整的<code>3D human shape</code>。</p>
+<p>作者还解决了两个在重建工作的问题。其一就是缺少<code>3D ground-truth</code>数据，同时，已有的<code>3D ground-truth</code>绝大部分是在实验室环境下采集的，其对<code>in the wild</code>的2D图像泛化性很差。其二就是单视角情况下2D-3D mapping的问题，不同的<code>3D shape</code>存在对应一张相同的2D图片，在这些<code>3D shape</code>中，存在一些不正常的shape(may not be anthropometrically reasonable)</p>
+<h4 id="网络训练"><a href="#网络训练" class="headerlink" title="网络训练"></a>网络训练</h4><ul>
+<li>网络结构</li>
+</ul>
+<p><img src="/images/paper/SMPL_net/Net_Arc.jpg"></p>
+<ul>
+<li>Encoder和Regression</li>
+</ul>
+<p>网络首先输入一张图片经过Encoder(Resnet-50)后，输出一个feature$\in \mathbb{R}^{2048}$。之后输入到一个Regressor（3层FC,2048D-&gt;1024D-&gt;1024D-&gt;85D）进行迭代，总共会迭代3次，每次迭代过程中会输入一个<code>cam_para</code>,<code>shape</code> $\beta$,<code>pose</code> $\theta$。将<code>pose</code>和<code>shape</code>输入smpl可以得到本次迭代后预测的模型（包括<code>3D joint location</code>）。由<code>cam_para</code>和<code>3D joint location</code>可以得到<code>2D joint location</code>从而可以计算$L_{reproj}$。由<code>pose</code>(也就是<code>joint rotation</code>)和<code>shape</code>可以计算出$L_{adv}$。若输入的2D image有对应的3D数据，则还可以计算$L_{3D}$。 但是在最后计算loss的时候，只会使用每次迭代时产生的$L_{adv}$，而$L_{3D}$和$L_{reproj}$只会利用最后一次迭代产生的loss。这是由于作者认为若每次迭代产生的loss全部都利用,这容易导致regressor限于局部最优化。</p>
+<ul>
+<li>Adversarial Prior</li>
+</ul>
+<p>Adversarial Prior是用来解决上面提到的生成3D数据不真实情况的一个判别器。由于该判别器的任务是判断smpl参数是否是一个正常的人体，那么自然就不需要与输入2D image对应的3D ground truth数据来训练这个判别器判断参数的正确性。由于事先知道我们预测的latent space的意义，所以作者将整个discriminator分解为pose discriminator和shape discriminate。作者又进一步将pose discriminator分解为对每个关节点的判别器（23个，这些判别器的作用在于限制每个关节点的旋转角度）和一个对所有关节点整体做判断的判别器（这个判别器作用在于判断所有关节点的分布关系)。</p>
+<p>作者认为因为这个网络结构不存在刻意去欺骗Discriminator的行为，所以不会产生一般GANs网络会产生的mode collapse现象。</p>
+<ul>
+<li>loss函数</li>
+</ul>
+<p>$L &#x3D; \lambda(L_{reproj} + \mathbb{1}L_{3D}) + L_{adv} $，$\lambda$是用来控制两个目标函数的相对权重的。若输入的2D图像有对应的ground truth 3D数据时，$\mathbb{1}$的值就为1,否则就是0。</p>
+<p>$L_{reproj} &#x3D; \sum \limits_{i}||v_{i}(x_{i}-\hat{x_{i}})||_{1}$,其中$\hat{x_{i}} &#x3D; s\Pi(RX(\theta,\beta)) + t$。 $R$表示旋转操作，$\Pi$表示正交投影，$s，t$分别表示Scale和translation。</p>
+<p>$L_{3D} &#x3D; L_{3D joints} + L_{3D smpl}$</p>
+<p>$L_{joints} &#x3D; ||(X_i-\hat{X_i})||_2^2$</p>
+<p>$L_{smpl} &#x3D; ||[\beta_i,\theta_i]-[\hat{\beta_i},\hat{\theta_i}]||_2^2$</p>
+<p>$minL_{abv}(E) &#x3D; \sum_i\mathbb{E}_{\Theta ~ pE}[(D_i(E(I)-1)^2]$</p>
+<p>$minL(D_i) &#x3D; \mathbb{E}<em>{\Theta~pdata}[(D_i(\Theta)-1)^2]+\mathbb{E}</em>{\Theta ~ pE}[D_i(E(I)^2]$</p>
+<p>很典型的GANs网络结构的Loss函数，其中$\Theta$表示真实的smpl参数。（这个loss函数真的能够限制每个关节的旋转角度和整体关节的分布情况么？？表示很难理解,欢迎提出新的见解~)</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p>对于2D image dataset,作者使用了<code>LSP</code>,<code>LSP-extended</code>,<code>MPII</code>和<code>MS COCO</code>，训练数据量分别是1k,10k,20k和80k。2D image和3D dataset作者使用了<code>Human 3.6M</code>和<code>MPI-INF-3DHP</code>。而用作训练<code>discriminator</code>的<code>SMPL</code>真实数据是: <code>CMU</code>, <code>Human3.6M training set</code> 和<br><code>the PosePrior dataset</code>,训练数据量分别是390k,150k,180k。</p>
+<p>作者在<code>Human 3.6M</code>上采用了两种评价标准：</p>
+<ul>
+<li>mean per joint position error (MPJPE)</li>
+<li>Reconstruction error, which is MPJPE after rigid alignment of the prediction with ground truth via Procrustes Analysis.</li>
+</ul>
+<p>相较于第一种，<code>Reconstruction error</code>能排除全局误差的影响，更好的比较<code>3D skeleton</code>.</p>
+<p><img src="/%5Cimages%5Cpaper%5CSMPL_net%5Cevaluation1.jpg"></p>
+<p><img src="/%5Cimages%5Cpaper%5CSMPL_net%5Cevaluation2.jpg"></p>
+<p>作者发现即使拥有较高的<code>MPJPE</code>，文中的方法生成的3D模型从视觉效果上看，也不错。<br><img src="/%5Cimages%5Cpaper%5CSMPL_net%5Ch_error_b_reasonable.jpg"></p>
+<p>作者在<code>MPI-INF-3DHP</code>上采用了两种评价标准：</p>
+<ul>
+<li>Percentage of Correct Keypoints(PCK) thresholded at 150mm</li>
+<li>Area Under the Curve(AUC) over a range of PCK thresholds</li>
+</ul>
+<p><img src="/%5Cimages%5Cpaper%5CSMPL_net%5Cevaluation3.jpg"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/3d-reconstruction/" rel="tag"># 三维重建</a>
+              <a href="/tags/dl/" rel="tag"># 深度学习</a>
+              <a href="/tags/SMPL/" rel="tag"># SMPL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/08/4a17b156/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/24/30a4c30f/" rel="next" title="Ubuntu18.04装机">
+      Ubuntu18.04装机 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#End-to-end-Recovery-of-Human-Shape-and-Pose"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method"><span class="nav-number">1.2.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83"><span class="nav-number">1.2.1.</span> <span class="nav-text">网络训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.3.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

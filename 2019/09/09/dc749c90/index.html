@@ -1,23 +1,498 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="文章将多图约束重建工作分为两步。第一步对单图重建的模糊性进行建模，第二步利用第一步训练好的模型，将多个重建好的三维模型进行融合得到最终模型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文阅读&gt;(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/09/09/dc749c90/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="文章将多图约束重建工作分为两步。第一步对单图重建的模糊性进行建模，第二步利用第一步训练好的模型，将多个重建好的三维模型进行融合得到最终模型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/openmvs/overview.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/openmvs/single_view_re.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/openmvs/arch.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/openmvs/multi_view_re.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/openmvs/algorithm.jpg">
+<meta property="article:published_time" content="2019-09-09T04:24:32.000Z">
+<meta property="article:modified_time" content="2019-09-10T08:38:58.000Z">
+<meta property="article:author" content="diver">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="模糊性建模">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/openmvs/overview.jpg">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2019/09/09/dc749c90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文阅读>(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/09/09/dc749c90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文阅读>(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-09 12:24:32" itemprop="dateCreated datePublished" datetime="2019-09-09T12:24:32+08:00">2019-09-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-10 16:38:58" itemprop="dateModified" datetime="2019-09-10T16:38:58+08:00">2019-09-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/%E5%88%9A%E6%80%A7%E7%89%A9%E4%BD%93%E9%87%8D%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">刚性物体重建</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+            <div class="post-description">文章将多图约束重建工作分为两步。第一步对单图重建的模糊性进行建模，第二步利用第一步训练好的模型，将多个重建好的三维模型进行融合得到最终模型。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Conditional-Single-view-Shape-Generation-for-Multi-view-Stereo-Reconstruction"><a href="#Conditional-Single-view-Shape-Generation-for-Multi-view-Stereo-Reconstruction" class="headerlink" title="&lt;论文阅读&gt;Conditional Single-view Shape Generation for Multi-view Stereo Reconstruction"></a>&lt;论文阅读&gt;Conditional Single-view Shape Generation for Multi-view Stereo Reconstruction</h2><p><a href="https://arxiv.org/pdf/1904.06699.pdf">论文链接</a></p>
+<p><a href="https://github.com/weiyithu/OptimizeMVS">github</a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution###"></a>Contribution###</h3><ul>
+<li>首次提出将单图重建工作中的模糊性进行建模。以单张图片作为输入，网络可以重建出若干符合单视角约束条件的三维模型。而这若干个三维模型就对单视角中的模糊性问题进行了建模，生成了模糊性空间。</li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method###"></a>Method###</h3><p><img src="/images/paper/openmvs/overview.jpg"></p>
+<h4 id="Overview"><a href="#Overview" class="headerlink" title="Overview####"></a>Overview####</h4><p>从上图可以看出，对于单图作为输入的重建模型，现有方法只能重建出一个确定的模型，而由于单图存在重建模糊性问题，肯定会导致该重建结果存在一些问题，特别是对不可见趋于的重建。而作者所提出的方法，可以在符合仅有的单视角约束条件下，重建出若干张图片，这些图片就模拟了不可见视角下的形状。</p>
+<h4 id="Single-view-Reconstruction"><a href="#Single-view-Reconstruction" class="headerlink" title="Single-view Reconstruction####"></a>Single-view Reconstruction####</h4><p><img src="/images/paper/openmvs/single_view_re.jpg"></p>
+<p>作者为了实现在重建的三维模型在符合单视角约束的前提下，对不可见视角进行合理猜想，设计了三个约束条件<code>Front Constraint</code>,<code>Diversity Constraint</code>,<code>Latent Space Discriminator</code>。</p>
+<ul>
+<li>Front Constraint</li>
+</ul>
+<p><code>Front Constraint</code>的作用是将收到视角约束限制的点从整个点云中分离开来。作者的做法是首先将重建得到的三维点云投影至二维平面以得到depth图片，然后再计算出哪些三维点构成了这些depth图片。文中将这些点的数量记为$N_i$</p>
+<ul>
+<li>Diversity Constraint</li>
+</ul>
+<p><code>Diversity Constraint</code>是限制剩下的$N-N_i$个生成点的位置。作者利用&nbsp;&nbsp;$loss_{div}&#x3D;max(0,||r_1-r_2||_2 - \alpha EMD(S_1,S_2))$ 来约束两个由同一张单视角图片生成的点云之间的差异性。$r_1，r_2$表示两个不同的随机向量，作者用这个来使得生成的模型具有一定的，可控的差异性。</p>
+<ul>
+<li>Latent Space Discriminator</li>
+</ul>
+<p><code>Latent Space Discriminator</code>被作者用来使生成的若干个三维模型不仅要符合单视角图片的约束，还需要符合一定的合理性。作者首先利用已有的点云表征学习的方法，训练了一个auto-encoder。接着作者将auto-encoder中的解码器移植到他自己的网络结构最后面，并将生成的三维模型作为输入，生成三维模型。</p>
+<p><img src="/images/paper/openmvs/arch.jpg"></p>
+<p>$loss_{gan} &#x3D; - \mathbb E_{I_i \thicksim p_{data},r_i \thicksim p(r)}[D(E_I(I_i,r_i))] + \mathbb E_{S \thicksim P_{data}}[D(E_S(S))] -\lambda \mathbb E_{\hat z \thicksim p_{\hat z}}[(||\triangledown_{\hat z}D(\hat z)||_2)^2] \tag{1}$</p>
+<p>其中$E_I$为作者自己网络的编码器，$E_S$为auto-encoder的编码器，$D$为判别器，$S$为从训练数据集中采样的三维模型。作者认为该结构可以学习到形状先验，以保证生成的三维模型的合理性</p>
+<h4 id="Synthesizing-Multi-view-Predictions"><a href="#Synthesizing-Multi-view-Predictions" class="headerlink" title="Synthesizing Multi-view Predictions"></a>Synthesizing Multi-view Predictions</h4><p>有了上面三个约束条件，作者预训练了一个单视角生成网络，但是网络的最终目的是生成一个准确的三维模型，这就需要用到多视角约束。</p>
+<p><img src="/images/paper/openmvs/multi_view_re.jpg"> </p>
+<p>根据上图可知，输入有单视角图片扩展为多视角图片，然后为每个输入图片生成一个三维模型。接着根据&nbsp;&nbsp; $loss_{consis} &#x3D; \frac{2}{n(n-1)}\sum_{i&#x3D;1}^{n-1}\sum^n_{j&#x3D;i+1}CD(S_i,S_j)$&nbsp;&nbsp;来约束这几个三维模型的一致性。</p>
+<p><img src="/images/paper/openmvs/algorithm.jpg"></p>
+<p>根据算法步骤可以发现一个<em><strong>有意思的</strong></em>地方，作者称为<code>heuristic search in initialization</code>。作者首先随机选择5组不同和的${r_{ij}}^5_{j&#x3D;1}$,每组包含的数量与输入图片数量一致。接着就分别把这5组$r_{ij}$结合同一组输入图片，输入到网络中，得到5个不同的$loss_{consis}$,把得到最小$loss_{consis}$的那组$r_{ij}$记为${r_i^+}<em>{i&#x3D;1}^n$。 接着在开始训练前，将预测模型Freeze,只根据loss值更新$r</em>{ij}$，直到收敛。</p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>1、将多视角重建问题分成两个部分，第一部分进行单输入图重建，并<strong>创造性</strong>的对固有的模糊性进行建模。作者对此在文中解释道：</p>
+<blockquote>
+<p>However, different from the scenarios of generation in CGAN [27], we only have limited groundtruth (in fact, only one shape per image) which cannot span the reasonable shape space. We aim to learn a mapping to approximate the probabilistic model $p(S|I)$) in the reasonable shape space.</p>
+</blockquote>
+<p>作者认为，单单靠一个监督是不足以使网络学习到一个可靠的形状空间。<strong>尽管作者做了消融实验证明了有效性，但是仍不足说服我。一个上百个点组成的三维空间，靠多预测个位数的三维模型，就能完成建模？）</strong></p>
+<p>2、作者采用的启发式初始化有一定的可取之处，让网络自身决定合适的初始参数是什么</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/dl/" rel="tag"># 深度学习</a>
+              <a href="/tags/%E6%A8%A1%E7%B3%8A%E6%80%A7%E5%BB%BA%E6%A8%A1/" rel="tag"># 模糊性建模</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/23/8f9285bb/" rel="prev" title="<论文阅读>(六)Three-D Safari Learning to Estimate Zebra Pose, Shape, and Texture From Images “In the Wild”">
+      <i class="fa fa-chevron-left"></i> <论文阅读>(六)Three-D Safari Learning to Estimate Zebra Pose, Shape, and Texture From Images “In the Wild”
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/28/4767f891/" rel="next" title="欧式空间的旋转表示(一)">
+      欧式空间的旋转表示(一) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Conditional-Single-view-Shape-Generation-for-Multi-view-Stereo-Reconstruction"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;Conditional Single-view Shape Generation for Multi-view Stereo Reconstruction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">Contribution###</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method"><span class="nav-number">1.2.</span> <span class="nav-text">Method###</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Overview"><span class="nav-number">1.2.1.</span> <span class="nav-text">Overview####</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Single-view-Reconstruction"><span class="nav-number">1.2.2.</span> <span class="nav-text">Single-view Reconstruction####</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Synthesizing-Multi-view-Predictions"><span class="nav-number">1.2.3.</span> <span class="nav-text">Synthesizing Multi-view Predictions</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Conclusion"><span class="nav-number">1.3.</span> <span class="nav-text">Conclusion</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

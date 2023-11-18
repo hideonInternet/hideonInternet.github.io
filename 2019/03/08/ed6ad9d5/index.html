@@ -1,23 +1,501 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文阅读&gt;(一)Learning Category-Specific Mesh Reconstruction From Image Collections">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/03/08/ed6ad9d5/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/Net_Arch.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/project.png">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/rendering.png">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/bird_net/exp.png">
+<meta property="article:published_time" content="2019-03-08T04:17:53.000Z">
+<meta property="article:modified_time" content="2019-03-24T14:55:14.000Z">
+<meta property="article:author" content="diver">
+<meta property="article:tag" content="三维重建">
+<meta property="article:tag" content="纹理渲染">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/bird_net/Net_Arch.jpg">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2019/03/08/ed6ad9d5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文阅读>(一)Learning Category-Specific Mesh Reconstruction From Image Collections | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/03/08/ed6ad9d5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文阅读>(一)Learning Category-Specific Mesh Reconstruction From Image Collections
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-08 12:17:53" itemprop="dateCreated datePublished" datetime="2019-03-08T12:17:53+08:00">2019-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-03-24 22:55:14" itemprop="dateModified" datetime="2019-03-24T22:55:14+08:00">2019-03-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/%E4%B8%89%E7%BB%B4%E5%8A%A8%E7%89%A9%E9%87%8D%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">三维动物重建</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">论文介绍了从单图重建一类物体的三维形状，文章主要介绍对鸟类的三维重建。但是在最后作者比较了其它刚性物体类别，例如汽车、飞机，等的重建效果。同时论文也介绍了一种在三维重建过程中，对物体纹理进行渲染的方法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><a href="#Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections" class="headerlink" title="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections"></a>&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</h2><p><a href="https://arxiv.org/abs/1803.07549" title="Learning Category-Specific Mesh Reconstruction"><strong>论文链接</strong></a></p>
+<p><a href="https://github.com/akanazawa/cmr"><strong>Github链接</strong></a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
+<li>单图重建</li>
+<li>纹理渲染</li>
+<li>训练过程无需3d ground truth数据</li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><h4 id="训练数据预处理"><a href="#训练数据预处理" class="headerlink" title="训练数据预处理"></a>训练数据预处理</h4><p>本次实验用到的数据集是<code>CUB-200-2011</code>,提供了200种鸟类，共计11788张图片。每张图片附含了15个关键点的标记（头部，背部，脚等）、一张Mask和Bounding box。<br>作者首先将这些数据导入Matlab当中，首先对每组关键点进行零均值处理，接着计算平均模型$\hat{S}$。 接着利用所有关键点进行<code>structure from motion</code>变换，得到每张图片相对于平均模型$\hat{S}$的<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数。</p>
+<h4 id="网络训练"><a href="#网络训练" class="headerlink" title="网络训练"></a>网络训练</h4><p>作者用到了三个网络来达到重建效果，分别是<code>文中所用主体网络</code>,<a href="https://arxiv.org/abs/1711.07566"><strong>Neural Mesh Render</strong></a><br>和<a href="https://arxiv.org/abs/1801.03924"><strong>Perceptual loss</strong></a>。</p>
+<ul>
+<li>论文中所用网络简介</li>
+</ul>
+<p><img src="/images/paper/bird_net/Net_Arch.jpg"></p>
+<p>首先网络接受一张图片，经过encoder之后变为了一个200d的shape feature <code>f</code>（注：encoder是一个经过imagenet预训练的resnet-18接上两个全连接层）。之后将得到的<code>f</code>送入三个网络,分别是<code>ShapePredictor</code>,<code>CameraPredictor</code>和<code>UVMapPredictor</code>. 其中<code>ShapePredictor</code>是预测形状变化$\Delta{V}$,最后的形状预测结果就是$V &#x3D; \hat{V} + \Delta{V}$。<code>CameraPredictor</code>是预测<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数的。值得一提的是<code>rot</code>参数,它与以前见到的旋转矩阵不同，<code>rot</code>$\in \mathbb{R}^4$,是一个<a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC"><strong>四元数</strong></a>,可以用来表示三维空间中点的旋转。</p>
+<ul>
+<li>TexturePredictor</li>
+</ul>
+<p>作者提出的纹理预测思路比较巧妙。首先在数据预处理过程中的$\hat{S}$与网络训练过程的$\hat{V}$并不一致，实际上$\hat{V} &#x3D;\mathcal{P}(\hat{S})$，$\mathcal{P}$表示将一个点数为642，面片数为1280的二十面体投影至$\hat{S}$。在将二十面体投影至$\hat{S}$前，作者对二十面体的点，面做了一次<em><strong>重新排序</strong></em>，使他们的顺序按照独立点，左侧点，右侧点排列。而投影操作$\mathcal{P}$作者在代码注释中写了这么一句话：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">triangle_direction_intersection</span>(<span class="params">tri, trg</span>):</span><br><span class="line">    Finds where an origin-centered ray going <span class="keyword">in</span> direction trg intersects a triangle.</span><br><span class="line">    Args:</span><br><span class="line">        tri: <span class="number">3</span> X <span class="number">3</span> vertex locations. tri[<span class="number">0</span>, :] <span class="keyword">is</span> 0th vertex.</span><br></pre></td></tr></table></figure>
+<p><img src="/images/paper/bird_net/project.png"></p>
+<p>多边形相当于二十面体，而中间的三角形就相当于$\hat{S}$,其边就可以看作三角面片。投影操作就是求解沿着二十面体点的方法，求与三角片面的交点。</p>
+<p>有了上面的基础，作者就认为由于所有的预测3D模型都是从同一个平均模型在保持拓扑变化的基础上变化得到的原因，所以每个所预测3D模型的点语义都是一致，即编号为1的点若代表嘴巴，则所有预测模型中编号为1的点就是所预测的嘴巴那个点。那么对于所预测的纹理图片来说，只要知道了最原始的那个二十面体的UV图，便可以对预测3D模型进行渲染(rendering)。</p>
+<p><img src="/images/paper/bird_net/rendering.png"></p>
+<ul>
+<li>Loss函数介绍</li>
+</ul>
+<p>** 注1：$\mathcal{R}$（<em>）和$G$（</em>）分别表示渲染(rendering)和双线性取样(bilinear sampling),其中$\mathcal{R}$（<em>）引用自</em>*<a href="https://arxiv.org/abs/1711.07566">Hiroharu Kato, etc. Neural 3D Mesh Renderer</a></p>
+<p>** 注2：$L_{texture}$函数表示的percetual loss,较传统的pixel loss相比更能从人的感知角度来评价两幅图像的相似度 引用自**<a href="https://arxiv.org/abs/1801.03924">Zhang,R etc. The unreasonable effectiveness of deep networks as a perceptual metric. In CVPR 2018</a></p>
+<p>$L_1 &#x3D; L_{reproj} + L_{mask} + L_{cam} + L_{smooth} + L_{def} + L_{vert2kp}$</p>
+<p>$L_{reproj} &#x3D; \sum_{i}^{}||x_{i}-\tilde{\pi}_{i}(AV_{i})||_{2}$，其中 $\tilde{\pi}（*）$表示投影操作，其值是从<code>structure-from-motion</code>中获得参数</p>
+<p>$L_{mask} &#x3D; \sum_i||S_{i}-\mathcal{R}(V_{i},F,\tilde{\pi}_{i})||_{2}$，$S_{i}$表示ground-truth的Mask。</p>
+<p>$L_{cam} &#x3D; \sum_{i}||\tilde{\pi}_{i}-{\pi}_{i}||_{2}$，$\pi_{i}$表示估计的相机旋转参数，由于旋转参数是由四元数表示，那么就是利用hamilton_product来求解估计与实际的误差</p>
+<p>$L_{smooth} &#x3D; ||LV||_{2}$，$L$表示Laplacian光滑，其目的是为了最小化平均曲率</p>
+<p>$L_{def}&#x3D;||\Delta{V}||_{2}$，这个是一个正则项</p>
+<p>$L_{vert2kp} &#x3D; \frac{1}{|K|}\sum_{k}\sum_{v}-A_{k,v}logA_{k,v}$，这个是一个k*V的矩阵，每一行表示一个特征点，而每一列表示这个特征点在各个点的概率分布。初始化是，每个特征点在各个点上的概率分布是一致的，进过迭代之后，作者期望形成一个类似与one-hot的矩阵。</p>
+<p>$L_2 &#x3D; L_{texture} + L_{dt}$</p>
+<p>$L_{texture} &#x3D; \sum_{i}dist(\mathcal{S_{i}}\bigodot\mathcal{I_{i}},\mathcal{S_{i}}\bigodot\mathcal{R}(V_{i},F,\tilde{\pi_{i}},I^{uv}))$</p>
+<p>$L_{dt} &#x3D; \sum_{i}\sum_{u,v}G(\mathcal{D_{S_{i}};F_{i}}(u,v)$， $\mathcal{D_{S_{i}}}$表示对于每一个Mask的distance transform。</p>
+<p>TexturePredictor会输出一个<code>texture flow</code>，也就是$\mathcal{F} \in \mathbb{R}^{H_{uv} * W_{uv} * 2}$,其中$H_{uv}*W_{uv}$分别表示UVmap的长和宽，而$\mathcal{F}(x,y)$对应的就是input image(x,y)。最后的UVmap就是$I^{uv} &#x3D; G(I;\mathcal{F})$。而这个<code>texture flow</code>不是神经网络的直接输出产物，而神经网络直接输出的是一个表示体现了UV图和Img的对应位置的关系，而其还是会与另一个<code>UVsample</code>进行取样。而<code>UVsample</code>表示的是UV图与$\hat{V}$上各个点的一个对应关系。这两个东西结合在一起后就可以体现UVmap、$\hat{V}$、img三者之间的关系。</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/bird_net/exp.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/3d-reconstruction/" rel="tag"># 三维重建</a>
+              <a href="/tags/render/" rel="tag"># 纹理渲染</a>
+              <a href="/tags/dl/" rel="tag"># 深度学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/08/4a17b156/" rel="next" title="Hello World">
+      Hello World <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method"><span class="nav-number">1.2.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">训练数据预处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83"><span class="nav-number">1.2.2.</span> <span class="nav-text">网络训练</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.3.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

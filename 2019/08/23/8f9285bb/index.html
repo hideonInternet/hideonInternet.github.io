@@ -1,23 +1,517 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="作者在SMAL的基础上，将原本传统优化方法改进为基于深度学习的方法，简化了重建方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文阅读&gt;(六)Three-D Safari Learning to Estimate Zebra Pose, Shape, and Texture From Images “In the Wild”">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/08/23/8f9285bb/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="作者在SMAL的基础上，将原本传统优化方法改进为基于深度学习的方法，简化了重建方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/smalst/net.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/smalst/texture.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/paper/smalst/back_model_label.png">
+<meta property="article:published_time" content="2019-08-23T01:39:16.000Z">
+<meta property="article:modified_time" content="2020-01-06T15:43:36.000Z">
+<meta property="article:author" content="diver">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="SMAL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/paper/smalst/net.jpg">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2019/08/23/8f9285bb/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文阅读>(六)Three-D Safari Learning to Estimate Zebra Pose, Shape, and Texture From Images “In the Wild” | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/08/23/8f9285bb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文阅读>(六)Three-D Safari Learning to Estimate Zebra Pose, Shape, and Texture From Images “In the Wild”
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-23 09:39:16" itemprop="dateCreated datePublished" datetime="2019-08-23T09:39:16+08:00">2019-08-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-06 23:43:36" itemprop="dateModified" datetime="2020-01-06T23:43:36+08:00">2020-01-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/%E4%B8%89%E7%BB%B4%E5%8A%A8%E7%89%A9%E9%87%8D%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">三维动物重建</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">作者在SMAL的基础上，将原本传统优化方法改进为基于深度学习的方法，简化了重建方法。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="六-Three-D-Safari-Learning-to-Estimate-Zebra-Pose-Shape-and-Texture-from-Images-“In-the-Wild”"><a href="#六-Three-D-Safari-Learning-to-Estimate-Zebra-Pose-Shape-and-Texture-from-Images-“In-the-Wild”" class="headerlink" title="&lt;论文阅读&gt;(六)Three-D Safari: Learning to Estimate Zebra Pose, Shape, and Texture from Images “In the Wild”"></a>&lt;论文阅读&gt;(六)Three-D Safari: Learning to Estimate Zebra Pose, Shape, and Texture from Images “In the Wild”</h2><p><a href="https://128.84.21.199/pdf/1908.07201.pdf">论文链接</a></p>
+<p><a href="https://github.com/silviazuffi/smalst">Github</a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution###"></a>Contribution###</h3><ul>
+<li>提出了一个基于已有统计模型的，构造合成数据集的方法</li>
+<li>针对四足动物有更复杂的形状问题，改进了已有纹理预测的方法</li>
+<li>为了进一步对不同实例的改进，提出了<code>per-instance optimization</code></li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><p><img src="/images/paper/smalst/net.jpg"></p>
+<ul>
+<li>Net Architecture</li>
+</ul>
+<p>输入图片经过Encoder(主要是ResNet-18)，输出为一个特征向量，接着送入三个分支网络。由于网络最后会生成一个一个<code>full texture map</code>，作者基于此对于每个实例做了进一步优化（<code>per-instance optimization</code>）。</p>
+<ul>
+<li>digital dataset</li>
+</ul>
+<p>这篇论文是基于作者之前的两篇工作<code>SMAL</code>和<code>SMALR</code>。其中前者是利用一组动物玩具扫描进行统计建模得到一个统计模型，也就是上图的<code>SMAL horse template</code>。之后在根据一系列优化函数进行给定输入图像的优化，三维模型可以建模为：</p>
+<p>$v &#x3D; M(\beta,\theta,\gamma) \tag{1}$</p>
+<p>$v_{shape}(\beta) &#x3D; v_{horse} + B_s\beta \tag{2}$</p>
+<p>其中$\beta$为一组基$B_s$的系数，表示为动物形状，$\theta$为pose参数，$\gamma$为相机参数。后者较于前者，输入由单张图片变为对于同一个动物的（可以是）不同相机角度，不同姿态的若干张图片。作者首先利用<code>SMAL</code>对输入的多张图片进行拟合，得到对应的三维模型$v_i &#x3D; M(\hat \beta_i,\hat \theta_i , \hat \gamma_i)$。由于不同照片所对应的是同一动物，所有用以描述形状的$\hat \beta_i$应该是一致的，所以可以任选一个。接着，作者对上面所获得的三维模型进行进一步的优化，以期获得待重建动物独有的形状特征，例如犀牛的角。</p>
+<p>$v_{shape}(dv^{SMALR}) &#x3D; v_{horse} + B_s \hat \beta + dv^{SMALR} \tag{3}$</p>
+<p>其中$dv^{SAMLR}$就可以看作待重建动物独有的形状特征。</p>
+<p>作者利用有限的，真实的动物图片，通过<code>SMALR</code>合成了10个不同的三维模型。然后这个10个不同的模型，再加以不同的，合理的相机参数$\gamma$，pose参数$\theta$，形状参数$\beta$,然后投影在不同的二维背景上，以获得合成数据。这些数据用来作为网络的训练集，而测试集和验证集均为真实的图片。因此，对于每一组训练数据，都包含了：1、一张RGB图片，2、Texture map $T_{gt}$，3、texture uv-flow $uv_{gt}$4、剪影(sihouette) $\mathcal S_{gt}$，5 、pose参数 $\theta_{gt}$，6、相机参数 $\gamma_{gt}$，7、形状参数 $\beta_{gt}$，8、vertex displacements $dv_{gt}^{SMALR}$，9、特征点 $K_{2D,gt}$。为了更好的预测作者将9和7结合在一起得到10、$dv_{gt} &#x3D; B_s\beta_{gt} + dv_{gt}^{SMALR}$</p>
+<ul>
+<li>uv-flow predictor</li>
+</ul>
+<p><img src="/images/paper/smalst/texture.jpg"></p>
+<p>大体思路与<a href="https://hideoninternet.github.io/2019/03/08/ed6ad9d5/">CMR</a>一致，不同的是，作者认为，由于四足动物有着更大的articulated model,导致了在空间上具有不连续性（我估计可能是四肢之间具有较大空当的意思）。这就是个原本的纹理预测方法效果较差。作者的方法就是将其分成四个子块，同四个不同的编码，解码器来预测。但具体是如何做的，不清楚。</p>
+<p>或者换种角度看待，这个问题.<a href="https://hideoninternet.github.io/2019/03/08/ed6ad9d5/">CMR</a> 中初始模型是由一个单位球体得来的，这使得从中心到各个点的连线上不会存在第三个点。而对与这个工作中的统计模型，即使把点单位化，从中心到各个点的连线上也可能会存在第三个点，从而导致UV展开后的坐标一致，不利于网络预测。</p>
+<ul>
+<li>shape prediction</li>
+</ul>
+<p>$dv &#x3D; Wf_s + b \tag{4}$</p>
+<p>其中$b$是偏置项，$W$被初始化为<code>SMAL</code>的$B_s$，为了获得更好的三维模型，$B_s$会随着迭代进行优化。</p>
+<p>$L_{train} &#x3D; L_{mask}(S_{gt},S) + L_{kp2D}(K_{2D,gt},K_{2D}) + L_{cam}(f_{gt},f)+L_{img}(I{input},I,S_{gt})+L_{pose}(\theta_{gt},\theta)+L_{trans}(\gamma_{gt},\gamma)+L_{shape}(dv_{gt},dv)+L_{uv}(uv_{gt},uv)+L_{tex}(T_{gt},T)+L_{dt}(uv,S_{gt}) \tag{6}$</p>
+<ul>
+<li>per-instance optimization</li>
+</ul>
+<blockquote>
+<p>Given an input image, we run the regression network and then perform a per-instance optimization where we keep the network layers fixed and optimize over the feature space variables. In this way we eploit the correlation between variables learned by the network.</p>
+</blockquote>
+<p>由于不是很确定这个方法是如何对特征空间进行优化的和优化的先后顺序是怎样的，所以就不下结论了，等开源之后，再补回来。这里就记录一下关于这个方法的一些<strong>可能</strong>的意义。</p>
+<p>网络的输入为<code>input image</code>,将其输出的三维模型投影回二维平面的图片记为<code>prediction</code>(与网络结构图一致)。作者的意思就是将<code>prediction</code>加上具有一定意义的<code>background</code>之后（记为<code>back-prediction</code>），再跟<code>input image</code>进行比较。其中优化函数就包括了<code>perceptual loss</code>。</p>
+<ul>
+<li>per-instance optimization有何用</li>
+</ul>
+<p>由于<code>Encoder</code>所编码的<code>features</code>包含了很多的噪声，而这些噪声会干扰接下来三个分支网络的结果预测。如果去除这些噪声，毫无疑问，会有利于参数的预测。我们可以将一幅图片分为前景和背景两个部分,从而可以将<code>perceptual loss</code>的评价方法分为前景损失和背景损失两种。在<code>per-instance optimization</code>中，由于网络所有层的参数都是固定的，导致了<code>back-prediction</code>和<code>input image</code>的背景都是一致的，那么为了降低损失，网络就势必要尽可能提高两者在前景上的相似度，从而就去除了<code>features</code>中的噪音。</p>
+<ul>
+<li>为什么要加background model</li>
+</ul>
+<p>文中说的很清楚，如果在不加background model，那么在测试时，就要求输入图片一定具有所对应的剪影，否者单单有<code>prediction</code>是没法跟<code>input image</code>进行<code>peceptual loss</code>上的比较。而background model,如文中所提，就是预测一个平均的背景像素值，来代替真实的背景值。文中提到这个模型使用构造<code>SMALR</code>模型所用的图片来训练的</p>
+<ul>
+<li>为什么需要预测背景的平均值</li>
+</ul>
+<p>尽管这是一个说服力很弱的猜想，但是记录一下。</p>
+<p><img src="/images/paper/smalst/back_model_label.png"></p>
+<p>横轴可以看作难易度，纵轴可以看作背景的相似度。back-model的作用就可以看作为左侧橙色的线，而要预测剪影的话，就可以看作右侧黄色的线。尽管back-model的效果较弱，但其所需的成本较剪影预测要少很多，同时获得的效果也可以达到预期的效果。</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/dl/" rel="tag"># 深度学习</a>
+              <a href="/tags/SMAL/" rel="tag"># SMAL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/19/54bbc8cd/" rel="prev" title="<论文阅读>(五)Learning View Priors for Single-View 3D Reconstruction">
+      <i class="fa fa-chevron-left"></i> <论文阅读>(五)Learning View Priors for Single-View 3D Reconstruction
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/09/dc749c90/" rel="next" title="<论文阅读>(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction">
+      <论文阅读>(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD-Three-D-Safari-Learning-to-Estimate-Zebra-Pose-Shape-and-Texture-from-Images-%E2%80%9CIn-the-Wild%E2%80%9D"><span class="nav-number">1.</span> <span class="nav-text">&lt;论文阅读&gt;(六)Three-D Safari: Learning to Estimate Zebra Pose, Shape, and Texture from Images “In the Wild”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contribution"><span class="nav-number">1.1.</span> <span class="nav-text">Contribution###</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method"><span class="nav-number">1.2.</span> <span class="nav-text">Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.3.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

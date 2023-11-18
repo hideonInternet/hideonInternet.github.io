@@ -1,23 +1,499 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章不包含透视变换（projective&#x2F;perspective transformation），而将重点放在仿射变换（affine transformation），将介绍仿射变换所包含的各种变换，以及变换矩阵该如何理解记忆。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="仿射变换及其变换矩阵的理解">
+<meta property="og:url" content="https://hideoninternet.github.io/2020/01/09/8152e3be/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="这篇文章不包含透视变换（projective&#x2F;perspective transformation），而将重点放在仿射变换（affine transformation），将介绍仿射变换所包含的各种变换，以及变换矩阵该如何理解记忆。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Cvenn.png">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Cexplanation.png">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Ccoord.png">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Cconclusion.png">
+<meta property="article:published_time" content="2020-01-09T04:09:53.000Z">
+<meta property="article:modified_time" content="2020-02-07T06:52:04.000Z">
+<meta property="article:author" content="diver">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2020/01/09/8152e3be/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>仿射变换及其变换矩阵的理解 | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2020/01/09/8152e3be/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          仿射变换及其变换矩阵的理解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-09 12:09:53" itemprop="dateCreated datePublished" datetime="2020-01-09T12:09:53+08:00">2020-01-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-07 14:52:04" itemprop="dateModified" datetime="2020-02-07T14:52:04+08:00">2020-02-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%89%E7%BB%B4%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">三维基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%89%E7%BB%B4%E5%9F%BA%E7%A1%80/%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5/" itemprop="url" rel="index"><span itemprop="name">变换矩阵</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">这篇文章不包含透视变换（projective/perspective transformation），而将重点放在仿射变换（affine transformation），将介绍仿射变换所包含的各种变换，以及变换矩阵该如何理解记忆。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="仿射变换：平移、旋转、放缩、剪切、反射"><a href="#仿射变换：平移、旋转、放缩、剪切、反射" class="headerlink" title="仿射变换：平移、旋转、放缩、剪切、反射"></a>仿射变换：平移、旋转、放缩、剪切、反射</h3><p>仿射变换包括如下所有变换，以及这些变换任意次序次数的组合：</p>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png"></p>
+<p><strong>平移</strong>（translation）和<strong>旋转</strong>（rotation）顾名思义，两者的组合称之为<strong>欧式变换</strong>（Euclidean transformation）或<strong>刚体变换</strong>（rigid transformation）</p>
+<p><strong>放缩</strong>（scaling）可进一步分为uniform scaling和non-uniform scaling，前者每个坐标轴放缩系数相同（各向同性），后者不同；如果放缩系数为负，则会叠加上<strong>反射</strong>（reflection）——reflection可以看成是特殊的scaling</p>
+<p><strong>刚体变换</strong>+uniform scaling 称之为，<strong>相似变换</strong>（similarity transformation），即平移+旋转+各向同性的放缩</p>
+<p><strong>剪切变换</strong>（shear mapping）将所有点沿某一指定方向成比例地平移，语言描述不如上面图示直观。各种变换间的关系如下面的venn图所示</p>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cvenn.png"></p>
+<h3 id="变换矩阵形式"><a href="#变换矩阵形式" class="headerlink" title="变换矩阵形式"></a>变换矩阵形式</h3><p>没有平移或者平移量为0的所有仿射变换可以用如下变换矩阵描述：</p>
+<p>$\left[ \begin{array}{l}{x’} \\ {y’}\end{array}\right]&#x3D;\left[ \begin{array}{ll}{a} &amp; {b} \\ {c} &amp; {d}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
+<p>不同变换对应的a,b,c,d约束不同，排除了平移变换的所有仿射变换为<strong>线性变换</strong>（linear transformation），其涵盖的变换如上面的venn图所示，其特点是<strong>原点位置不变，多次线性变换的结果仍是线性变换</strong>。</p>
+<p>为了涵盖平移，引入齐次坐标，在原有2维坐标的基础上，增广1个维度，如下所示：</p>
+<p>$\left[ \begin{array}{l}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right] &#x3D;\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f} \end{array}\right] \left[ \begin{array}{l}{x} \\ {y} \\ {1}\end{array}\right]$</p>
+<p>所以，仿射变换的变换矩阵统一用 $\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f}\end{array}\right]$ 来描述，不同基础变换的$a,b,c,d,e,f$约束不同，因此，放射变换总共有6个自由度。如下所示：</p>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cexplanation.png"></p>
+<p>此外，旋转和平移相乘得到刚体变换的变换矩阵，如下，有3个自由度$(\theta, t_x, t_y)$，这里旋转方向为逆时针方向，因此与上图中的正负号不同，</p>
+<p>$\left[ \begin{array}{ccc}{\cos (\theta)} &amp; {-\sin (\theta)} &amp; {t_{x}} \\ {\sin (\theta)} &amp; {\cos (\theta)} &amp; {t_{y}}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y} \\ {1}\end{array}\right]&#x3D;\left[ \begin{array}{c}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right]$</p>
+<p>再乘上uniform scaling得到相似变换，有4个自由度（$s, \theta, t_x, t_y$），如下：</p>
+<p>$\left[ \begin{array}{ccc}{s\cos (\theta)} &amp; {-s\sin (\theta)} &amp; {t_{x}} \\ {s\sin (\theta)} &amp; {s\cos (\theta)} &amp; {t_{y}}\end{array}\right] \left[ \begin{array}{l}{x} \ {y} \\ {1}\end{array}\right]&#x3D;\left[ \begin{array}{c}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right]$</p>
+<h3 id="变换矩阵的理解与记忆"><a href="#变换矩阵的理解与记忆" class="headerlink" title="变换矩阵的理解与记忆"></a>变换矩阵的理解与记忆</h3><p><img src="/%5Cimages%5Cothers%5Ctransform%5Ccoord.png"></p>
+<p>坐标系由坐标<strong>原点</strong>和<strong>基向量</strong>决定，坐标<strong>原点</strong>和<strong>基向量</strong>确定了，坐标系也就确定了。</p>
+<p>对于坐标系中的位置$(x,y)$，其相对坐标原点在$[1,0]$方向上的投影为$x$，在$[0,1]$方向上的投影为$y$这里投影的意思是过$(x,y)$做坐标轴的平行线与坐标轴的交点到原点的距离，即$(x,y)$实际为：</p>
+<p>$\left[ \begin{array}{l}{x} \\ {y}\end{array}\right] &#x3D; x\left[ \begin{array}{l}{1} \\ {0}\end{array}\right] + y\left[ \begin{array}{l}{0} \\ {1}\end{array}\right]  &#x3D; \left[ \begin{array}{ll}{1} &amp; {0} \\ {0} &amp; {1}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
+<p>当坐标系变化，坐标系中的点也跟着变化，但点相对新坐标系（$x′−y′坐标系$）的位置不变仍为$(x,y)$，以旋转变换为例，新坐标轴的基向量则变为$[cos(θ),sin(θ)]$和$[−sin(θ),cos(θ)]$，所以点变化到新位置为：</p>
+<p>$\left[ \begin{array}{l}{x’} \\ {y’}\end{array}\right] &#x3D; x\left[ \begin{array}{l}{\cos (\theta)} \\ { \sin (\theta)}\end{array}\right] + y\left[ \begin{array}{r}{- \sin (\theta)} \\ { \cos (\theta)}\end{array}\right]  &#x3D; \left[ \begin{array}{lr}{\cos (\theta)} &amp; {-\sin (\theta)} \\ {\sin (\theta)} &amp; {\cos (\theta)}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
+<p>所以，我们可以得出以下结论：</p>
+<ul>
+<li><p>所有变换矩阵只需关注一点：坐标系的变化，即<strong>基向量和原点的变化</strong>， 在仿射变换矩阵$\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f} \\ 0 &amp; {0} &amp; {1}\end{array}\right]$中， $\left[ \begin{array}{l}{a} \\ {d}\end{array}\right]$和$\left[ \begin{array}{l}{b} \\ {e}\end{array}\right]$为新的基向量，$\left[ \begin{array}{l}{c} \\ {f}\end{array}\right]$为新的坐标原点，先变化基向量，再变化坐标原点。</p>
+</li>
+<li><p>坐标系变化到哪里，坐标系中的所有点（这里表示的是相对点）也跟着做同样的变化。</p>
+</li>
+</ul>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cconclusion.png"></p>
+<h3 id="变换矩阵的参数估计"><a href="#变换矩阵的参数估计" class="headerlink" title="变换矩阵的参数估计"></a>变换矩阵的参数估计</h3><h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
+<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2004/10/tr-2004-92.pdf">Image Alignment and Stitching: A Tutorial</a></li>
+<li><a href="https://wiki2.org/en/Affine_transformation">wiki: Affine transformation</a></li>
+<li><a href="https://www.ics.uci.edu/~majumder/VC/new-lectures/geom.pdf">Geometric Transformation</a></li>
+<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-837-computer-graphics-fall-2012/lecture-notes/MIT6_837F12_Lec03.pdf">Coordinates and Transformations</a></li>
+<li><a href="http://www.cs.tau.ac.il/~dcor/Graphics/cg-slides/trans3d.pdf">Transformations</a></li>
+<li><a href="https://courses.cs.washington.edu/courses/csep576/11sp/pdf/Transformations.pdf">Geometric Transformations</a></li>
+<li><a href="https://www.cnblogs.com/shine-lee/p/www.cs.cornell.edu/courses/cs664/2008sp/handouts/cs664-5-image-geom.pdf">Image Geometry</a></li>
+<li><a href="https://www.cnblogs.com/shine-lee/p/10950963.html">仿射变换及其变换矩阵的理解</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/06/a18afe7a/" rel="prev" title="<论文阅读>(九)Deep Marching Cubes Learning Explicit Surface Representations">
+      <i class="fa fa-chevron-left"></i> <论文阅读>(九)Deep Marching Cubes Learning Explicit Surface Representations
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/05/febd937d/" rel="next" title="拉普拉斯矩阵与拉普拉斯算子的关系">
+      拉普拉斯矩阵与拉普拉斯算子的关系 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%EF%BC%9A%E5%B9%B3%E7%A7%BB%E3%80%81%E6%97%8B%E8%BD%AC%E3%80%81%E6%94%BE%E7%BC%A9%E3%80%81%E5%89%AA%E5%88%87%E3%80%81%E5%8F%8D%E5%B0%84"><span class="nav-number">1.</span> <span class="nav-text">仿射变换：平移、旋转、放缩、剪切、反射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">变换矩阵形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E7%9A%84%E7%90%86%E8%A7%A3%E4%B8%8E%E8%AE%B0%E5%BF%86"><span class="nav-number">3.</span> <span class="nav-text">变换矩阵的理解与记忆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%B0%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">变换矩阵的参数估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

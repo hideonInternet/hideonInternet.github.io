@@ -1,23 +1,522 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文总结了欧式空间中的旋转表征方式：轴角式(Axis and angle), 欧拉角（Euler angles), 四元数（Quaterions), 旋转矩阵（rotation matrix)之间的联系。本文所用坐标系均为右手坐标系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="欧式空间的旋转表示(一)">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/09/28/4767f891/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="本文总结了欧式空间中的旋转表征方式：轴角式(Axis and angle), 欧拉角（Euler angles), 四元数（Quaterions), 旋转矩阵（rotation matrix)之间的联系。本文所用坐标系均为右手坐标系">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Caxis_angle.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Cgimbal_lock.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Cquat_mul.jpg">
+<meta property="article:published_time" content="2019-09-28T07:36:22.000Z">
+<meta property="article:modified_time" content="2020-02-17T03:16:52.000Z">
+<meta property="article:author" content="diver">
+<meta property="article:tag" content="旋转矩阵">
+<meta property="article:tag" content="欧拉角">
+<meta property="article:tag" content="四元数">
+<meta property="article:tag" content="轴角">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Crotation%5Caxis_angle.jpg">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2019/09/28/4767f891/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>欧式空间的旋转表示(一) | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/09/28/4767f891/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          欧式空间的旋转表示(一)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-28 15:36:22" itemprop="dateCreated datePublished" datetime="2019-09-28T15:36:22+08:00">2019-09-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-17 11:16:52" itemprop="dateModified" datetime="2020-02-17T11:16:52+08:00">2020-02-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%89%E7%BB%B4%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">三维基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%89%E7%BB%B4%E5%9F%BA%E7%A1%80/%E6%97%8B%E8%BD%AC%E8%A1%A8%E5%BE%81/" itemprop="url" rel="index"><span itemprop="name">旋转表征</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description">本文总结了欧式空间中的旋转表征方式：轴角式(Axis and angle), 欧拉角（Euler angles), 四元数（Quaterions), 旋转矩阵（rotation matrix)之间的联系。本文所用坐标系均为右手坐标系</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念##"></a>基本概念##</h2><h3 id="刚体变换"><a href="#刚体变换" class="headerlink" title="刚体变换###"></a>刚体变换###</h3><p>刚体变换也被称为欧氏变换，它在变化当中保持了向量的长度和相互之间的夹角大小，相当于我们把一个刚体原封不同的进行了移动或旋转，不改变它自身的样子。</p>
+<h3 id="点与向量的关系"><a href="#点与向量的关系" class="headerlink" title="点与向量的关系###"></a>点与向量的关系###</h3><p>点和向量两者并不是等价的关系。向量$\overrightarrow{a}$是一个空间上的抽象概念，只有当我们将其与某个坐标系联系起来的时候，它就具象化为了坐标点。<br>$\begin{align}\overrightarrow{a} &#x3D;<br>\begin{bmatrix} e_1&amp;e_2&amp;e_3 \end{bmatrix} \begin{bmatrix}a_1\\a_2\\a_3\end{bmatrix}<br>&#x3D; a_1e_1 + a_2e_2 + a_3e_3 \end{align}$</p>
+<p>这里$e_i$为列向量，代表了空间当中坐标系的一组基。</p>
+<h3 id="内积和外积"><a href="#内积和外积" class="headerlink" title="内积和外积###"></a>内积和外积###</h3><ul>
+<li>内积</li>
+</ul>
+<p>$$\begin{align}a \cdot b &#x3D; a^Tb &#x3D; \sum_{i&#x3D;1}^{3}a_ib_i &#x3D; |a||b|\cos&lt;a,b&gt; \end{align}$$</p>
+<ul>
+<li>外积</li>
+</ul>
+<p>$\begin{align}a \times b &#x3D; \begin{bmatrix} i&amp;j&amp;k\\a_1&amp;a_2&amp;a_3\\b_1&amp;b_2&amp;b_3 \end{bmatrix} &#x3D; \begin{bmatrix} a_2b_3 - a_3b_2\\a_3b_1 - a_1b_3\\a_1b_2 - a_2b_1\end{bmatrix} &#x3D; \begin{bmatrix} 0&amp;-a_3&amp;a_2\\a_3&amp;0&amp;-a_1\\-a_2&amp;-a_1&amp;0 \end{bmatrix}b \triangleq a^ b \end{align}$</p>
+<p>这里将$\overrightarrow{a}^$记为将向量$\overrightarrow a$变为反对称。外积的大小为$|a||b|\sin&lt;a,b&gt;$,是两个向量张成的四边形的有向面积。</p>
+<h2 id="欧拉角和旋转向量"><a href="#欧拉角和旋转向量" class="headerlink" title="欧拉角和旋转向量"></a>欧拉角和旋转向量</h2><p>假设我们有一个经过原点的旋转轴$\overrightarrow{u} &#x3D; (x,y,z)^T$,我们希望将一个向量$\overrightarrow{v}$，以$\overrightarrow u$为旋转轴，旋转$\theta$度之后，变换到$\overrightarrow{v \prime }$</p>
+<p><img src="/%5Cimages%5Cothers%5Crotation%5Caxis_angle.jpg"></p>
+<p>这时，我们就可以用一个<strong>旋转向量$\overrightarrow u$和角度$\theta$来表示一次旋转</strong>。由于以这种方式表示旋转需要四个自由度(向量三个，角度一个)，而刻画一次选择只需要三个自由度（x,y,z)这就导致了冗余。所以，我们额外规定向量的模长为一，$|\overrightarrow u| &#x3D; \sqrt{x^2 + y^2 + z^2} &#x3D;1$。</p>
+<p>欧拉角其实与旋转向量十分类似，但是却更加符合人们思考旋转的方式。欧拉角使用三个分离的转角，把一个旋转分解为三次绕不同轴的旋转。分解方式可以是多种多样的，但通常是分解为X轴，Y轴，Z轴。</p>
+<ul>
+<li>绕物体Z轴旋转，得到偏航角<code>yaw</code></li>
+<li>绕<strong>旋转之后</strong>的Y轴旋转，得到俯仰角<code>pitch</code></li>
+<li>绕<strong>旋转之后</strong>的X轴旋转，得到滚转角<code>roll</code></li>
+</ul>
+<p>那么一个三维向量[90,-60,80]，就可以定义一次旋转了。但是使用欧拉角会出现万向锁（Gimbal Lock）的错误: 在俯仰角为$±90^°$的时候，第一次旋转与第三次旋转将会使用同一个轴，这使得系统丢失了一个自由度。</p>
+<p><img src="/%5Cimages%5Cothers%5Crotation%5Cgimbal_lock.jpg"></p>
+<h2 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵##"></a>旋转矩阵##</h2><p>在<code>基本概念</code>中提到，向量在刚体变化中的长度和相对夹角是不变的，利用这种不变性，我们可以得到：</p>
+<p>$\begin{align}\begin{bmatrix}e_1&amp;e_2&amp;e_3\end{bmatrix}\begin{bmatrix}x_1\\y_1\\z_1\end{bmatrix} &amp; &#x3D; \begin{bmatrix}e_1^{‘}&amp;e_2^{&#96;}&amp;e_3^{‘}\end{bmatrix}\begin{bmatrix}x_2\\y_2\\z_2\end{bmatrix}  \\<br>\begin{bmatrix}x_1\\y_1\\z_1\end{bmatrix}<br>&amp; &#x3D; \underbrace{\begin{bmatrix}e_1^Te_1^{‘}&amp;e_1^Te_2^{‘}&amp;e_1^Te_3^{‘} \\ e_2^Te_1^{‘}&amp;e_2^Te_2^{‘}&amp;e_2^Te_3^{‘} \\<br>e_3^Te_1^{‘}&amp;e_3^Te_2^{‘}&amp;e_3^Te_3^{‘}\end{bmatrix}}_{R} \begin{bmatrix}x_2\\y_2\\z_2\end{bmatrix}<br>\end{align} $</p>
+<p>我们将中间这个矩阵称为<code>旋转矩阵R</code>,它具有如下性质：<br>$\begin{align} SO(n) &#x3D; \lbrace R \in \mathbb R^{n \times n} | RR^T &#x3D; I, det(R) &#x3D; 1 \rbrace \end{align} $</p>
+<p>不管多少维的旋转矩阵，它都必须是正交矩阵，且满足公式6。同时满足$tr(R) &#x3D; 2\cos\theta + 1$,$\theta$为旋转的角度。而旋转矩阵的特征值为$\lbrace e^{i\theta},e^{-i\theta},1\rbrace$。 可以根据$R\overrightarrow{n} &#x3D; R$求解出旋转轴向量。</p>
+<h2 id="四元数"><a href="#四元数" class="headerlink" title="四元数##"></a>四元数##</h2><h3 id="复数基础"><a href="#复数基础" class="headerlink" title="复数基础"></a>复数基础</h3><p>如果有两个复数$z_1 &#x3D; a + bi,z_2 &#x3D; c +di$,由分配率我们可得</p>
+<p>$\begin{align}<br>z_1z_2 &amp;&#x3D; ac+adi+bci+bdi^2 \\<br>        &amp;&#x3D; ac-bd+(bc+ad)i \\<br>        &amp;&#x3D; \begin{bmatrix}a&amp;-b\\b&amp;a \end{bmatrix}\begin{bmatrix}c\\d \end{bmatrix}<br>\end{align}$</p>
+<p>我们可以将$\begin{bmatrix}a&amp;-b\\b&amp;a \end{bmatrix}$ 看成一个二维旋转矩阵，将复平面上的向量$(c,d)$变换到$(ac-bd,bc+ad)$上。具体来说：</p>
+<p>$\begin{align}<br>\begin{bmatrix}a&amp;-b\\b&amp;a \end{bmatrix} &amp;&#x3D; \sqrt{a^2 + b^2}\begin{bmatrix}\frac{a}{\sqrt{a^2 + b^2}}&amp;\frac{-b}{\sqrt{a^2 + b^2}}\\\frac{b}{\sqrt{a^2 + b^2}}&amp;\frac{a}{\sqrt{a^2 + b^2}} \end{bmatrix} \\<br>    &amp;&#x3D;\sqrt{a^2 + b^2} \begin{bmatrix}\cos(\theta)&amp;-\sin(\theta)\\\sin(\theta&amp;\cos(\theta) \end{bmatrix}<br>\end{align}$</p>
+<p>根据欧拉公式，我们可以进一步将二维旋转坐标写成极坐标的形式：</p>
+<p>$\begin{align}<br>\begin{bmatrix}\cos(\theta)&amp;-\sin(\theta)\\\sin(\theta&amp;\cos(\theta) \end{bmatrix}  &#x3D; \cos(\theta) + i\sin(\theta) &#x3D; e^{i\theta}<br>\end{align}$</p>
+<p><strong>注意这里的$\theta$是逆时针方向,同时多个二维旋转操作可以叠加，即若干个二维旋转矩阵相乘仍是一个旋转矩阵，而且与施加的次序无关。角度为多个旋转角之和</strong></p>
+<h3 id="四元数定义与操作"><a href="#四元数定义与操作" class="headerlink" title="四元数定义与操作###"></a>四元数定义与操作###</h3><p>所有四元数$q \in \mathbb H$都可以写成如下形式：<br>$\begin{align} q &#x3D; a + bi +cj +dk&amp;(a,b,c,d \in \mathbb R)\end{align}$</p>
+<p>其中：</p>
+<p>$\begin{align}i^2&#x3D;j^2&#x3D;k^2&#x3D;ijk&#x3D;-1\end{align}$</p>
+<p>通常可以简化表示为有序对形式：</p>
+<p>$\begin{align}q&#x3D;[s,\bf{v}]&amp;&amp;(\bf{v}&#x3D;\begin{bmatrix}x\\y\\z\end{bmatrix},s,x,y,z \in \mathbb R) \end{align}$</p>
+<p>如果一个四元数的$s&#x3D;&#x3D;0$,即$q_0&#x3D;[0,{\bf{v}}]$。那么我们就称$q_0$为纯四元数。两个纯四元数相乘:<br>$\begin{align}vu &#x3D; [\bf -v \cdot u,v \times u]\end{align}$</p>
+<p>四元数的加减法与复数保持一致，乘法可以总结为下表：</p>
+<p><img src="/%5Cimages%5Cothers%5Crotation%5Cquat_mul.jpg"></p>
+<p>与复数一致，四元数的乘法也能写成矩阵乘向量的形式：</p>
+<p>$\begin{align}q_1q_2 &amp;&#x3D; \begin{bmatrix}<br>a&amp;-b&amp;-c&amp;-d\\<br>b&amp;a&amp;d&amp;-c\\<br>c&amp;-d&amp;a&amp;b\\<br>d&amp;c&amp;-b&amp;a<br>\end{bmatrix}<br>\begin{bmatrix}<br>e\\f\\g\\h<br>\end{bmatrix}\\<br>&amp;&#x3D;(ae-(bf+cg+dh))+ \\<br>&amp;(be+af+ch-dg)i+ \\<br>&amp;(ce+ag+df-bh)j+ \\<br>&amp;(de+ah+bg-cf)k \\<br>&amp;&#x3D;[ae-{\bf{u}} \cdot {\bf{v}}, a {\bf{u}}+e {\bf{v}}+{\bf{v}} \times \bf{u}]<br>\end{align}<br>$</p>
+<p>其中：${\bf{v}} &#x3D; \begin{bmatrix}b\\c\\d\end{bmatrix},{\bf{u}} &#x3D; \begin{bmatrix}f\\g\\h\end{bmatrix}$</p>
+<p><strong>注意四元数并不满足交换律，即$q_1q_2 \neq q_2q_1$。这点与复数不一样。</strong></p>
+<h3 id="四元数的逆和共轭"><a href="#四元数的逆和共轭" class="headerlink" title="四元数的逆和共轭"></a>四元数的逆和共轭</h3><p>四元数共轭：$q^* &#x3D; (s,-{\bf{v}})$</p>
+<p>四元数的逆：$q^{-1} &#x3D; \frac{q^*}{||q||^2}$</p>
+<p>四元数的逆和共轭都满足交换律 : $q^*q &#x3D; qq^*&#x3D;||q||^2\quad;\quad q^{-1} &#x3D;q^{-1}q&#x3D;1$ </p>
+<p>单位四元数满足 : $q^{-1} &#x3D; \frac{q^*}{||q||^2} &#x3D; q^{*}$</p>
+<h3 id="四元数型3D旋转"><a href="#四元数型3D旋转" class="headerlink" title="四元数型3D旋转"></a>四元数型3D旋转</h3><p>任意向量$\bf v$沿着以单位向量定义的旋转轴$\bf u$旋转$\theta$度之后的$\bf v’$可以使用四元数乘法获得.用纯四元数$v &#x3D; [0,{\bf v}]$表示三维空间中一个点,$\quad q &#x3D; [\cos(\frac{1}{2}\theta),\sin(\frac{1}{2}\theta{\bf u})]$表示一次选择，那么：</p>
+<p>$\begin{align}v’ &#x3D; qvq^* &#x3D; qvq^{-1}\end{align}$</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料##"></a>参考资料##</h2><ol>
+<li><a href="http://www.baidu.com/s?wd=%E8%A7%86%E8%A7%89slam%E5%8D%81%E5%9B%9B%E8%AE%B2&rsv_spt=1&rsv_iqid=0xba8a1b9c000a4e61&issp=1&f=3&rsv_bp=1&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_dl=ts_0&rsv_sug3=24&rsv_sug1=3&rsv_sug7=101&rsv_t=dab2/GnTtkD786FniyQVwjpH8Cs9UrV9x4FkWg1sHBeH1ZAwrkxldkoUbepsePGrchbe&rsv_sug2=1&prefixsug=%25E8%25A7%2586%25E8%25A7%2589SLAM&rsp=0&inputT=10337&rsv_sug4=11386">视觉SLAM十四讲</a></li>
+<li><a href="http://www.euclideanspace.com/">euclideanspace</a></li>
+<li><a href="https://github.com/Krasjet/quaternion">quaternion</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/" rel="tag"># 旋转矩阵</a>
+              <a href="/tags/%E6%AC%A7%E6%8B%89%E8%A7%92/" rel="tag"># 欧拉角</a>
+              <a href="/tags/%E5%9B%9B%E5%85%83%E6%95%B0/" rel="tag"># 四元数</a>
+              <a href="/tags/%E8%BD%B4%E8%A7%92/" rel="tag"># 轴角</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/09/dc749c90/" rel="prev" title="<论文阅读>(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction">
+      <i class="fa fa-chevron-left"></i> <论文阅读>(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/06/d3c15ac3/" rel="next" title="薄板样条插值">
+      薄板样条插值 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念##</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9A%E4%BD%93%E5%8F%98%E6%8D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">刚体变换###</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E4%B8%8E%E5%90%91%E9%87%8F%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.2.</span> <span class="nav-text">点与向量的关系###</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E7%A7%AF%E5%92%8C%E5%A4%96%E7%A7%AF"><span class="nav-number">1.3.</span> <span class="nav-text">内积和外积###</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E8%A7%92%E5%92%8C%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">欧拉角和旋转向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="nav-number">3.</span> <span class="nav-text">旋转矩阵##</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">四元数##</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%95%B0%E5%9F%BA%E7%A1%80"><span class="nav-number">4.1.</span> <span class="nav-text">复数基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%93%8D%E4%BD%9C"><span class="nav-number">4.2.</span> <span class="nav-text">四元数定义与操作###</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E7%9A%84%E9%80%86%E5%92%8C%E5%85%B1%E8%BD%AD"><span class="nav-number">4.3.</span> <span class="nav-text">四元数的逆和共轭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E5%9E%8B3D%E6%97%8B%E8%BD%AC"><span class="nav-number">4.4.</span> <span class="nav-text">四元数型3D旋转</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料##</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

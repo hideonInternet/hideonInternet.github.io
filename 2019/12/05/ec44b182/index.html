@@ -1,23 +1,536 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hideoninternet.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="冒泡排序，插入排序，归并排序，快速排序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见排序算法">
+<meta property="og:url" content="https://hideoninternet.github.io/2019/12/05/ec44b182/index.html">
+<meta property="og:site_name" content="Diver">
+<meta property="og:description" content="冒泡排序，插入排序，归并排序，快速排序">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/sort/conclusion.jpg">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/sort/bucketSort_1.png">
+<meta property="article:published_time" content="2019-12-05T14:28:25.000Z">
+<meta property="article:modified_time" content="2020-04-10T12:05:48.000Z">
+<meta property="article:author" content="diver">
+<meta property="article:tag" content="冒泡">
+<meta property="article:tag" content="插入">
+<meta property="article:tag" content="归并">
+<meta property="article:tag" content="快速">
+<meta property="article:tag" content="桶排序">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/others/sort/conclusion.jpg">
+
+<link rel="canonical" href="https://hideoninternet.github.io/2019/12/05/ec44b182/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>常见排序算法 | Diver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Diver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A coder in kindergarten</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hideoninternet.github.io/2019/12/05/ec44b182/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="diver">
+      <meta itemprop="description" content="Dive into deeper and deeper">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Diver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          常见排序算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-05 22:28:25" itemprop="dateCreated datePublished" datetime="2019-12-05T22:28:25+08:00">2019-12-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-10 20:05:48" itemprop="dateModified" datetime="2020-04-10T20:05:48+08:00">2020-04-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">排序算法</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+            <div class="post-description">冒泡排序，插入排序，归并排序，快速排序</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2019年12月18日更新：加入归并排序的两种链表版本：top-down, bottom-up。</p>
+<p>2019年12月28日更新：加入桶排序算法</p>
+<p>2020年3月20日更新：加入堆排序，计数排序，希尔排序</p>
+<p><img src="/images/others/sort/conclusion.jpg"></p>
+<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//冒泡排序: 每次迭代最大的在最上方</span><br><span class="line"> int* sort(int* nums, int numsSize)&#123;</span><br><span class="line">     int tmp = 0;</span><br><span class="line">     // 注意这里的起始值</span><br><span class="line">     for(int i =numsSize-1;i&gt;0;i--)&#123; //最大的值所放置的位置</span><br><span class="line">         for(int j = 0;j&lt;i;j++)&#123; // 比较的位置</span><br><span class="line">             if(nums[j] &gt; nums[j+1])&#123;</span><br><span class="line">                 tmp = nums[j];</span><br><span class="line">                 nums[j] = nums[j+1];</span><br><span class="line">                 nums[j+1] = tmp;</span><br><span class="line">             &#125;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     return nums;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：$O(n^2)$  空间复杂度：$O(1)$ 稳定</p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 选择排序 找到最大或最小的值，放在最边的位置</span><br><span class="line"> int* sort(int* nums, int numsSize)&#123;</span><br><span class="line">     int minInd = 0;</span><br><span class="line">     int tmp = 0;</span><br><span class="line">     for(int i=0;i&lt;numsSize-1;i++)&#123; //最小值的位置 和 比较的位置</span><br><span class="line">         minInd = i;</span><br><span class="line">         for(int j =i+1;j&lt;numsSize;j++)&#123;</span><br><span class="line">             if(nums[minInd] &gt; nums[j])&#123;</span><br><span class="line">                 minInd = j;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         // 交换</span><br><span class="line">         tmp = nums[i];</span><br><span class="line">         nums[i] = nums[minInd];</span><br><span class="line">         nums[minInd] = tmp;</span><br><span class="line">     &#125;</span><br><span class="line">     return nums;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度：$O(n^2)$  空间复杂度：$O(1)$ 不稳定</p>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">// 插入排序 每次迭代，都与以排序好的数组进行比较，在排序好的数组中找到合适的位置。 </span><br><span class="line"> int* sort(int* nums, int numsSize)&#123;</span><br><span class="line">     for(int i=0;i&lt;numsSize;i++)&#123;</span><br><span class="line">         int tmp = nums[i];</span><br><span class="line">         int j =i;</span><br><span class="line">        </span><br><span class="line">         while(j&gt;0 &amp;&amp; tmp &lt; nums[j-1])&#123;</span><br><span class="line">             nums[j] = nums[j-1];</span><br><span class="line">             j=j-1;</span><br><span class="line">         &#125;</span><br><span class="line">         nums[j] = tmp;</span><br><span class="line">     &#125;</span><br><span class="line">     return nums;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>时间复杂度：$O(n^2)$  空间复杂度：$O(1)$  稳定</p>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><ul>
+<li>数组Top-Down版本</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// 归并排序 分治算法</span><br><span class="line">void merge(int* nums, int start, int mid, int end)&#123;</span><br><span class="line">    // for(int i=start;i&lt;=end;i++)&#123;</span><br><span class="line">        // printf(&quot;%d  &quot;,nums[i]);</span><br><span class="line">    // &#125;</span><br><span class="line">    // printf(&quot;\n&quot;);</span><br><span class="line">    int p =start, q =mid+1;</span><br><span class="line">    int* newNums = (int*)malloc(sizeof(int) * (end-start+1));</span><br><span class="line">    int k =0;</span><br><span class="line">   </span><br><span class="line">    for(int i = start;i&lt;=end;i++)&#123;</span><br><span class="line">        // 检查第一部分是否完毕</span><br><span class="line">        if(p &gt; mid)</span><br><span class="line">            newNums[k++] = nums[q++];</span><br><span class="line">        else if(q &gt; end)</span><br><span class="line">            newNums[k++] = nums[p++];</span><br><span class="line">        else if(nums[p] &lt; nums[q])</span><br><span class="line">            newNums[k++] = nums[p++];</span><br><span class="line">        else</span><br><span class="line">            newNums[k++] = nums[q++];</span><br><span class="line">    &#125;</span><br><span class="line">	   </span><br><span class="line">    for(int p=0;p&lt;k;p++)&#123;</span><br><span class="line">        nums[start++] = newNums[p];</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void divide(int* nums, int start, int end)&#123;</span><br><span class="line">    if(start &lt; end)&#123;</span><br><span class="line">        int mid = (start + end) / 2;</span><br><span class="line">        divide(nums,start,mid);</span><br><span class="line">        divide(nums, mid+1, end);</span><br><span class="line">       </span><br><span class="line">        merge(nums, start , mid ,end);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int* sort(int* nums, int numsSize)&#123;</span><br><span class="line">    divide(nums, 0, numsSize-1);</span><br><span class="line">    return nums;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>时间复杂度：$O(n\log_2{n})$  空间复杂度：$O(n+log_2{n})$  稳定</p>
+<ul>
+<li>链表Top-Down版本</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* sortList(ListNode* head) &#123;</span><br><span class="line">        if(!head || !head-&gt;next) return head;</span><br><span class="line">          /*</span><br><span class="line">            这里head-&gt;next是要给trick, 因为如果不加next的话,若子链长度为2,在</span><br><span class="line">            一次walk之后，fast指向nullptr,slow就指向最后一个元素，而下边有mid =slow-&gt;next = nullptr</span><br><span class="line">            所以就直接返回了，等于只有左半边链。而这时做半边脸仍然有两个元素，就会陷入循环，导致无法正常结束。</span><br><span class="line">            换句话说，如果不加next, 当子链长度为2时，就无法继续进行分治（分为左右两个长度为1的子链）,使得程序无法结束。</span><br><span class="line">            而又由于我们使用递归，使得栈不断有新数据写入，最后就栈满溢出。</span><br><span class="line">        */</span><br><span class="line">        ListNode* slow = head;</span><br><span class="line">        ListNode* fast = head-&gt;next;</span><br><span class="line">        // 当fast走到低时，slow正好在中间</span><br><span class="line">        while(fast &amp;&amp; fast-&gt;next)&#123;</span><br><span class="line">            fast = fast-&gt;next-&gt;next;</span><br><span class="line">            slow = slow-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        ListNode* mid = slow-&gt;next;</span><br><span class="line">        // 将左，右两个子链断开</span><br><span class="line">        slow-&gt;next = nullptr;</span><br><span class="line">        </span><br><span class="line">        return merge(sortList(head), sortList(mid));</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    // 两个子链排序，空间复杂度为常数</span><br><span class="line">    ListNode* merge(ListNode* l1, ListNode* l2)&#123;</span><br><span class="line">        ListNode dummy(0);</span><br><span class="line">        ListNode* tail = &amp;dummy;</span><br><span class="line">        while(l1 &amp;&amp; l2)&#123;</span><br><span class="line">            if(l1-&gt;val &gt; l2-&gt;val)</span><br><span class="line">                swap(l1,l2);</span><br><span class="line">            tail-&gt;next = l1;</span><br><span class="line">            l1 = l1-&gt;next;            </span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        if(l1) tail-&gt;next = l1;</span><br><span class="line">        if(l2) tail-&gt;next = l2;</span><br><span class="line">        </span><br><span class="line">        return dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：$O(log_2{n})$ 空间复杂度$(log_2{n})$ 稳定</p>
+<ul>
+<li>链表Bottom-up版本</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* sortList(ListNode* head) &#123;</span><br><span class="line">        </span><br><span class="line">        if(!head || !head-&gt;next) return head;</span><br><span class="line">        //由于我们采用bottom-up,所以需要知道整个链表的长度，作为大致范围的限制，但要求不算严格</span><br><span class="line">        int len = 0;</span><br><span class="line">        ListNode* cur = head;</span><br><span class="line">        // 获取长度</span><br><span class="line">        while(cur = cur-&gt;next) ++len;</span><br><span class="line">        </span><br><span class="line">        ListNode dummy(0);</span><br><span class="line">        dummy.next = head;</span><br><span class="line">        </span><br><span class="line">        ListNode* l;</span><br><span class="line">        ListNode* r;</span><br><span class="line">        ListNode* tail;</span><br><span class="line">        </span><br><span class="line">        for(int n =1; n&lt;len; n&lt;&lt;=1)&#123;</span><br><span class="line">        	/*</span><br><span class="line">                cur不能等于head, 因为head只是一个存储值得指针名，并不是代表</span><br><span class="line">                它在每次排序之后，都是头结点，可能在一次排序过后，head指针所</span><br><span class="line">                指的那个元素，就被放置在了最尾处，所以不能每次都将起始位置初始化为head.</span><br><span class="line">                这也是为什么要维护一个dummy结点，使dummy结点每次都指向真正的头节点。</span><br><span class="line">            */</span><br><span class="line">            // cur = head;</span><br><span class="line">            cur = dummy.next;</span><br><span class="line">            tail = &amp;dummy;</span><br><span class="line">            while(cur)&#123;</span><br><span class="line">                l = cur;</span><br><span class="line">                r = split(l, n);</span><br><span class="line">                cur = split(r, n);</span><br><span class="line">                </span><br><span class="line">                auto merged = merge(l, r);</span><br><span class="line">                tail-&gt;next = merged.first;</span><br><span class="line">                tail = merged.second;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    // 前n个元素一组，剩下的元素一组，返回剩下元素的head</span><br><span class="line">    ListNode* split(ListNode* head, int n)&#123;</span><br><span class="line">    	// 这里需要注意的是子链长度n是包括了头结点的长度</span><br><span class="line">        while(--n &amp;&amp; head)</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">        </span><br><span class="line">        ListNode* rest = head ? head-&gt;next : nullptr;     </span><br><span class="line">        if(head) head-&gt;next = nullptr;</span><br><span class="line">        // 上面两行或换成下面易懂</span><br><span class="line">        // if(head)&#123;</span><br><span class="line">        //     rest = head-&gt;next;</span><br><span class="line">        //     head-&gt;next = nullptr;</span><br><span class="line">        // &#125;else&#123;</span><br><span class="line">        //     rest = nullptr;</span><br><span class="line">        // &#125;</span><br><span class="line">        return rest;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    pair&lt;ListNode*, ListNode*&gt; merge(ListNode* l1, ListNode* l2)&#123;</span><br><span class="line">        ListNode dummy(0);</span><br><span class="line">        ListNode* tail = &amp;dummy;</span><br><span class="line">        while( l1 &amp;&amp; l2)&#123;</span><br><span class="line">            if(l1-&gt;val &gt; l2-&gt;val) swap(l1,l2);</span><br><span class="line">            </span><br><span class="line">            tail-&gt;next = l1;</span><br><span class="line">            l1 = l1-&gt;next;</span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        tail-&gt;next = l1 ? l1 : l2;</span><br><span class="line">        while( tail-&gt;next) tail = tail-&gt;next;</span><br><span class="line">        return &#123;dummy.next, tail&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：$O(log_2{n})$ 空间复杂度：$O(1)$</p>
+<p>首先对于Top-Down版本来讲，数组版本由于每次需要新建一个数组来对左右两部分子数组进行排序，所以相较于链表版本来说要多$O(n)$的空间复杂度。而对于Top-Down的版本，无论是数组还是链表，都比Bottom-up版本多了递归操作，所以空间复杂度要多$O(log_2{n})$。</p>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序##"></a>快速排序##</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">int partition(int* nums, int start, int end) &#123;</span><br><span class="line">    int pivot = start;</span><br><span class="line">    int l = pivot + 1;</span><br><span class="line">    int r = end;</span><br><span class="line">    int tmp = 0;</span><br><span class="line">    // 等号是防止长度为2的子序列</span><br><span class="line">    while (l &lt;= r) &#123;</span><br><span class="line">        while (l &lt;= end &amp;&amp; nums[l] &lt;= nums[pivot]) &#123;</span><br><span class="line">            ++ l;</span><br><span class="line">        &#125;</span><br><span class="line">        while (r &gt;= start &amp;&amp; nums[r] &gt; nums[pivot]) &#123;</span><br><span class="line">            -- r;</span><br><span class="line">        &#125;</span><br><span class="line">        if (l &lt; r) &#123;</span><br><span class="line">            tmp = nums[l];</span><br><span class="line">            nums[l] = nums[r];</span><br><span class="line">            nums[r] = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    // 这里由于pivot是取到最*左边*一个，要保证交换后，pivot左侧必须全部小于pivot，右侧必须全部大于pivot，就必须</span><br><span class="line">    // 与右指针所指元素进行交换（因为这时候右指针所指元素（记为i）小于pivot,交换之后，i还是在pivot*左边*，这就符合条件。</span><br><span class="line">    // 假设与左指针进行交换，那么由于做指针所指元素大于pivot，交换之后，在pivot左边就有一个大于pivot的元素，不符合条件。</span><br><span class="line">    tmp = nums[pivot];</span><br><span class="line">    nums[pivot] = nums[r];</span><br><span class="line">    nums[r] = tmp;</span><br><span class="line">    pivot = r;</span><br><span class="line">    return pivot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void quick_sort(int* nums, int start, int end)&#123;</span><br><span class="line">    if(start &lt; end)&#123;</span><br><span class="line">        int piv_pos = partition(nums, start, end);</span><br><span class="line">        quick_sort(nums,start,piv_pos-1); // sorts the left side of pivot</span><br><span class="line">        quick_sort(nums, piv_pos+1,end);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int* sort(int* nums, int numsSize)&#123;</span><br><span class="line">    quick_sort(nums,0,numsSize-1);</span><br><span class="line">    return nums;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度：$O(n\log_2{n})$  空间复杂度：$O(1)$  不稳定</p>
+<h2 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序##"></a>桶排序##</h2><p>桶排序（Bucket sort）或所谓的箱排序，是一个排序算法，工作的原理是将数组分到有限数量的桶里。每个桶再个别排序（有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排序）。桶排序是鸽巢排序的一种归纳结果。当要被排序的数组内的数值是均匀分配的时候，桶排序使用线性时间$\Theta (n)$。但桶排序并不是比较排序，他不受到$O(n\log_2 n)$下限的影响。具体步骤如下：</p>
+<ul>
+<li>设置一个定量的数组当做空桶子</li>
+<li>寻访序列，并且把每一个元素一个一个放到对应的桶子中</li>
+<li>对每个不是空的桶子进行排序</li>
+<li>从不是空的桶子里把项目再放回原来的序列中。</li>
+</ul>
+<p>假设我们有一组长度为20的数据, 同时设定空桶子数量为5:</p>
+<blockquote>
+<p>[63,157,189,51,101,47,141,121,157,156,194,117,98,139,67,133,181,13,28,109] </p>
+</blockquote>
+<ul>
+<li>找到数组中的最大值194和最小值13，然后根据桶数为5，计算出每个桶中的数据范围为<code>(194-13+1)/5=36.4</code></li>
+<li>遍历原始数据，(以第一个数据63为例)先找到该数据对应的桶序列<code>(63 - 13) / 36.4) =1</code>，然后将该数据放入序列为1的桶中(从0开始算)</li>
+<li>当向同一个序列的桶中第二次插入数据时，判断桶中已存在的数字与新插入的数字的大小，按从左到右，从小打大的顺序插入。如第一个桶已经有了63，再插入51，67后，桶中的排序为(51,63,67) 一般通过链表来存放桶中数据。</li>
+<li>全部数据装桶完毕后，按序列，从小到大合并所有非空的桶(如0,1,2,3,4桶)</li>
+<li>全部数据装桶完毕后，按序列，从小到大合并所有非空的桶(如0,1,2,3,4桶)</li>
+</ul>
+<p><img src="/images/others/sort/bucketSort_1.png"></p>
+<p>桶排序的时间复杂度主要受两个因素影响。</p>
+<ul>
+<li>循环计算每个元素是属于哪个桶：O(n)</li>
+<li>对每个桶内的元素进行排序，受不同排序算法的影响，最好情况为：$\sum \limits^{N} \limits_{i&#x3D;1}O(n_i\log_2(n_i))$, $n_i$为每个桶内的元素数量。</li>
+</ul>
+<p>可以看出，若每个桶内的数量均为1的话，则时间复杂度为$O(n)$</p>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line">#include&lt;string&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">void show(const vector&lt;int&gt;&amp; nums,const string&amp; describe)&#123;</span><br><span class="line">    cout &lt;&lt; describe &lt;&lt; &quot;:  &quot;;</span><br><span class="line">    for(int i : nums) cout &lt;&lt; i &lt;&lt; &quot; &quot;;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 自底向上建堆</span><br><span class="line">void AdjustBottom2Up(vector&lt;int&gt;&amp; nums)&#123;</span><br><span class="line">    int len = nums.size();</span><br><span class="line"></span><br><span class="line">    for(int i=len-1; i&gt;0; i = (i-1)/2)&#123;</span><br><span class="line">        if(nums[i] &gt; nums[(i-1)/2])&#123;</span><br><span class="line">            swap(nums[i], nums[(i-1)/2]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">    自顶向下调整时，注意要判断有单个结点或双个结点的情况</span><br><span class="line">*/</span><br><span class="line">void AdjustTop2Down(vector&lt;int&gt;&amp; nums, int i)&#123;</span><br><span class="line">    int len = nums.size()-1;</span><br><span class="line">    // show(nums, &quot;Adjust&quot;);</span><br><span class="line">    while(i&lt;=(len-1)/2)&#123;</span><br><span class="line">        int nextI = 2*i+1;</span><br><span class="line">        if(2*i+2 &lt;= len)&#123;</span><br><span class="line">            nextI = nums[2*i+1] &gt; nums[2*i+2] ? nextI : (2*i+2);</span><br><span class="line">        &#125;</span><br><span class="line">        if(nums[nextI] &gt; nums[i])&#123;</span><br><span class="line">            swap(nums[nextI], nums[i]);</span><br><span class="line">            i = nextI;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        // show(nums, &quot;Adjust&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void Insert(const int i, vector&lt;int&gt;&amp; nums)&#123;</span><br><span class="line">    nums.push_back(i);</span><br><span class="line">    show(nums, &quot;Before Insert&quot;);</span><br><span class="line">    AdjustBottom2Up(nums);</span><br><span class="line">    show(nums, &quot;After Insert&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void Pop(vector&lt;int&gt;&amp; nums)&#123;</span><br><span class="line">    int len = nums.size();</span><br><span class="line">    // show(nums, &quot;Debug&quot;);</span><br><span class="line">    swap(nums[0], nums.back());</span><br><span class="line">    // show(nums, &quot;Debug&quot;);</span><br><span class="line">    nums.pop_back();</span><br><span class="line">    // show(nums, &quot;Debug&quot;);</span><br><span class="line">    AdjustTop2Down(nums, 0);</span><br><span class="line">    // show(nums, &quot;Debug&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vector&lt;int&gt; BuildMaxHeapOut(const vector&lt;int&gt;&amp; nums)&#123;</span><br><span class="line">    int len = nums.size();</span><br><span class="line">    vector&lt;int&gt; res;</span><br><span class="line">    for(int i=0; i&lt;len; i++)&#123;</span><br><span class="line">        Insert(nums[i], res);</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void BuildMaxHeapIn(vector&lt;int&gt;&amp; nums)&#123;</span><br><span class="line">    int len = nums.size();</span><br><span class="line"></span><br><span class="line">    for(int i=(len-1)/2; i&gt;=0; i--)&#123;</span><br><span class="line">        AdjustTop2Down(nums, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    vector&lt;int&gt; nums&#123;5,6,3,1,7,5,7,4,12,13,11,20,5,32,18,22&#125;;</span><br><span class="line"></span><br><span class="line">    // Out-Place 操作</span><br><span class="line">    show(nums,&quot;Before BuildMaxHeap&quot;);</span><br><span class="line">    auto res = BuildMaxHeapOut(nums);</span><br><span class="line">    show(res, &quot;After BuildMaxHeap&quot;);</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; &quot;===================Insert==================\n&quot; &lt;&lt; endl;</span><br><span class="line">    show(res, &quot;Before Insert&quot;);</span><br><span class="line">    Insert(15, res);</span><br><span class="line">    show(res, &quot;After Insert&quot;);</span><br><span class="line"></span><br><span class="line">    show(res, &quot;Before Insert&quot;);</span><br><span class="line">    Insert(19, res);</span><br><span class="line">    show(res, &quot;After Insert&quot;);</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;===================Pop======================\n&quot; &lt;&lt; endl;</span><br><span class="line">    for(int i=0; i&lt;10; i++)&#123;</span><br><span class="line">        show(res, &quot;Before Pop&quot;);</span><br><span class="line">        Pop(res);</span><br><span class="line">        show(res, &quot;After Pop&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;In-Place Sort&quot; &lt;&lt; endl;</span><br><span class="line">    // In-Place 操作</span><br><span class="line">    show(nums,&quot;Before BuildMaxHeap&quot;);</span><br><span class="line">    BuildMaxHeapIn(nums);</span><br><span class="line">    show(nums, &quot;After BuildMaxHeap&quot;); // 32 22 20 12 13 5 18 4 6 7 11 5 5 7 3 1</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;===================Insert==================\n&quot; &lt;&lt; endl;</span><br><span class="line">    show(nums, &quot;Before Insert&quot;);</span><br><span class="line">    Insert(15, nums);</span><br><span class="line">    show(nums, &quot;After Insert&quot;);</span><br><span class="line"></span><br><span class="line">    show(nums, &quot;Before Insert&quot;);</span><br><span class="line">    Insert(19, nums);</span><br><span class="line">    show(nums, &quot;After Insert&quot;);</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;===================Pop======================\n&quot; &lt;&lt; endl;</span><br><span class="line">    for(int i=0; i&lt;10; i++)&#123;</span><br><span class="line">        show(nums, &quot;Before Pop&quot;);</span><br><span class="line">        Pop(nums);</span><br><span class="line">        show(nums, &quot;After Pop&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>堆可以看作是一个完全二叉数，为了方便比较，用数组方式存储。</p>
+<p>堆的构建有两种，一个是<code>In-Place</code>的操作，就是不占用额外的空间；另外一种是将建堆看成是循环插入，是一中<code>Out-Place</code>的插入方式，每次插入最后一个位置。第一种方法需要从第$(n-1)&#x2F;2$个元素开始，遍历到第$0$个元素。在每次遍历的时候，都需要从当前位置，往下（TOP-Down）判断当前子堆是否合法。第二种方法就是往上（Bottom-Up）的方法，将新插入元素放在堆的最后一位上，然后跟父结点进行判断。</p>
+<p>堆删除时，需要将第一个元素与最后一个元素进行交换，然后弹出最后一个元素。接着从第一个元素开始，自顶向下调整堆（这与第一种建堆的方式一致）。</p>
+<h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"> </span><br><span class="line">int main() &#123;</span><br><span class="line">    vector&lt;int&gt; nums&#123;1,6,4,2,7,8,4,2,6,10&#125;;</span><br><span class="line"></span><br><span class="line">    int maxE=nums[0], minE=nums[0];</span><br><span class="line">    for(int i=0; i&lt;nums.size(); i++)&#123;</span><br><span class="line">        maxE = max(nums[i], maxE);</span><br><span class="line">        minE = min(nums[i], minE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    vector&lt;int&gt; cnt(maxE-minE+1,0);</span><br><span class="line"></span><br><span class="line">    for(int i : nums)&#123;</span><br><span class="line">        cnt[i-minE]++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for(int i=1; i&lt;cnt.size(); i++)&#123;</span><br><span class="line">        cnt[i] += cnt[i-1];</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;int&gt; res(nums.size(), 0);</span><br><span class="line">    for(int i=nums.size()-1; i&gt;=0; i--)&#123;</span><br><span class="line">        res[--cnt[nums[i]-minE]] = nums[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for(int i : res) cout &lt;&lt; i &lt;&lt; &quot; &quot;;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>思想：如果比元素x小的元素个数有n个，则元素x排序后位置为n+1。</p>
+<h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line">#include&lt;string&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void show(const vector&lt;int&gt;&amp; nums,const string&amp; describe)&#123;</span><br><span class="line">    cout &lt;&lt; describe &lt;&lt; &quot;:  &quot;;</span><br><span class="line">    for(int i : nums) cout &lt;&lt; i &lt;&lt; &quot; &quot;;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void shellsort1(vector&lt;int&gt;&amp; a, int n)</span><br><span class="line">&#123;</span><br><span class="line">	int i, j, gap;</span><br><span class="line"> </span><br><span class="line">	for (gap = n / 2; gap &gt; 0; gap /= 2) //步长</span><br><span class="line">		for (i = 0; i &lt; gap; i++)        //直接插入排序</span><br><span class="line">		&#123;</span><br><span class="line">			for (j = i + gap; j &lt; n; j += gap) </span><br><span class="line">				if (a[j] &lt; a[j - gap])</span><br><span class="line">				&#123;</span><br><span class="line">					int temp = a[j];</span><br><span class="line">					int k = j - gap;</span><br><span class="line">					while (k &gt;= 0 &amp;&amp; a[k] &gt; temp)</span><br><span class="line">					&#123;</span><br><span class="line">						a[k + gap] = a[k];</span><br><span class="line">						k -= gap;</span><br><span class="line">					&#125;</span><br><span class="line">					a[k + gap] = temp;</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    vector&lt;int&gt; nums&#123;3,5,2,7,6,5,8,9,11,2,31,21,15,17,20&#125;;</span><br><span class="line">    int n = nums.size();</span><br><span class="line"></span><br><span class="line">    shellsort1(nums, n);</span><br><span class="line">    show(nums, &quot;After Shell Sort: &quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>希尔排序的实质就是<strong>分组插入排序</strong>，该方法又称缩小增量排序。</p>
+<p>该方法的基本思想是：先将整个待排元素序列分割成若干个子序列（由相隔某个“增量”的元素组成的）分别进行直接插入排序，然后依次缩减增量再进行排序，待整个序列中的元素基本有序（增量足够小）时，再对全体元素进行一次直接插入排序。因为直接插入排序在元素基本有序的情况下（接近最好情况），效率是很高的，因此希尔排序在时间效率上比前两种方法有较大提高。</p>
+<h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">int maxbit(int data[], int n) //辅助函数，求数据的最大位数</span><br><span class="line">&#123;</span><br><span class="line">    int maxData = data[0];		///&lt; 最大数</span><br><span class="line">    /// 先求出最大数，再求其位数，这样有原先依次每个数判断其位数，稍微优化点。</span><br><span class="line">    for (int i = 1; i &lt; n; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        if (maxData &lt; data[i])</span><br><span class="line">            maxData = data[i];</span><br><span class="line">    &#125;</span><br><span class="line">    int d = 1;</span><br><span class="line">    int p = 10;</span><br><span class="line">    while (maxData &gt;= p)</span><br><span class="line">    &#123;</span><br><span class="line">        //p *= 10; // Maybe overflow</span><br><span class="line">        maxData /= 10;</span><br><span class="line">        ++d;</span><br><span class="line">    &#125;</span><br><span class="line">    return d;</span><br><span class="line">&#125;</span><br><span class="line">void radixsort(int data[], int n) //基数排序</span><br><span class="line">&#123;</span><br><span class="line">    int d = maxbit(data, n);</span><br><span class="line">    int *tmp = new int[n];</span><br><span class="line">    int *count = new int[10]; //计数器</span><br><span class="line">    int i, j, k;</span><br><span class="line">    int radix = 1;</span><br><span class="line">    for(i = 1; i &lt;= d; i++) //进行d次排序</span><br><span class="line">    &#123;</span><br><span class="line">        for(j = 0; j &lt; 10; j++)</span><br><span class="line">            count[j] = 0; //每次分配前清空计数器</span><br><span class="line">        for(j = 0; j &lt; n; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            k = (data[j] / radix) % 10; //统计每个桶中的记录数</span><br><span class="line">            count[k]++;</span><br><span class="line">        &#125;</span><br><span class="line">        for(j = 1; j &lt; 10; j++)</span><br><span class="line">            count[j] = count[j - 1] + count[j]; //将tmp中的位置依次分配给每个桶</span><br><span class="line">        for(j = n - 1; j &gt;= 0; j--) //将所有桶中记录依次收集到tmp中</span><br><span class="line">        &#123;</span><br><span class="line">            k = (data[j] / radix) % 10;</span><br><span class="line">            tmp[count[k] - 1] = data[j];</span><br><span class="line">            count[k]--;</span><br><span class="line">        &#125;</span><br><span class="line">        for(j = 0; j &lt; n; j++) //将临时数组的内容复制到data中</span><br><span class="line">            data[j] = tmp[j];</span><br><span class="line">        radix = radix * 10;</span><br><span class="line">    &#125;</span><br><span class="line">    delete []tmp;</span><br><span class="line">    delete []count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>基数排序时间复杂度为$O(nk)$,其中$n$为元素个数，$k$为元素的属性。如果是数字的话，就是数字的位数。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%86%92%E6%B3%A1/" rel="tag"># 冒泡</a>
+              <a href="/tags/%E6%8F%92%E5%85%A5/" rel="tag"># 插入</a>
+              <a href="/tags/%E5%BD%92%E5%B9%B6/" rel="tag"># 归并</a>
+              <a href="/tags/%E5%BF%AB%E9%80%9F/" rel="tag"># 快速</a>
+              <a href="/tags/%E6%A1%B6%E6%8E%92%E5%BA%8F/" rel="tag"># 桶排序</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/06/d3c15ac3/" rel="prev" title="薄板样条插值">
+      <i class="fa fa-chevron-left"></i> 薄板样条插值
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/21/b040bbb5/" rel="next" title="<论文阅读>(八)Occupancy Networks Learning 3D Reconstruction in Function Sapce">
+      <论文阅读>(八)Occupancy Networks Learning 3D Reconstruction in Function Sapce <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">冒泡排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">选择排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">插入排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">归并排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">快速排序##</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">6.</span> <span class="nav-text">桶排序##</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-number">6.1.</span> <span class="nav-text">堆排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">6.2.</span> <span class="nav-text">计数排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="nav-number">6.3.</span> <span class="nav-text">希尔排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">6.4.</span> <span class="nav-text">基数排序</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">diver</p>
+  <div class="site-description" itemprop="description">Dive into deeper and deeper</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">diver</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">102k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
