@@ -111,6 +111,57 @@
 ]]></content>
   </entry>
   <entry>
+    <title>仿射变换及其变换矩阵的理解</title>
+    <url>/2020/01/09/8152e3be/</url>
+    <content><![CDATA[<h3 id="仿射变换：平移、旋转、放缩、剪切、反射"><a href="#仿射变换：平移、旋转、放缩、剪切、反射" class="headerlink" title="仿射变换：平移、旋转、放缩、剪切、反射"></a>仿射变换：平移、旋转、放缩、剪切、反射</h3><p>仿射变换包括如下所有变换，以及这些变换任意次序次数的组合：</p>
+<p><img src="/images/others/transform/VKWszD.png"></p>
+<p><strong>平移</strong>（translation）和<strong>旋转</strong>（rotation）顾名思义，两者的组合称之为<strong>欧式变换</strong>（Euclidean transformation）或<strong>刚体变换</strong>（rigid transformation）</p>
+<p><strong>放缩</strong>（scaling）可进一步分为uniform scaling和non-uniform scaling，前者每个坐标轴放缩系数相同（各向同性），后者不同；如果放缩系数为负，则会叠加上<strong>反射</strong>（reflection）——reflection可以看成是特殊的scaling</p>
+<p><strong>刚体变换</strong>+uniform scaling 称之为，<strong>相似变换</strong>（similarity transformation），即平移+旋转+各向同性的放缩</p>
+<p><strong>剪切变换</strong>（shear mapping）将所有点沿某一指定方向成比例地平移，语言描述不如上面图示直观。各种变换间的关系如下面的venn图所示</p>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cvenn.png"></p>
+<h3 id="变换矩阵形式"><a href="#变换矩阵形式" class="headerlink" title="变换矩阵形式"></a>变换矩阵形式</h3><p>没有平移或者平移量为0的所有仿射变换可以用如下变换矩阵描述：</p>
+<p>$\left[ \begin{array}{l}{x’} \\ {y’}\end{array}\right]&#x3D;\left[ \begin{array}{ll}{a} &amp; {b} \\ {c} &amp; {d}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
+<p>不同变换对应的a,b,c,d约束不同，排除了平移变换的所有仿射变换为<strong>线性变换</strong>（linear transformation），其涵盖的变换如上面的venn图所示，其特点是<strong>原点位置不变，多次线性变换的结果仍是线性变换</strong>。</p>
+<p>为了涵盖平移，引入齐次坐标，在原有2维坐标的基础上，增广1个维度，如下所示：</p>
+<p>$\left[ \begin{array}{l}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right] &#x3D;\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f} \end{array}\right] \left[ \begin{array}{l}{x} \\ {y} \\ {1}\end{array}\right]$</p>
+<p>所以，仿射变换的变换矩阵统一用 $\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f}\end{array}\right]$ 来描述，不同基础变换的$a,b,c,d,e,f$约束不同，因此，放射变换总共有6个自由度。如下所示：</p>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cexplanation.png"></p>
+<p>此外，旋转和平移相乘得到刚体变换的变换矩阵，如下，有3个自由度$(\theta, t_x, t_y)$，这里旋转方向为逆时针方向，因此与上图中的正负号不同，</p>
+<p>$\left[ \begin{array}{ccc}{\cos (\theta)} &amp; {-\sin (\theta)} &amp; {t_{x}} \\ {\sin (\theta)} &amp; {\cos (\theta)} &amp; {t_{y}}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y} \\ {1}\end{array}\right]&#x3D;\left[ \begin{array}{c}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right]$</p>
+<p>再乘上uniform scaling得到相似变换，有4个自由度（$s, \theta, t_x, t_y$），如下：</p>
+<p>$\left[ \begin{array}{ccc}{s\cos (\theta)} &amp; {-s\sin (\theta)} &amp; {t_{x}} \\ {s\sin (\theta)} &amp; {s\cos (\theta)} &amp; {t_{y}}\end{array}\right] \left[ \begin{array}{l}{x} \ {y} \\ {1}\end{array}\right]&#x3D;\left[ \begin{array}{c}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right]$</p>
+<h3 id="变换矩阵的理解与记忆"><a href="#变换矩阵的理解与记忆" class="headerlink" title="变换矩阵的理解与记忆"></a>变换矩阵的理解与记忆</h3><p><img src="/%5Cimages%5Cothers%5Ctransform%5Ccoord.png"></p>
+<p>坐标系由坐标<strong>原点</strong>和<strong>基向量</strong>决定，坐标<strong>原点</strong>和<strong>基向量</strong>确定了，坐标系也就确定了。</p>
+<p>对于坐标系中的位置$(x,y)$，其相对坐标原点在$[1,0]$方向上的投影为$x$，在$[0,1]$方向上的投影为$y$这里投影的意思是过$(x,y)$做坐标轴的平行线与坐标轴的交点到原点的距离，即$(x,y)$实际为：</p>
+<p>$\left[ \begin{array}{l}{x} \\ {y}\end{array}\right] &#x3D; x\left[ \begin{array}{l}{1} \\ {0}\end{array}\right] + y\left[ \begin{array}{l}{0} \\ {1}\end{array}\right]  &#x3D; \left[ \begin{array}{ll}{1} &amp; {0} \\ {0} &amp; {1}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
+<p>当坐标系变化，坐标系中的点也跟着变化，但点相对新坐标系（$x′−y′坐标系$）的位置不变仍为$(x,y)$，以旋转变换为例，新坐标轴的基向量则变为$[cos(θ),sin(θ)]$和$[−sin(θ),cos(θ)]$，所以点变化到新位置为：</p>
+<p>$\left[ \begin{array}{l}{x’} \\ {y’}\end{array}\right] &#x3D; x\left[ \begin{array}{l}{\cos (\theta)} \\ { \sin (\theta)}\end{array}\right] + y\left[ \begin{array}{r}{- \sin (\theta)} \\ { \cos (\theta)}\end{array}\right]  &#x3D; \left[ \begin{array}{lr}{\cos (\theta)} &amp; {-\sin (\theta)} \\ {\sin (\theta)} &amp; {\cos (\theta)}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
+<p>所以，我们可以得出以下结论：</p>
+<ul>
+<li><p>所有变换矩阵只需关注一点：坐标系的变化，即<strong>基向量和原点的变化</strong>， 在仿射变换矩阵$\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f} \\ 0 &amp; {0} &amp; {1}\end{array}\right]$中， $\left[ \begin{array}{l}{a} \\ {d}\end{array}\right]$和$\left[ \begin{array}{l}{b} \\ {e}\end{array}\right]$为新的基向量，$\left[ \begin{array}{l}{c} \\ {f}\end{array}\right]$为新的坐标原点，先变化基向量，再变化坐标原点。</p>
+</li>
+<li><p>坐标系变化到哪里，坐标系中的所有点（这里表示的是相对点）也跟着做同样的变化。</p>
+</li>
+</ul>
+<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cconclusion.png"></p>
+<h3 id="变换矩阵的参数估计"><a href="#变换矩阵的参数估计" class="headerlink" title="变换矩阵的参数估计"></a>变换矩阵的参数估计</h3><h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
+<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2004/10/tr-2004-92.pdf">Image Alignment and Stitching: A Tutorial</a></li>
+<li><a href="https://wiki2.org/en/Affine_transformation">wiki: Affine transformation</a></li>
+<li><a href="https://www.ics.uci.edu/~majumder/VC/new-lectures/geom.pdf">Geometric Transformation</a></li>
+<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-837-computer-graphics-fall-2012/lecture-notes/MIT6_837F12_Lec03.pdf">Coordinates and Transformations</a></li>
+<li><a href="http://www.cs.tau.ac.il/~dcor/Graphics/cg-slides/trans3d.pdf">Transformations</a></li>
+<li><a href="https://courses.cs.washington.edu/courses/csep576/11sp/pdf/Transformations.pdf">Geometric Transformations</a></li>
+<li><a href="https://www.cnblogs.com/shine-lee/p/www.cs.cornell.edu/courses/cs664/2008sp/handouts/cs664-5-image-geom.pdf">Image Geometry</a></li>
+<li><a href="https://www.cnblogs.com/shine-lee/p/10950963.html">仿射变换及其变换矩阵的理解</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>三维基础</category>
+        <category>变换矩阵</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Ubuntu18.04装机</title>
     <url>/2019/03/24/30a4c30f/</url>
     <content><![CDATA[<h2 id="MatlabR2016b"><a href="#MatlabR2016b" class="headerlink" title="MatlabR2016b##"></a>MatlabR2016b##</h2><ul>
@@ -212,61 +263,20 @@
       </tags>
   </entry>
   <entry>
-    <title>仿射变换及其变换矩阵的理解</title>
-    <url>/2020/01/09/8152e3be/</url>
-    <content><![CDATA[<h3 id="仿射变换：平移、旋转、放缩、剪切、反射"><a href="#仿射变换：平移、旋转、放缩、剪切、反射" class="headerlink" title="仿射变换：平移、旋转、放缩、剪切、反射"></a>仿射变换：平移、旋转、放缩、剪切、反射</h3><p>仿射变换包括如下所有变换，以及这些变换任意次序次数的组合：</p>
-<p><img src="/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png"></p>
-<p><strong>平移</strong>（translation）和<strong>旋转</strong>（rotation）顾名思义，两者的组合称之为<strong>欧式变换</strong>（Euclidean transformation）或<strong>刚体变换</strong>（rigid transformation）</p>
-<p><strong>放缩</strong>（scaling）可进一步分为uniform scaling和non-uniform scaling，前者每个坐标轴放缩系数相同（各向同性），后者不同；如果放缩系数为负，则会叠加上<strong>反射</strong>（reflection）——reflection可以看成是特殊的scaling</p>
-<p><strong>刚体变换</strong>+uniform scaling 称之为，<strong>相似变换</strong>（similarity transformation），即平移+旋转+各向同性的放缩</p>
-<p><strong>剪切变换</strong>（shear mapping）将所有点沿某一指定方向成比例地平移，语言描述不如上面图示直观。各种变换间的关系如下面的venn图所示</p>
-<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cvenn.png"></p>
-<h3 id="变换矩阵形式"><a href="#变换矩阵形式" class="headerlink" title="变换矩阵形式"></a>变换矩阵形式</h3><p>没有平移或者平移量为0的所有仿射变换可以用如下变换矩阵描述：</p>
-<p>$\left[ \begin{array}{l}{x’} \\ {y’}\end{array}\right]&#x3D;\left[ \begin{array}{ll}{a} &amp; {b} \\ {c} &amp; {d}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
-<p>不同变换对应的a,b,c,d约束不同，排除了平移变换的所有仿射变换为<strong>线性变换</strong>（linear transformation），其涵盖的变换如上面的venn图所示，其特点是<strong>原点位置不变，多次线性变换的结果仍是线性变换</strong>。</p>
-<p>为了涵盖平移，引入齐次坐标，在原有2维坐标的基础上，增广1个维度，如下所示：</p>
-<p>$\left[ \begin{array}{l}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right] &#x3D;\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f} \end{array}\right] \left[ \begin{array}{l}{x} \\ {y} \\ {1}\end{array}\right]$</p>
-<p>所以，仿射变换的变换矩阵统一用 $\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f}\end{array}\right]$ 来描述，不同基础变换的$a,b,c,d,e,f$约束不同，因此，放射变换总共有6个自由度。如下所示：</p>
-<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cexplanation.png"></p>
-<p>此外，旋转和平移相乘得到刚体变换的变换矩阵，如下，有3个自由度$(\theta, t_x, t_y)$，这里旋转方向为逆时针方向，因此与上图中的正负号不同，</p>
-<p>$\left[ \begin{array}{ccc}{\cos (\theta)} &amp; {-\sin (\theta)} &amp; {t_{x}} \\ {\sin (\theta)} &amp; {\cos (\theta)} &amp; {t_{y}}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y} \\ {1}\end{array}\right]&#x3D;\left[ \begin{array}{c}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right]$</p>
-<p>再乘上uniform scaling得到相似变换，有4个自由度（$s, \theta, t_x, t_y$），如下：</p>
-<p>$\left[ \begin{array}{ccc}{s\cos (\theta)} &amp; {-s\sin (\theta)} &amp; {t_{x}} \\ {s\sin (\theta)} &amp; {s\cos (\theta)} &amp; {t_{y}}\end{array}\right] \left[ \begin{array}{l}{x} \ {y} \\ {1}\end{array}\right]&#x3D;\left[ \begin{array}{c}{x^{\prime}} \\ {y^{\prime}} \\ {1}\end{array}\right]$</p>
-<h3 id="变换矩阵的理解与记忆"><a href="#变换矩阵的理解与记忆" class="headerlink" title="变换矩阵的理解与记忆"></a>变换矩阵的理解与记忆</h3><p><img src="/%5Cimages%5Cothers%5Ctransform%5Ccoord.png"></p>
-<p>坐标系由坐标<strong>原点</strong>和<strong>基向量</strong>决定，坐标<strong>原点</strong>和<strong>基向量</strong>确定了，坐标系也就确定了。</p>
-<p>对于坐标系中的位置$(x,y)$，其相对坐标原点在$[1,0]$方向上的投影为$x$，在$[0,1]$方向上的投影为$y$这里投影的意思是过$(x,y)$做坐标轴的平行线与坐标轴的交点到原点的距离，即$(x,y)$实际为：</p>
-<p>$\left[ \begin{array}{l}{x} \\ {y}\end{array}\right] &#x3D; x\left[ \begin{array}{l}{1} \\ {0}\end{array}\right] + y\left[ \begin{array}{l}{0} \\ {1}\end{array}\right]  &#x3D; \left[ \begin{array}{ll}{1} &amp; {0} \\ {0} &amp; {1}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
-<p>当坐标系变化，坐标系中的点也跟着变化，但点相对新坐标系（$x′−y′坐标系$）的位置不变仍为$(x,y)$，以旋转变换为例，新坐标轴的基向量则变为$[cos(θ),sin(θ)]$和$[−sin(θ),cos(θ)]$，所以点变化到新位置为：</p>
-<p>$\left[ \begin{array}{l}{x’} \\ {y’}\end{array}\right] &#x3D; x\left[ \begin{array}{l}{\cos (\theta)} \\ { \sin (\theta)}\end{array}\right] + y\left[ \begin{array}{r}{- \sin (\theta)} \\ { \cos (\theta)}\end{array}\right]  &#x3D; \left[ \begin{array}{lr}{\cos (\theta)} &amp; {-\sin (\theta)} \\ {\sin (\theta)} &amp; {\cos (\theta)}\end{array}\right] \left[ \begin{array}{l}{x} \\ {y}\end{array}\right]$</p>
-<p>所以，我们可以得出以下结论：</p>
-<ul>
-<li><p>所有变换矩阵只需关注一点：坐标系的变化，即<strong>基向量和原点的变化</strong>， 在仿射变换矩阵$\left[ \begin{array}{lll}{a} &amp; {b} &amp; {c}\\ {d} &amp; {e} &amp; {f} \\ 0 &amp; {0} &amp; {1}\end{array}\right]$中， $\left[ \begin{array}{l}{a} \\ {d}\end{array}\right]$和$\left[ \begin{array}{l}{b} \\ {e}\end{array}\right]$为新的基向量，$\left[ \begin{array}{l}{c} \\ {f}\end{array}\right]$为新的坐标原点，先变化基向量，再变化坐标原点。</p>
-</li>
-<li><p>坐标系变化到哪里，坐标系中的所有点（这里表示的是相对点）也跟着做同样的变化。</p>
-</li>
-</ul>
-<p><img src="/%5Cimages%5Cothers%5Ctransform%5Cconclusion.png"></p>
-<h3 id="变换矩阵的参数估计"><a href="#变换矩阵的参数估计" class="headerlink" title="变换矩阵的参数估计"></a>变换矩阵的参数估计</h3><h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
-<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2004/10/tr-2004-92.pdf">Image Alignment and Stitching: A Tutorial</a></li>
-<li><a href="https://wiki2.org/en/Affine_transformation">wiki: Affine transformation</a></li>
-<li><a href="https://www.ics.uci.edu/~majumder/VC/new-lectures/geom.pdf">Geometric Transformation</a></li>
-<li><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-837-computer-graphics-fall-2012/lecture-notes/MIT6_837F12_Lec03.pdf">Coordinates and Transformations</a></li>
-<li><a href="http://www.cs.tau.ac.il/~dcor/Graphics/cg-slides/trans3d.pdf">Transformations</a></li>
-<li><a href="https://courses.cs.washington.edu/courses/csep576/11sp/pdf/Transformations.pdf">Geometric Transformations</a></li>
-<li><a href="https://www.cnblogs.com/shine-lee/p/www.cs.cornell.edu/courses/cs664/2008sp/handouts/cs664-5-image-geom.pdf">Image Geometry</a></li>
-<li><a href="https://www.cnblogs.com/shine-lee/p/10950963.html">仿射变换及其变换矩阵的理解</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>三维基础</category>
-        <category>变换矩阵</category>
-      </categories>
-  </entry>
-  <entry>
     <title>射线相交检测</title>
     <url>/2020/03/16/b0dc2a0f/</url>
     <content><![CDATA[<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>我们可以将也给射线写成:$R &#x3D; O + Dt$，其中，$O$为射线的起始点，$D$为射线的方向。同时我们可以利用重心坐标公式，将一个三角面片上的点，用其三个角的坐标所表示：$P_t &#x3D; (1-u-v)V_0 + uV_1 + vV_2$</p>
-<p><img src="/%5Cimages%5Cothers%5Crayintersection%5Cbari.png"></p>
+<center>
+    <img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="\images\others\rayintersection\bari.png">
+    <br>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">bari</div>
+</center>
+
 <p>基于以上公式，我们可以将求射线与面片的交点坐标，转换为求解：</p>
 <p>$O+Dt &#x3D; (1-u-v)V_0 + uV_1 + vV_2 \tag{1}$</p>
 <p>整理公式（1）我们可以得到：</p>
@@ -307,12 +317,61 @@
       </tags>
   </entry>
   <entry>
+    <title>拉普拉斯矩阵与拉普拉斯算子的关系</title>
+    <url>/2020/02/05/febd937d/</url>
+    <content><![CDATA[<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>首先贴出一段利用拉普拉斯矩阵进行光滑处理的代码，根据<em>Learning Category-Specific Mesh Reconstruction from Image Collections</em>中的描述，拉普拉斯算子可以获得表面的平均曲率，通过最小化平均曲率，就可以使得表面变得光滑。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class LaplacianLoss(nn.Module):</span><br><span class="line">    def __init__(self, vertex, faces, average=False):</span><br><span class="line">        &#x27;&#x27;&#x27;</span><br><span class="line">			vertex: N*3</span><br><span class="line">            faces: F*3</span><br><span class="line">        &#x27;&#x27;&#x27;</span><br><span class="line">        super(LaplacianLoss, self).__init__()</span><br><span class="line">        self.nv = vertex.size(0)</span><br><span class="line">        self.nf = faces.size(0)</span><br><span class="line">        self.average = average</span><br><span class="line">        laplacian = np.zeros([self.nv, self.nv]).astype(np.float32)</span><br><span class="line"></span><br><span class="line">        laplacian[faces[:, 0], faces[:, 1]] = -1</span><br><span class="line">        laplacian[faces[:, 1], faces[:, 0]] = -1</span><br><span class="line">        laplacian[faces[:, 1], faces[:, 2]] = -1</span><br><span class="line">        laplacian[faces[:, 2], faces[:, 1]] = -1</span><br><span class="line">        laplacian[faces[:, 2], faces[:, 0]] = -1</span><br><span class="line">        laplacian[faces[:, 0], faces[:, 2]] = -1</span><br><span class="line"></span><br><span class="line">        r, c = np.diag_indices(laplacian.shape[0])</span><br><span class="line">        laplacian[r, c] = -laplacian.sum(1)</span><br><span class="line"></span><br><span class="line">        for i in range(self.nv):</span><br><span class="line">            laplacian[i, :] /= laplacian[i, i]</span><br><span class="line"></span><br><span class="line">        self.register_buffer(&#x27;laplacian&#x27;, torch.from_numpy(laplacian))</span><br><span class="line"></span><br><span class="line">    def forward(self, x):</span><br><span class="line">        batch_size = x.size(0)</span><br><span class="line">        x = torch.matmul(self.laplacian, x)</span><br><span class="line">        dims = tuple(range(x.ndimension())[1:])</span><br><span class="line">        x = x.pow(2).sum(dims)</span><br><span class="line">        if self.average:</span><br><span class="line">            return x.sum() / batch_size</span><br><span class="line">        else:</span><br><span class="line">            return x</span><br></pre></td></tr></table></figure>
+
+<p><strong>Q：为什么拉普拉斯算子可以获得一个3D网格的平均曲率？</strong></p>
+<p><strong>A: 图拉普拉斯矩阵，如果把它看作线性变换的话，它起的作用与数学分析中的拉普拉斯算子是一样的。也就是说拉普拉斯矩阵就是图上的拉普拉斯算子，或者说是离散的拉普拉斯算子。而拉普拉斯算子是用以获取连续可微函数的二阶微分（散度)。</strong></p>
+<h2 id="拉普拉斯算子和拉普拉斯矩阵"><a href="#拉普拉斯算子和拉普拉斯矩阵" class="headerlink" title="拉普拉斯算子和拉普拉斯矩阵"></a>拉普拉斯算子和拉普拉斯矩阵</h2><h3 id="符号定义"><a href="#符号定义" class="headerlink" title="符号定义"></a>符号定义</h3><ul>
+<li>$f$是欧式空间中的二阶可微实函数，或从图的视角看作一组高维向量。</li>
+<li>$\Delta$为拉普拉斯算子，求欧式空间的散度</li>
+<li>$L$为拉普拉斯矩阵，求图空间的散度</li>
+</ul>
+<h3 id="理论推导"><a href="#理论推导" class="headerlink" title="理论推导"></a>理论推导</h3><p><strong>梯度（矢量）</strong> ：梯度 $\nabla$ 的本意是一个向量（矢量），表示某一函数在该点处的方向导数沿着该方向取得最大值，即函数在该方向处沿着该方向（此梯度方向）变化最快，变化率最大（为该梯度的模）。假设一个三元函数 $u&#x3D;f(x,y,z)$ 在空间区域 $G$ 内具有一阶连续偏导数，点 $P(x,y,z) \in G$ ， 称向量</p>
+<p>$\lbrace \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \rbrace &#x3D; \frac{\partial f}{\partial x} \overrightarrow{i} + \frac{\partial f}{\partial y} \overrightarrow{j} + \frac{\partial f}{\partial z} \overrightarrow{k} \tag{1}$</p>
+<p>为函数$u&#x3D;f(x,y,z)$在点$P$处的梯度，记为$gradf(x,y,z)$ 或 $\nabla f(x,y,z)$。其中： $\nabla &#x3D; \frac{\partial}{\partial x} \overrightarrow{i} + \frac{\partial}{\partial y} \overrightarrow{j} + \frac{\partial}{\partial z} \overrightarrow{k}$ 被称为三维向量的微分算子。</p>
+<p><strong>散度（标量）</strong> 散度 $\nabla\cdot$（divergence）可用于表针空间中各点矢量场发散的强弱程度，物理上，散度的意义是场的有源性。当 $div(F)&gt;0$ ，表示该点有散发通量的正源（发散源）；当 $div(F)&lt;0$ 表示该点有吸收能量的负源（洞或汇）；当 $div(F)&#x3D;0$ ，表示该点无源。</p>
+<p><strong>拉普拉斯算子</strong>： 拉普拉斯算子（Laplace Operator）是 $n$ 维欧几里得空间中的一个二阶微分算子，定义为梯度（ $\nabla f$ ）的散度（ $\nabla\cdot$ ）。 $\Delta f &#x3D; \nabla^2f &#x3D; \nabla \cdot \nabla f&#x3D; div(gradf)$。 在笛卡尔坐标系下，拉普拉斯算子可以被表示为：</p>
+<p>$\Delta f &#x3D; \frac{\partial^2f}{\partial x^2} + \frac{\partial^2f}{\partial y^2} + \frac{\partial^2f}{\partial z^2} \tag{2}$</p>
+<p>推广到$n$维空间中的形式为:</p>
+<p>$\Delta &#x3D; \sum \limits_{i} \frac{\partial^2f}{\partial x^2_i} \tag{3}$</p>
+<p>如果将其推导到离散的形式下：</p>
+<p><img src="/%5Cimages%5Cothers%5Claplacian%5Cfig1.png"></p>
+<p>$\Delta f &#x3D; \frac{\partial^2f}{\partial x^2} + \frac{\partial^2f}{\partial y^2} \\ &#x3D;f(x+1, y) + f(x-1,y) - 2f(x,y) + f(x,y+1) - 2f(x,y) \\<br>&#x3D;f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4f(x,y) \tag{4}$</p>
+<p>现在用<strong>散度</strong>的概念解读一下：</p>
+<p>如果 $\Delta f &#x3D; 0$ ，可以近似认为中心点 $f(x,y)$ 的势和其周围点的势是相等的， $f(x,y)$局部范围内不存在势差。所以该点无源<br>$\Delta f &gt; 0$ ，可以近似认为中心点 $f(x,y)$ 的势低于周围点，可以想象成中心点如恒星一样发出能量，补给周围的点，所以该点是正源<br>$\Delta f &lt; 0$ ,可以近似认为中心点 $f(x,y)$ 的势高于周围点，可以想象成中心点如吸引子一样在吸收能量，所以该点是负源<br>另一个角度，拉普拉斯算子计算了周围点与中心点的梯度差。当 $f(x,y)$ 受到扰动之后，其可能变为相邻的 $f(x+1,y), f(x-1,y), f(x,y+1), f(x,y-1)$ 之一，拉普拉斯算子得到的是对该点进行微小扰动后可能获得的总增益 （或者说是总变化）。</p>
+<p><strong>我们现在将这个结论推广到图</strong>： 假设具有 $N$ 个节点的图 $G$ ，此时以上定义的函数 $f$ 不再是二维，而是 $N$ 维向量： $f&#x3D;(f_1,f_2,…,f_n)$ ，其中 $f_i$ 为函数 $f$ 在图中节点 $i$ 处的函数值(<strong>注意：在实际中这个‘函数值’通常不是一个标量，而是一个高维向量，表征某个特征信息</strong>)。类比于 $f(x,y)$ 在节点 $(x_i,y_i)$ 处的值。对 $i$ 节点进行扰动，它可能变为任意一个与它相邻的节点 $j \in N_i$ , $N_i$ 表示节点 $i$ 的一环邻域节点。</p>
+<p>通过公式(4)，可以推广得到下面公式</p>
+<p>$\Delta f_i &#x3D; \sum \limits_{j \in N_i}W_{ij}(f_i - f_j) \tag{5}$</p>
+<p>其中， $W_{ij}$表示的边的权重， $N_i$表示节点$i$的一环邻域。当$W_{ij} &#x3D; 1$时，我们继续化简公式，可以得到：</p>
+<p>$\Delta f_i &#x3D; \sum \limits_{j \in N_i}W_{ij}(f_i - f_j) \\<br>&#x3D;\sum \limits_{j \in N_i}W_{ij}f_i - \sum \limits_{j \in N_i}W_{ij}f_j \\<br>&#x3D;d_if_i - \sum \limits_{j \in N_i}W_{ij}f_j \tag{6}$</p>
+<p>我们把$d_i$记为节点$i$的度，那么我们可以得到对于$f&#x3D;(f_1, f_2, \cdots,f_n)$的拉普拉斯矩阵为：</p>
+<p>$\Delta f &#x3D; Df - Wf \\<br>&#x3D;(D-W)f \\<br>&#x3D; \left(\begin{bmatrix} d_1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\ 0 &amp; d_2 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; 0 &amp; \cdots &amp; d_{n-1}&amp; 0 \\ 0 &amp; 0 &amp; \cdots\ &amp; 0 &amp; d_{n}\end{bmatrix} - \begin{bmatrix} 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \end{bmatrix}\right) f \\<br>&#x3D; Lf \tag{7}$</p>
+<p><strong>其中，当边的权重$W_{ij}$均为1时，$D,W$分别为关于网（graph)的度矩阵和邻接矩阵。</strong></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>拉普拉斯矩阵$L$其实是离散化拉普拉斯算子的一种表示方式，通过这个方式，可以求得以图表示的，非规则结构的，点与点之间的二阶微分（某点曲率与该点关于函数的二阶导有关）。我们可以利用求得的曲率，来使平面变得光滑。</p>
+<p>离散化拉普拉斯算子有多种表示形式，主要差别是符号，缩放因子上的差别。</p>
+<p>公式(7)中的$W_{ij}$有不同的选择，比较常见的有常数1，度的倒数$\frac{1}{d_i}$, 余切权重 $\frac{\cot \alpha_{ij} + \cot \beta_{ij}}{2}$, $\alpha$和$\beta$为空间四边形$aibj$的相对角</p>
+]]></content>
+  </entry>
+  <entry>
     <title>常见排序算法</title>
     <url>/2019/12/05/ec44b182/</url>
     <content><![CDATA[<p>2019年12月18日更新：加入归并排序的两种链表版本：top-down, bottom-up。</p>
 <p>2019年12月28日更新：加入桶排序算法</p>
 <p>2020年3月20日更新：加入堆排序，计数排序，希尔排序</p>
-<p><img src="/images/others/sort/conclusion.jpg"></p>
+<center>
+    <img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="/images/others/sort/conclusion.jpg">
+    <br>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">总结</div>
+</center>
+
 <h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//冒泡排序: 每次迭代最大的在最上方</span><br><span class="line"> int* sort(int* nums, int numsSize)&#123;</span><br><span class="line">     int tmp = 0;</span><br><span class="line">     // 注意这里的起始值</span><br><span class="line">     for(int i =numsSize-1;i&gt;0;i--)&#123; //最大的值所放置的位置</span><br><span class="line">         for(int j = 0;j&lt;i;j++)&#123; // 比较的位置</span><br><span class="line">             if(nums[j] &gt; nums[j+1])&#123;</span><br><span class="line">                 tmp = nums[j];</span><br><span class="line">                 nums[j] = nums[j+1];</span><br><span class="line">                 nums[j+1] = tmp;</span><br><span class="line">             &#125;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     return nums;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>时间复杂度：$O(n^2)$  空间复杂度：$O(1)$ 稳定</p>
@@ -393,6 +452,35 @@
       </tags>
   </entry>
   <entry>
+    <title>欧式空间的旋转表示(三)-旋转矩阵</title>
+    <url>/2020/02/18/ca04af5a/</url>
+    <content><![CDATA[<h3 id="什么是旋转矩阵"><a href="#什么是旋转矩阵" class="headerlink" title="什么是旋转矩阵"></a>什么是旋转矩阵</h3><p>旋转矩阵被用来在欧式空间进行旋转变换. 例如矩阵$R &#x3D; \begin{bmatrix} \cos{\theta} &amp; -\sin{\theta} \\ \sin{\theta} &amp; \cos{\theta}\end{bmatrix}$，就是将二维平面上的<strong>某点逆时针</strong>旋转$\theta$度。</p>
+<p>如果将向量（为了方便计算，这里将点表示为向量）和坐标系两者分离开，向量是独立于坐标系存在的。我们就可以将选择单独看作是坐标系的旋转，而旋转矩阵$R&#x3D;[X_1, Y_1, Z_1]$中的<strong>每一列就表示原始坐标系的坐标轴在新坐标系下的投影长度</strong>。我们有两个坐标系$C_{new}$和$C_{old}$，且$X_{1} &#x3D; \begin{bmatrix} \cos{\theta} &amp; \sin{\theta} &amp; 0 \end{bmatrix}^{T}$，则如下图所示：</p>
+<p><img src="/%5Cimages%5Cothers%5Crotation%5Crota_demo1.png"></p>
+<p>$X_{old}$在新坐标系下的投影分别是$X_{new}$：$\cos{\theta}$，$Y_{new}$：$\sin{\theta}$，$Z_{new}$：$0$，从而就得到了旋转矩阵的第一列$X_1$。其他列也是相同求解方法。</p>
+<h4 id="旋转矩阵的特性"><a href="#旋转矩阵的特性" class="headerlink" title="旋转矩阵的特性"></a>旋转矩阵的特性</h4><p>根据<a href="https://en.wikipedia.org/wiki/Rotation_matrix">WiKi</a>上的定义:<strong>当且仅当方阵$R$满足$det(R)&#x3D;1$，且$R^{-1} &#x3D; R^{T}$，我们就称它为旋转矩阵。</strong> 而所有满足$det(R)&#x3D;1$的正交矩阵所组成的集合被称为特殊正交群$SO(n)$(Sepcial Orthogonal Group), 而旋转就是属于$SO(3)$。而所有满足$det(R) &#x3D; \pm1$的正交阵所形成的群被称为正交群$O(n)$</p>
+<h5 id="为什么旋转矩阵的行列式值必须为1"><a href="#为什么旋转矩阵的行列式值必须为1" class="headerlink" title="为什么旋转矩阵的行列式值必须为1"></a>为什么旋转矩阵的行列式值必须为1</h5><p>旋转是一种线性变换，而<strong>行列式就是线性变换的尺度因子，它会改变被变换向量的模长</strong>。如前边所讲，旋转操作是对坐标系的旋转操作，<strong>旋转是不会改变独立于坐标系客观存在的向量</strong>，我们所看到的“变化”仅仅是向量在某个坐标系下的表征方式，也就是我们常说的<strong>坐标</strong>。如果旋转矩阵的$det(R) \neq 1$，由于坐标系的基依旧是为单位向量，使得目标向量的模长发生了改变，那么这个操作就不能被称为旋转操作。</p>
+<h5 id="为什么旋转矩阵必须是正交矩阵"><a href="#为什么旋转矩阵必须是正交矩阵" class="headerlink" title="为什么旋转矩阵必须是正交矩阵"></a>为什么旋转矩阵必须是正交矩阵</h5><p>正交矩阵是行向量和列向量皆相互正交且为单位向量的方阵，满足$R^{-1} &#x3D; R^{T}$。前边踢到，可以将旋转矩阵的每一列看作是原始坐标系上的坐标轴向量在目标坐标系下的投影。但其实我们稍微观察一下就可以发现，旋转向量的每一列其实还等于新坐标系下的坐标轴（表示方法是通过旧坐标系作为参考坐标系）。那么正是这个要求，使得其列与行向量必须正交。</p>
+<h3 id="旋转矩阵与其他旋转表征的转换"><a href="#旋转矩阵与其他旋转表征的转换" class="headerlink" title="旋转矩阵与其他旋转表征的转换"></a>旋转矩阵与其他旋转表征的转换</h3><p>由旋转轴$u &#x3D; \begin{bmatrix} u_x &amp; u_y &amp; u_z\end{bmatrix}$和旋转角度$\theta$可得绕任意旋转轴旋转任意角度的旋转矩阵为(具体推导过程可看:<a href="http://">欧式空间的旋转表示(一)-轴角式</a>:</p>
+<p>$R &#x3D; \begin{bmatrix}<br>        \cos{\theta}+(1-\cos{\theta})u_x^2 &amp; (1-\cos{\theta})u_xu_y-\sin\theta u_z &amp; (1-\cos\theta)u_xu_z + \sin\theta u_y \\<br>        (1-\cos\theta)u_yu_x + \sin\theta u_z &amp; \cos\theta + (1-\cos\theta)u_y^2 &amp; (1-\cos\theta)u_yu_z - \sin\theta u_x \\<br>        (1-\cos\theta)u_zu_x - \sin\theta u_y &amp; (1-\cos\theta)u_zu_y + \sin\theta u_x &amp; \cos\theta + (1-\cos\theta)u_y^2<br>\end{bmatrix}$</p>
+<h4 id="旋转矩阵到轴角式"><a href="#旋转矩阵到轴角式" class="headerlink" title="旋转矩阵到轴角式"></a>旋转矩阵到轴角式</h4><p>可以知道$tr(R) &#x3D; 3\cos\theta + (1-\cos\theta)(u_x^2 + u_y^2 + u_z^2)$，由于旋转轴的模长为1，我们可得$\theta &#x3D; \arccos{\frac{tr(R)-1}{2}}$。</p>
+<p>观察旋转矩阵我们可以发现$\begin{bmatrix} R_{32} - R_{23} \\ R_{13} - R_{31} \\ R_{21} - R_{12}\end{bmatrix} &#x3D; \begin{bmatrix} 2u_x\sin\theta \\ 2u_y\sin\theta \\ 2u_z\sin\theta \end{bmatrix}$，将所得向量归一化后即为旋转轴。然后便可使用右手螺旋定则（大拇指指向正方法，其余四指为正向旋转方向）。</p>
+<p>由于旋转轴在选择过程中保持不变，我们也可以通过$Ru &#x3D; R$来求解出旋转轴。</p>
+<h4 id="旋转矩阵到四元数"><a href="#旋转矩阵到四元数" class="headerlink" title="旋转矩阵到四元数"></a>旋转矩阵到四元数</h4><p>四元数$q &#x3D; (w, x, y, z)$，其中$w &#x3D; \cos{\frac{\theta}{2}};[x,y,z]^T&#x3D;\sin{\frac{\theta}{2}}u^T$，u为旋转轴。根据上面的推导，我们可以知道$\cos\theta &#x3D; \frac{tr(R)-1}{2}$，而$\cos\theta &#x3D; 2\cos^2{\frac{\theta}{2}} - 1 &#x3D; 2w^2-1$。所以我们可以知道$tr(R) &#x3D; 4w^2 -1$。</p>
+<p>而$(x,y,z)$也可用上面的公式得到$[x,y,z]^T &#x3D; \frac{1}{4\cos\frac{\theta}{2}}[R_{32}-R_{23},R_{13} - R_{31},R_{21} - R_{12}]^T$</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="https://zh.wikipedia.org/wiki/%E6%AD%A3%E4%BA%A4%E7%9F%A9%E9%98%B5">Wiki-正交矩阵</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E8%A1%8C%E5%88%97%E5%BC%8F">Wiki-行列式</a></p>
+<p><a href="https://www.matongxue.com/madocs/247/">行列式本质</a></p>
+]]></content>
+      <categories>
+        <category>三维基础</category>
+        <category>旋转表征</category>
+      </categories>
+      <tags>
+        <tag>旋转矩阵</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>树的遍历算法</title>
     <url>/2019/12/25/cb9a2247/</url>
     <content><![CDATA[<h3 id="层次遍历"><a href="#层次遍历" class="headerlink" title="层次遍历"></a>层次遍历</h3><h4 id="使用vector"><a href="#使用vector" class="headerlink" title="使用vector"></a>使用vector</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) &#123;</span><br><span class="line">        </span><br><span class="line">        vector&lt;TreeNode*&gt; curQue;</span><br><span class="line">        vector&lt;TreeNode*&gt; nextQue;</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; res;</span><br><span class="line">        vector&lt;int&gt; tmp;</span><br><span class="line">        int depth=0;</span><br><span class="line">        </span><br><span class="line">        if(!root) return res; </span><br><span class="line">        </span><br><span class="line">        curQue.push_back(root);</span><br><span class="line">        </span><br><span class="line">        while(!curQue.empty())&#123;</span><br><span class="line">            for(int i =0; i&lt;curQue.size(); i++)&#123;</span><br><span class="line">                if(curQue[i]-&gt;left != NULL)&#123;</span><br><span class="line">                    nextQue.push_back(curQue[i]-&gt;left);</span><br><span class="line">                &#125;</span><br><span class="line">                if(curQue[i]-&gt;right != NULL)&#123;</span><br><span class="line">                    nextQue.push_back(curQue[i]-&gt;right);</span><br><span class="line">                &#125;</span><br><span class="line">                tmp.push_back(curQue[i]-&gt;val);</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">            curQue = nextQue;</span><br><span class="line">            depth++;</span><br><span class="line">            nextQue.clear();</span><br><span class="line">            tmp.clear();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -432,45 +520,6 @@
         <tag>先序</tag>
         <tag>层次</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>拉普拉斯矩阵与拉普拉斯算子的关系</title>
-    <url>/2020/02/05/febd937d/</url>
-    <content><![CDATA[<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>首先贴出一段利用拉普拉斯矩阵进行光滑处理的代码，根据<em>Learning Category-Specific Mesh Reconstruction from Image Collections</em>中的描述，拉普拉斯算子可以获得表面的平均曲率，通过最小化平均曲率，就可以使得表面变得光滑。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class LaplacianLoss(nn.Module):</span><br><span class="line">    def __init__(self, vertex, faces, average=False):</span><br><span class="line">        &#x27;&#x27;&#x27;</span><br><span class="line">			vertex: N*3</span><br><span class="line">            faces: F*3</span><br><span class="line">        &#x27;&#x27;&#x27;</span><br><span class="line">        super(LaplacianLoss, self).__init__()</span><br><span class="line">        self.nv = vertex.size(0)</span><br><span class="line">        self.nf = faces.size(0)</span><br><span class="line">        self.average = average</span><br><span class="line">        laplacian = np.zeros([self.nv, self.nv]).astype(np.float32)</span><br><span class="line"></span><br><span class="line">        laplacian[faces[:, 0], faces[:, 1]] = -1</span><br><span class="line">        laplacian[faces[:, 1], faces[:, 0]] = -1</span><br><span class="line">        laplacian[faces[:, 1], faces[:, 2]] = -1</span><br><span class="line">        laplacian[faces[:, 2], faces[:, 1]] = -1</span><br><span class="line">        laplacian[faces[:, 2], faces[:, 0]] = -1</span><br><span class="line">        laplacian[faces[:, 0], faces[:, 2]] = -1</span><br><span class="line"></span><br><span class="line">        r, c = np.diag_indices(laplacian.shape[0])</span><br><span class="line">        laplacian[r, c] = -laplacian.sum(1)</span><br><span class="line"></span><br><span class="line">        for i in range(self.nv):</span><br><span class="line">            laplacian[i, :] /= laplacian[i, i]</span><br><span class="line"></span><br><span class="line">        self.register_buffer(&#x27;laplacian&#x27;, torch.from_numpy(laplacian))</span><br><span class="line"></span><br><span class="line">    def forward(self, x):</span><br><span class="line">        batch_size = x.size(0)</span><br><span class="line">        x = torch.matmul(self.laplacian, x)</span><br><span class="line">        dims = tuple(range(x.ndimension())[1:])</span><br><span class="line">        x = x.pow(2).sum(dims)</span><br><span class="line">        if self.average:</span><br><span class="line">            return x.sum() / batch_size</span><br><span class="line">        else:</span><br><span class="line">            return x</span><br></pre></td></tr></table></figure>
-
-<p><strong>Q：为什么拉普拉斯算子可以获得一个3D网格的平均曲率？</strong></p>
-<p><strong>A: 图拉普拉斯矩阵，如果把它看作线性变换的话，它起的作用与数学分析中的拉普拉斯算子是一样的。也就是说拉普拉斯矩阵就是图上的拉普拉斯算子，或者说是离散的拉普拉斯算子。而拉普拉斯算子是用以获取连续可微函数的二阶微分（散度)。</strong></p>
-<h2 id="拉普拉斯算子和拉普拉斯矩阵"><a href="#拉普拉斯算子和拉普拉斯矩阵" class="headerlink" title="拉普拉斯算子和拉普拉斯矩阵"></a>拉普拉斯算子和拉普拉斯矩阵</h2><h3 id="符号定义"><a href="#符号定义" class="headerlink" title="符号定义"></a>符号定义</h3><ul>
-<li>$f$是欧式空间中的二阶可微实函数，或从图的视角看作一组高维向量。</li>
-<li>$\Delta$为拉普拉斯算子，求欧式空间的散度</li>
-<li>$L$为拉普拉斯矩阵，求图空间的散度</li>
-</ul>
-<h3 id="理论推导"><a href="#理论推导" class="headerlink" title="理论推导"></a>理论推导</h3><p><strong>梯度（矢量）</strong> ：梯度 $\nabla$ 的本意是一个向量（矢量），表示某一函数在该点处的方向导数沿着该方向取得最大值，即函数在该方向处沿着该方向（此梯度方向）变化最快，变化率最大（为该梯度的模）。假设一个三元函数 $u&#x3D;f(x,y,z)$ 在空间区域 $G$ 内具有一阶连续偏导数，点 $P(x,y,z) \in G$ ， 称向量</p>
-<p>$\lbrace \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \rbrace &#x3D; \frac{\partial f}{\partial x} \overrightarrow{i} + \frac{\partial f}{\partial y} \overrightarrow{j} + \frac{\partial f}{\partial z} \overrightarrow{k} \tag{1}$</p>
-<p>为函数$u&#x3D;f(x,y,z)$在点$P$处的梯度，记为$gradf(x,y,z)$ 或 $\nabla f(x,y,z)$。其中： $\nabla &#x3D; \frac{\partial}{\partial x} \overrightarrow{i} + \frac{\partial}{\partial y} \overrightarrow{j} + \frac{\partial}{\partial z} \overrightarrow{k}$ 被称为三维向量的微分算子。</p>
-<p><strong>散度（标量）</strong> 散度 $\nabla\cdot$（divergence）可用于表针空间中各点矢量场发散的强弱程度，物理上，散度的意义是场的有源性。当 $div(F)&gt;0$ ，表示该点有散发通量的正源（发散源）；当 $div(F)&lt;0$ 表示该点有吸收能量的负源（洞或汇）；当 $div(F)&#x3D;0$ ，表示该点无源。</p>
-<p><strong>拉普拉斯算子</strong>： 拉普拉斯算子（Laplace Operator）是 $n$ 维欧几里得空间中的一个二阶微分算子，定义为梯度（ $\nabla f$ ）的散度（ $\nabla\cdot$ ）。 $\Delta f &#x3D; \nabla^2f &#x3D; \nabla \cdot \nabla f&#x3D; div(gradf)$。 在笛卡尔坐标系下，拉普拉斯算子可以被表示为：</p>
-<p>$\Delta f &#x3D; \frac{\partial^2f}{\partial x^2} + \frac{\partial^2f}{\partial y^2} + \frac{\partial^2f}{\partial z^2} \tag{2}$</p>
-<p>推广到$n$维空间中的形式为:</p>
-<p>$\Delta &#x3D; \sum \limits_{i} \frac{\partial^2f}{\partial x^2_i} \tag{3}$</p>
-<p>如果将其推导到离散的形式下：</p>
-<p><img src="/%5Cimages%5Cothers%5Claplacian%5Cfig1.png"></p>
-<p>$\Delta f &#x3D; \frac{\partial^2f}{\partial x^2} + \frac{\partial^2f}{\partial y^2} \\ &#x3D;f(x+1, y) + f(x-1,y) - 2f(x,y) + f(x,y+1) - 2f(x,y) \\<br>&#x3D;f(x+1, y) + f(x-1, y) + f(x, y+1) + f(x, y-1) - 4f(x,y) \tag{4}$</p>
-<p>现在用<strong>散度</strong>的概念解读一下：</p>
-<p>如果 $\Delta f &#x3D; 0$ ，可以近似认为中心点 $f(x,y)$ 的势和其周围点的势是相等的， $f(x,y)$局部范围内不存在势差。所以该点无源<br>$\Delta f &gt; 0$ ，可以近似认为中心点 $f(x,y)$ 的势低于周围点，可以想象成中心点如恒星一样发出能量，补给周围的点，所以该点是正源<br>$\Delta f &lt; 0$ ,可以近似认为中心点 $f(x,y)$ 的势高于周围点，可以想象成中心点如吸引子一样在吸收能量，所以该点是负源<br>另一个角度，拉普拉斯算子计算了周围点与中心点的梯度差。当 $f(x,y)$ 受到扰动之后，其可能变为相邻的 $f(x+1,y), f(x-1,y), f(x,y+1), f(x,y-1)$ 之一，拉普拉斯算子得到的是对该点进行微小扰动后可能获得的总增益 （或者说是总变化）。</p>
-<p><strong>我们现在将这个结论推广到图</strong>： 假设具有 $N$ 个节点的图 $G$ ，此时以上定义的函数 $f$ 不再是二维，而是 $N$ 维向量： $f&#x3D;(f_1,f_2,…,f_n)$ ，其中 $f_i$ 为函数 $f$ 在图中节点 $i$ 处的函数值(<strong>注意：在实际中这个‘函数值’通常不是一个标量，而是一个高维向量，表征某个特征信息</strong>)。类比于 $f(x,y)$ 在节点 $(x_i,y_i)$ 处的值。对 $i$ 节点进行扰动，它可能变为任意一个与它相邻的节点 $j \in N_i$ , $N_i$ 表示节点 $i$ 的一环邻域节点。</p>
-<p>通过公式(4)，可以推广得到下面公式</p>
-<p>$\Delta f_i &#x3D; \sum \limits_{j \in N_i}W_{ij}(f_i - f_j) \tag{5}$</p>
-<p>其中， $W_{ij}$表示的边的权重， $N_i$表示节点$i$的一环邻域。当$W_{ij} &#x3D; 1$时，我们继续化简公式，可以得到：</p>
-<p>$\Delta f_i &#x3D; \sum \limits_{j \in N_i}W_{ij}(f_i - f_j) \\<br>&#x3D;\sum \limits_{j \in N_i}W_{ij}f_i - \sum \limits_{j \in N_i}W_{ij}f_j \\<br>&#x3D;d_if_i - \sum \limits_{j \in N_i}W_{ij}f_j \tag{6}$</p>
-<p>我们把$d_i$记为节点$i$的度，那么我们可以得到对于$f&#x3D;(f_1, f_2, \cdots,f_n)$的拉普拉斯矩阵为：</p>
-<p>$\Delta f &#x3D; Df - Wf \\<br>&#x3D;(D-W)f \\<br>&#x3D; \left(\begin{bmatrix} d_1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\ 0 &amp; d_2 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; 0 &amp; \cdots &amp; d_{n-1}&amp; 0 \\ 0 &amp; 0 &amp; \cdots\ &amp; 0 &amp; d_{n}\end{bmatrix} - \begin{bmatrix} 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; \cdots &amp; 0 &amp; 1 \end{bmatrix}\right) f \\<br>&#x3D; Lf \tag{7}$</p>
-<p><strong>其中，当边的权重$W_{ij}$均为1时，$D,W$分别为关于网（graph)的度矩阵和邻接矩阵。</strong></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>拉普拉斯矩阵$L$其实是离散化拉普拉斯算子的一种表示方式，通过这个方式，可以求得以图表示的，非规则结构的，点与点之间的二阶微分（某点曲率与该点关于函数的二阶导有关）。我们可以利用求得的曲率，来使平面变得光滑。</p>
-<p>离散化拉普拉斯算子有多种表示形式，主要差别是符号，缩放因子上的差别。</p>
-<p>公式(7)中的$W_{ij}$有不同的选择，比较常见的有常数1，度的倒数$\frac{1}{d_i}$, 余切权重 $\frac{\cot \alpha_{ij} + \cot \beta_{ij}}{2}$, $\alpha$和$\beta$为空间四边形$aibj$的相对角</p>
-]]></content>
   </entry>
   <entry>
     <title>欧式空间的旋转表示(二）-欧拉角</title>
@@ -525,32 +574,65 @@
       </tags>
   </entry>
   <entry>
-    <title>欧式空间的旋转表示(三)-旋转矩阵</title>
-    <url>/2020/02/18/ca04af5a/</url>
-    <content><![CDATA[<h3 id="什么是旋转矩阵"><a href="#什么是旋转矩阵" class="headerlink" title="什么是旋转矩阵"></a>什么是旋转矩阵</h3><p>旋转矩阵被用来在欧式空间进行旋转变换. 例如矩阵$R &#x3D; \begin{bmatrix} \cos{\theta} &amp; -\sin{\theta} \\ \sin{\theta} &amp; \cos{\theta}\end{bmatrix}$，就是将二维平面上的<strong>某点逆时针</strong>旋转$\theta$度。</p>
-<p>如果将向量（为了方便计算，这里将点表示为向量）和坐标系两者分离开，向量是独立于坐标系存在的。我们就可以将选择单独看作是坐标系的旋转，而旋转矩阵$R&#x3D;[X_1, Y_1, Z_1]$中的<strong>每一列就表示原始坐标系的坐标轴在新坐标系下的投影长度</strong>。我们有两个坐标系$C_{new}$和$C_{old}$，且$X_{1} &#x3D; \begin{bmatrix} \cos{\theta} &amp; \sin{\theta} &amp; 0 \end{bmatrix}^{T}$，则如下图所示：</p>
-<p><img src="/%5Cimages%5Cothers%5Crotation%5Crota_demo1.png"></p>
-<p>$X_{old}$在新坐标系下的投影分别是$X_{new}$：$\cos{\theta}$，$Y_{new}$：$\sin{\theta}$，$Z_{new}$：$0$，从而就得到了旋转矩阵的第一列$X_1$。其他列也是相同求解方法。</p>
-<h4 id="旋转矩阵的特性"><a href="#旋转矩阵的特性" class="headerlink" title="旋转矩阵的特性"></a>旋转矩阵的特性</h4><p>根据<a href="https://en.wikipedia.org/wiki/Rotation_matrix">WiKi</a>上的定义:<strong>当且仅当方阵$R$满足$det(R)&#x3D;1$，且$R^{-1} &#x3D; R^{T}$，我们就称它为旋转矩阵。</strong> 而所有满足$det(R)&#x3D;1$的正交矩阵所组成的集合被称为特殊正交群$SO(n)$(Sepcial Orthogonal Group), 而旋转就是属于$SO(3)$。而所有满足$det(R) &#x3D; \pm1$的正交阵所形成的群被称为正交群$O(n)$</p>
-<h5 id="为什么旋转矩阵的行列式值必须为1"><a href="#为什么旋转矩阵的行列式值必须为1" class="headerlink" title="为什么旋转矩阵的行列式值必须为1"></a>为什么旋转矩阵的行列式值必须为1</h5><p>旋转是一种线性变换，而<strong>行列式就是线性变换的尺度因子，它会改变被变换向量的模长</strong>。如前边所讲，旋转操作是对坐标系的旋转操作，<strong>旋转是不会改变独立于坐标系客观存在的向量</strong>，我们所看到的“变化”仅仅是向量在某个坐标系下的表征方式，也就是我们常说的<strong>坐标</strong>。如果旋转矩阵的$det(R) \neq 1$，由于坐标系的基依旧是为单位向量，使得目标向量的模长发生了改变，那么这个操作就不能被称为旋转操作。</p>
-<h5 id="为什么旋转矩阵必须是正交矩阵"><a href="#为什么旋转矩阵必须是正交矩阵" class="headerlink" title="为什么旋转矩阵必须是正交矩阵"></a>为什么旋转矩阵必须是正交矩阵</h5><p>正交矩阵是行向量和列向量皆相互正交且为单位向量的方阵，满足$R^{-1} &#x3D; R^{T}$。前边踢到，可以将旋转矩阵的每一列看作是原始坐标系上的坐标轴向量在目标坐标系下的投影。但其实我们稍微观察一下就可以发现，旋转向量的每一列其实还等于新坐标系下的坐标轴（表示方法是通过旧坐标系作为参考坐标系）。那么正是这个要求，使得其列与行向量必须正交。</p>
-<h3 id="旋转矩阵与其他旋转表征的转换"><a href="#旋转矩阵与其他旋转表征的转换" class="headerlink" title="旋转矩阵与其他旋转表征的转换"></a>旋转矩阵与其他旋转表征的转换</h3><p>由旋转轴$u &#x3D; \begin{bmatrix} u_x &amp; u_y &amp; u_z\end{bmatrix}$和旋转角度$\theta$可得绕任意旋转轴旋转任意角度的旋转矩阵为(具体推导过程可看:<a href="http://">欧式空间的旋转表示(一)-轴角式</a>:</p>
-<p>$R &#x3D; \begin{bmatrix}<br>        \cos{\theta}+(1-\cos{\theta})u_x^2 &amp; (1-\cos{\theta})u_xu_y-\sin\theta u_z &amp; (1-\cos\theta)u_xu_z + \sin\theta u_y \\<br>        (1-\cos\theta)u_yu_x + \sin\theta u_z &amp; \cos\theta + (1-\cos\theta)u_y^2 &amp; (1-\cos\theta)u_yu_z - \sin\theta u_x \\<br>        (1-\cos\theta)u_zu_x - \sin\theta u_y &amp; (1-\cos\theta)u_zu_y + \sin\theta u_x &amp; \cos\theta + (1-\cos\theta)u_y^2<br>\end{bmatrix}$</p>
-<h4 id="旋转矩阵到轴角式"><a href="#旋转矩阵到轴角式" class="headerlink" title="旋转矩阵到轴角式"></a>旋转矩阵到轴角式</h4><p>可以知道$tr(R) &#x3D; 3\cos\theta + (1-\cos\theta)(u_x^2 + u_y^2 + u_z^2)$，由于旋转轴的模长为1，我们可得$\theta &#x3D; \arccos{\frac{tr(R)-1}{2}}$。</p>
-<p>观察旋转矩阵我们可以发现$\begin{bmatrix} R_{32} - R_{23} \\ R_{13} - R_{31} \\ R_{21} - R_{12}\end{bmatrix} &#x3D; \begin{bmatrix} 2u_x\sin\theta \\ 2u_y\sin\theta \\ 2u_z\sin\theta \end{bmatrix}$，将所得向量归一化后即为旋转轴。然后便可使用右手螺旋定则（大拇指指向正方法，其余四指为正向旋转方向）。</p>
-<p>由于旋转轴在选择过程中保持不变，我们也可以通过$Ru &#x3D; R$来求解出旋转轴。</p>
-<h4 id="旋转矩阵到四元数"><a href="#旋转矩阵到四元数" class="headerlink" title="旋转矩阵到四元数"></a>旋转矩阵到四元数</h4><p>四元数$q &#x3D; (w, x, y, z)$，其中$w &#x3D; \cos{\frac{\theta}{2}};[x,y,z]^T&#x3D;\sin{\frac{\theta}{2}}u^T$，u为旋转轴。根据上面的推导，我们可以知道$\cos\theta &#x3D; \frac{tr(R)-1}{2}$，而$\cos\theta &#x3D; 2\cos^2{\frac{\theta}{2}} - 1 &#x3D; 2w^2-1$。所以我们可以知道$tr(R) &#x3D; 4w^2 -1$。</p>
-<p>而$(x,y,z)$也可用上面的公式得到$[x,y,z]^T &#x3D; \frac{1}{4\cos\frac{\theta}{2}}[R_{32}-R_{23},R_{13} - R_{31},R_{21} - R_{12}]^T$</p>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="https://zh.wikipedia.org/wiki/%E6%AD%A3%E4%BA%A4%E7%9F%A9%E9%98%B5">Wiki-正交矩阵</a></p>
-<p><a href="https://zh.wikipedia.org/wiki/%E8%A1%8C%E5%88%97%E5%BC%8F">Wiki-行列式</a></p>
-<p><a href="https://www.matongxue.com/madocs/247/">行列式本质</a></p>
+    <title>薄板样条插值</title>
+    <url>/2019/11/06/d3c15ac3/</url>
+    <content><![CDATA[<h3 id="Thin-Plate"><a href="#Thin-Plate" class="headerlink" title="Thin Plate"></a>Thin Plate</h3><p>薄板样条插值可以为一组对应的控制点提供<strong>光滑</strong>的插值结果，通过一组控制点，可以得到一个“平面”（不一定是二维平面），穿过这组控制点，并使得“平面”的弯曲能量（bending energy)最小。</p>
+<center>
+    <img style="border-radius: 0.3125em;
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="\images\others\tps\thinplates.png">
+    <br>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">穿过一组特征点的2D平面</div>
+</center>
+
+<p>图示的弯曲屏幕可以通过如下公式得到：</p>
+<p>$f(x_i,y_i) &#x3D; a_1 + a_2x_i + a_3y_i + \sum \limits_{j&#x3D;1} \limits^{n}w_iU(|p_i - p_j|) \tag{1}$</p>
+<p>前三个参数$a_1, a_2, a_3$可以看作是<code>仿射变换</code>, 第四个变换参数是关于使得“平面”弯曲以通过给定控制点。$U(r) &#x3D; r^2\log r$是径向基函数。$|p_i - p_j|$中的$p_i$和$p_j$都是控制点坐标，（1）总共有$N$个弯曲参数$w_i$和$1+D$个仿射参数，其中$D$为控制点的维度。</p>
+<p>我们可以化简公式（1）为：$f(x_i, y_i) &#x3D; L_i(W_i|a_{1,i}a_{2,i}a_{3,i})^T $, 其中$L &#x3D; [U(|p_i - p_1|), U(|p_i - p_2], \ldots , U(|p_i - pj|), U(|p_i - p_n), p_i, 1 n]$。我们接着定义$P &#x3D; \begin{bmatrix} 1 &amp; x_1 &amp; y_1 \\ 1 &amp; x_2 &amp; y_2 \\ 1 &amp; x_3 &amp; y_3 \\ &amp; \cdots  &amp;\\ 1 &amp; x_n &amp; y_n \end{bmatrix}$, $K &#x3D; \begin{bmatrix} U(r_{11}) &amp; U(r_{12}) &amp; \cdots &amp; U(r_{1n}) \\ U(r_{21}) &amp; U(r_{22}) &amp; \cdots &amp; U(r_{2n}) \\ \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\ U(r_{n1}) &amp; U(r_{n2}) &amp; \cdots &amp; U(r_{nn})\end{bmatrix}$。其中$(x1, y1)$表示控制点的坐标（以二维为例），$r_{1n} &#x3D; |p_i - p_n|$。我们可以将$P$和$K$组合得到:$L &#x3D; \begin{bmatrix} K &amp; P \\ P^T &amp; 0\end{bmatrix}$。这时，从公式（2）就可以推广到$N$个控制点的情形：</p>
+<p>$V &#x3D; L [W|a_1a_2a_3]^T \tag{3}$</p>
+<p>其中$L \in \mathbb R^{(n+3) \times (n+3)}$, $W \in \mathbb R^{n \times 1}$, $K \in \mathbb R^{n \times n}$, $P \in \mathbb R^{n \times 3}$, $a_i \in \mathbb R$， $V &#x3D; [v_1, v_2, \ldots, v_n, 0, 0, 0]^T$, <strong>$v_i &#x3D; f(x_i, y_i)$表示在控制点$(x_i, y_i)$的“高度”</strong>。</p>
+<h3 id="Deformation"><a href="#Deformation" class="headerlink" title="Deformation"></a>Deformation</h3><h4 id="How-to-calculate-the-TPS-parameters"><a href="#How-to-calculate-the-TPS-parameters" class="headerlink" title="How to calculate the TPS parameters"></a>How to calculate the TPS parameters</h4><p>由于L是一个对称矩阵，$[W|a_1a_2a_3]^T &#x3D; VL^{-1}$，我们可以得到<strong>一组控制点关于某个维度的TPS参数（如上图所示，我们有7个控制点，每个控制点$f(x_i, y_i)$都有其“高度”，我们便可通过TPS拟合出一个平面，通过这些高度值）。</strong>但如果是Deformaition的话（假设我们将<strong>img1</strong>“扭曲”得到<strong>img2</strong>），我们已知的是一组控制点的对应关系，即$(x_{1,1}, y_{1,1})$与$(x_{2,1}, y_{2,1})$是对应的，我们便需要两组TPS参数来将图片“扭曲”。</p>
+<p>$[X_2, Y_2] &#x3D; L\begin{bmatrix} W_x &amp; W_y \\ a_{1,x} &amp; a_{1,y} \\ a_{2,x} &amp; a_{2,y} \\ a_{3,x} &amp; a_{3,y}\end{bmatrix}$</p>
+<figure class="half">
+    <img src="\images\others\tps\herve.png" width="250">
+    <img src="\images\others\tps\herve-smile.png" width="250">
+    <br>
+    <center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">左图是原图，右图是扭曲之后的图片</div>
+    </center>
+</figure>
+
+
+<figure class="half">
+    <img src="\images\others\tps\thinplates-dx.png" width="300">
+    <img src="\images\others\tps\thinplates-dy.png" width="300">
+    <br>
+    <center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
+    display: inline-block;
+    color: #999;
+    padding: 2px;">左图是表示x方向的形变，右图表示y方向形变（与上图对应）</div>
+    </center>
+</figure>
+
+<p>以嘴角为例，可以看到x方向上的“高度”为0，而y方向上的“高度”却有很大的值。</p>
+<h4 id="How-to-conduct-image-warping"><a href="#How-to-conduct-image-warping" class="headerlink" title="How to conduct image warping"></a>How to conduct image warping</h4><p>现假设我们已经求得了一组图片之间的TPS参数$c_x \in \mathbb R^{(N+3) \times 1}, c_y \in \mathbb R^{(N+3) \times 1}$分别代表x方向和y方向。我们可以根据下面这个公式求得“扭曲”之后的点的位置（其实就是公式（1））。</p>
+<p>$\begin{bmatrix} x’ &amp; y’\end{bmatrix} &#x3D; \begin{bmatrix} U(||(x_{i,1}, y_{i,1}) - (x_{t,m}, y_{t, n})||_2) &amp; P\end{bmatrix}^T[c_x, c_y] \tag{4}$</p>
+<p>其中，$(x_{i,1}, y_{i,1})， i \in [1 \ldots N] $表示上面提到的img1中的控制点，而$(x_{t,m}, y_{t, n})$表示<strong>任意一组待扭曲的图片初始像素坐标，我们这里记为img3</strong>。而$||(x_{i,1}, y_{i,1}) - (x_{t,m}, y_{t, n})||_2$则表示两个点之间的欧式距离。如果img3有M个点，则$||*||_2$得到的值其维度是$N \times M$。那么就可以得到扭曲后的坐标：$\begin{bmatrix} x’ &amp; y’\end{bmatrix} \in \mathbb R^{M \times 2}$。代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">% MATLAB</span><br><span class="line">[N1,N2]=size(img3); % 获取img3的高，宽</span><br><span class="line">[x,y]=meshgrid(1:N2,1:N1); % 由于初始图像未扭曲，其做为整数，可以这样获取</span><br><span class="line">x=x(:);y=y(:);M=length(x);</span><br><span class="line">% cx: 为x方向形变参数，其维度与img1中控制点个数有关，这里就是n_good+3,n_good就是控制点个数</span><br><span class="line">fx_aff=cx(n_good+1:n_good+3)&#x27;*[ones(1,M); x&#x27;; y&#x27;]; %公式（1）前三个项的实现</span><br><span class="line">d2=dist2(X3b,[x y]); %X3b: (n_good * 2)  d2: (n_good * N)</span><br><span class="line">fx_wrp=cx(1:n_good)&#x27;*(d2.*log(d2+eps)); %fx_wrp: (1 * N)</span><br><span class="line">fx=fx_aff+fx_wrp;</span><br><span class="line">fy_aff=cy(n_good+1:n_good+3)&#x27;*[ones(1,M); x&#x27;; y&#x27;];</span><br><span class="line">fy_wrp=cy(1:n_good)&#x27;*(d2.*log(d2+eps));</span><br><span class="line">fy=fy_aff+fy_wrp;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">%% 接下来就是根据扭曲后的坐标【fx, fy】进行插值</span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="https://profs.etsmtl.ca/hlombaert/thinplates/">Manual Registration with Thin Plates</a></p>
 ]]></content>
       <categories>
-        <category>三维基础</category>
-        <category>旋转表征</category>
+        <category>图形学基础</category>
       </categories>
       <tags>
-        <tag>旋转矩阵</tag>
+        <tag>薄板样条插值</tag>
       </tags>
   </entry>
   <entry>
@@ -619,72 +701,64 @@
         <category>旋转表征</category>
       </categories>
       <tags>
-        <tag>欧拉角</tag>
         <tag>旋转矩阵</tag>
+        <tag>欧拉角</tag>
         <tag>四元数</tag>
         <tag>轴角</tag>
       </tags>
   </entry>
   <entry>
-    <title>薄板样条插值</title>
-    <url>/2019/11/06/d3c15ac3/</url>
-    <content><![CDATA[<h3 id="Thin-Plate"><a href="#Thin-Plate" class="headerlink" title="Thin Plate"></a>Thin Plate</h3><p>薄板样条插值可以为一组对应的控制点提供<strong>光滑</strong>的插值结果，通过一组控制点，可以得到一个“平面”（不一定是二维平面），穿过这组控制点，并使得“平面”的弯曲能量（bending energy)最小。</p>
-<center>
-    <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="\images\others\tps\thinplates.png">
-    <br>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
-    display: inline-block;
-    color: #999;
-    padding: 2px;">穿过一组特征点的2D平面</div>
-</center>
-
-<p>图示的弯曲屏幕可以通过如下公式得到：</p>
-<p>$f(x_i,y_i) &#x3D; a_1 + a_2x_i + a_3y_i + \sum \limits_{j&#x3D;1} \limits^{n}w_iU(|p_i - p_j|) \tag{1}$</p>
-<p>前三个参数$a_1, a_2, a_3$可以看作是<code>仿射变换</code>, 第四个变换参数是关于使得“平面”弯曲以通过给定控制点。$U(r) &#x3D; r^2\log r$是径向基函数。$|p_i - p_j|$中的$p_i$和$p_j$都是控制点坐标，（1）总共有$N$个弯曲参数$w_i$和$1+D$个仿射参数，其中$D$为控制点的维度。</p>
-<p>我们可以化简公式（1）为：$f(x_i, y_i) &#x3D; L_i(W_i|a_{1,i}a_{2,i}a_{3,i})^T $, 其中$L &#x3D; [U(|p_i - p_1|), U(|p_i - p_2], \ldots , U(|p_i - pj|), U(|p_i - p_n), p_i, 1 n]$。我们接着定义$P &#x3D; \begin{bmatrix} 1 &amp; x_1 &amp; y_1 \\ 1 &amp; x_2 &amp; y_2 \\ 1 &amp; x_3 &amp; y_3 \\ &amp; \cdots  &amp;\\ 1 &amp; x_n &amp; y_n \end{bmatrix}$, $K &#x3D; \begin{bmatrix} U(r_{11}) &amp; U(r_{12}) &amp; \cdots &amp; U(r_{1n}) \\ U(r_{21}) &amp; U(r_{22}) &amp; \cdots &amp; U(r_{2n}) \\ \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\ U(r_{n1}) &amp; U(r_{n2}) &amp; \cdots &amp; U(r_{nn})\end{bmatrix}$。其中$(x1, y1)$表示控制点的坐标（以二维为例），$r_{1n} &#x3D; |p_i - p_n|$。我们可以将$P$和$K$组合得到:$L &#x3D; \begin{bmatrix} K &amp; P \\ P^T &amp; 0\end{bmatrix}$。这时，从公式（2）就可以推广到$N$个控制点的情形：</p>
-<p>$V &#x3D; L [W|a_1a_2a_3]^T \tag{3}$</p>
-<p>其中$L \in \mathbb R^{(n+3) \times (n+3)}$, $W \in \mathbb R^{n \times 1}$, $K \in \mathbb R^{n \times n}$, $P \in \mathbb R^{n \times 3}$, $a_i \in \mathbb R$， $V &#x3D; [v_1, v_2, \ldots, v_n, 0, 0, 0]^T$, <strong>$v_i &#x3D; f(x_i, y_i)$表示在控制点$(x_i, y_i)$的“高度”</strong>。</p>
-<h3 id="Deformation"><a href="#Deformation" class="headerlink" title="Deformation"></a>Deformation</h3><h4 id="How-to-calculate-the-TPS-parameters"><a href="#How-to-calculate-the-TPS-parameters" class="headerlink" title="How to calculate the TPS parameters"></a>How to calculate the TPS parameters</h4><p>由于L是一个对称矩阵，$[W|a_1a_2a_3]^T &#x3D; VL^{-1}$，我们可以得到<strong>一组控制点关于某个维度的TPS参数（如上图所示，我们有7个控制点，每个控制点$f(x_i, y_i)$都有其“高度”，我们便可通过TPS拟合出一个平面，通过这些高度值）。</strong>但如果是Deformaition的话（假设我们将<strong>img1</strong>“扭曲”得到<strong>img2</strong>），我们已知的是一组控制点的对应关系，即$(x_{1,1}, y_{1,1})$与$(x_{2,1}, y_{2,1})$是对应的，我们便需要两组TPS参数来将图片“扭曲”。</p>
-<p>$[X_2, Y_2] &#x3D; L\begin{bmatrix} W_x &amp; W_y \\ a_{1,x} &amp; a_{1,y} \\ a_{2,x} &amp; a_{2,y} \\ a_{3,x} &amp; a_{3,y}\end{bmatrix}$</p>
-<figure class="half">
-    <img src="\images\others\tps\herve.png" width="250">
-    <img src="\images\others\tps\herve-smile.png" width="250">
-    <br>
-    <center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
-    display: inline-block;
-    color: #999;
-    padding: 2px;">左图是原图，右图是扭曲之后的图片</div>
-    </center>
-</figure>
-
-
-<figure class="half">
-    <img src="\images\others\tps\thinplates-dx.png" width="300">
-    <img src="\images\others\tps\thinplates-dy.png" width="300">
-    <br>
-    <center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;
-    display: inline-block;
-    color: #999;
-    padding: 2px;">左图是表示x方向的形变，右图表示y方向形变（与上图对应）</div>
-    </center>
-</figure>
-
-<p>以嘴角为例，可以看到x方向上的“高度”为0，而y方向上的“高度”却有很大的值。</p>
-<h4 id="How-to-conduct-image-warping"><a href="#How-to-conduct-image-warping" class="headerlink" title="How to conduct image warping"></a>How to conduct image warping</h4><p>现假设我们已经求得了一组图片之间的TPS参数$c_x \in \mathbb R^{(N+3) \times 1}, c_y \in \mathbb R^{(N+3) \times 1}$分别代表x方向和y方向。我们可以根据下面这个公式求得“扭曲”之后的点的位置（其实就是公式（1））。</p>
-<p>$\begin{bmatrix} x’ &amp; y’\end{bmatrix} &#x3D; \begin{bmatrix} U(||(x_{i,1}, y_{i,1}) - (x_{t,m}, y_{t, n})||_2) &amp; P\end{bmatrix}^T[c_x, c_y] \tag{4}$</p>
-<p>其中，$(x_{i,1}, y_{i,1})， i \in [1 \ldots N] $表示上面提到的img1中的控制点，而$(x_{t,m}, y_{t, n})$表示<strong>任意一组待扭曲的图片初始像素坐标，我们这里记为img3</strong>。而$||(x_{i,1}, y_{i,1}) - (x_{t,m}, y_{t, n})||_2$则表示两个点之间的欧式距离。如果img3有M个点，则$||*||_2$得到的值其维度是$N \times M$。那么就可以得到扭曲后的坐标：$\begin{bmatrix} x’ &amp; y’\end{bmatrix} \in \mathbb R^{M \times 2}$。代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">% MATLAB</span><br><span class="line">[N1,N2]=size(img3); % 获取img3的高，宽</span><br><span class="line">[x,y]=meshgrid(1:N2,1:N1); % 由于初始图像未扭曲，其做为整数，可以这样获取</span><br><span class="line">x=x(:);y=y(:);M=length(x);</span><br><span class="line">% cx: 为x方向形变参数，其维度与img1中控制点个数有关，这里就是n_good+3,n_good就是控制点个数</span><br><span class="line">fx_aff=cx(n_good+1:n_good+3)&#x27;*[ones(1,M); x&#x27;; y&#x27;]; %公式（1）前三个项的实现</span><br><span class="line">d2=dist2(X3b,[x y]); %X3b: (n_good * 2)  d2: (n_good * N)</span><br><span class="line">fx_wrp=cx(1:n_good)&#x27;*(d2.*log(d2+eps)); %fx_wrp: (1 * N)</span><br><span class="line">fx=fx_aff+fx_wrp;</span><br><span class="line">fy_aff=cy(n_good+1:n_good+3)&#x27;*[ones(1,M); x&#x27;; y&#x27;];</span><br><span class="line">fy_wrp=cy(1:n_good)&#x27;*(d2.*log(d2+eps));</span><br><span class="line">fy=fy_aff+fy_wrp;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">%% 接下来就是根据扭曲后的坐标【fx, fy】进行插值</span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="https://profs.etsmtl.ca/hlombaert/thinplates/">Manual Registration with Thin Plates</a></p>
+    <title>&lt;论文阅读&gt;(一)Learning Category-Specific Mesh Reconstruction From Image Collections</title>
+    <url>/2019/03/08/ed6ad9d5/</url>
+    <content><![CDATA[<h2 id="Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><a href="#Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections" class="headerlink" title="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections"></a>&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</h2><p><a href="https://arxiv.org/abs/1803.07549" title="Learning Category-Specific Mesh Reconstruction"><strong>论文链接</strong></a></p>
+<p><a href="https://github.com/akanazawa/cmr"><strong>Github链接</strong></a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
+<li>单图重建</li>
+<li>纹理渲染</li>
+<li>训练过程无需3d ground truth数据</li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><h4 id="训练数据预处理"><a href="#训练数据预处理" class="headerlink" title="训练数据预处理"></a>训练数据预处理</h4><p>本次实验用到的数据集是<code>CUB-200-2011</code>,提供了200种鸟类，共计11788张图片。每张图片附含了15个关键点的标记（头部，背部，脚等）、一张Mask和Bounding box。<br>作者首先将这些数据导入Matlab当中，首先对每组关键点进行零均值处理，接着计算平均模型$\hat{S}$。 接着利用所有关键点进行<code>structure from motion</code>变换，得到每张图片相对于平均模型$\hat{S}$的<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数。</p>
+<h4 id="网络训练"><a href="#网络训练" class="headerlink" title="网络训练"></a>网络训练</h4><p>作者用到了三个网络来达到重建效果，分别是<code>文中所用主体网络</code>,<a href="https://arxiv.org/abs/1711.07566"><strong>Neural Mesh Render</strong></a><br>和<a href="https://arxiv.org/abs/1801.03924"><strong>Perceptual loss</strong></a>。</p>
+<ul>
+<li>论文中所用网络简介</li>
+</ul>
+<p><img src="/images/paper/bird_net/Net_Arch.jpg"></p>
+<p>首先网络接受一张图片，经过encoder之后变为了一个200d的shape feature <code>f</code>（注：encoder是一个经过imagenet预训练的resnet-18接上两个全连接层）。之后将得到的<code>f</code>送入三个网络,分别是<code>ShapePredictor</code>,<code>CameraPredictor</code>和<code>UVMapPredictor</code>. 其中<code>ShapePredictor</code>是预测形状变化$\Delta{V}$,最后的形状预测结果就是$V &#x3D; \hat{V} + \Delta{V}$。<code>CameraPredictor</code>是预测<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数的。值得一提的是<code>rot</code>参数,它与以前见到的旋转矩阵不同，<code>rot</code>$\in \mathbb{R}^4$,是一个<a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC"><strong>四元数</strong></a>,可以用来表示三维空间中点的旋转。</p>
+<ul>
+<li>TexturePredictor</li>
+</ul>
+<p>作者提出的纹理预测思路比较巧妙。首先在数据预处理过程中的$\hat{S}$与网络训练过程的$\hat{V}$并不一致，实际上$\hat{V} &#x3D;\mathcal{P}(\hat{S})$，$\mathcal{P}$表示将一个点数为642，面片数为1280的二十面体投影至$\hat{S}$。在将二十面体投影至$\hat{S}$前，作者对二十面体的点，面做了一次<em><strong>重新排序</strong></em>，使他们的顺序按照独立点，左侧点，右侧点排列。而投影操作$\mathcal{P}$作者在代码注释中写了这么一句话：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">triangle_direction_intersection</span>(<span class="params">tri, trg</span>):</span><br><span class="line">    Finds where an origin-centered ray going <span class="keyword">in</span> direction trg intersects a triangle.</span><br><span class="line">    Args:</span><br><span class="line">        tri: <span class="number">3</span> X <span class="number">3</span> vertex locations. tri[<span class="number">0</span>, :] <span class="keyword">is</span> 0th vertex.</span><br></pre></td></tr></table></figure>
+<p><img src="/images/paper/bird_net/project.png"></p>
+<p>多边形相当于二十面体，而中间的三角形就相当于$\hat{S}$,其边就可以看作三角面片。投影操作就是求解沿着二十面体点的方法，求与三角片面的交点。</p>
+<p>有了上面的基础，作者就认为由于所有的预测3D模型都是从同一个平均模型在保持拓扑变化的基础上变化得到的原因，所以每个所预测3D模型的点语义都是一致，即编号为1的点若代表嘴巴，则所有预测模型中编号为1的点就是所预测的嘴巴那个点。那么对于所预测的纹理图片来说，只要知道了最原始的那个二十面体的UV图，便可以对预测3D模型进行渲染(rendering)。</p>
+<p><img src="/images/paper/bird_net/rendering.png"></p>
+<ul>
+<li>Loss函数介绍</li>
+</ul>
+<p>** 注1：$\mathcal{R}$（<em>）和$G$（</em>）分别表示渲染(rendering)和双线性取样(bilinear sampling),其中$\mathcal{R}$（<em>）引用自</em>*<a href="https://arxiv.org/abs/1711.07566">Hiroharu Kato, etc. Neural 3D Mesh Renderer</a></p>
+<p>** 注2：$L_{texture}$函数表示的percetual loss,较传统的pixel loss相比更能从人的感知角度来评价两幅图像的相似度 引用自**<a href="https://arxiv.org/abs/1801.03924">Zhang,R etc. The unreasonable effectiveness of deep networks as a perceptual metric. In CVPR 2018</a></p>
+<p>$L_1 &#x3D; L_{reproj} + L_{mask} + L_{cam} + L_{smooth} + L_{def} + L_{vert2kp}$</p>
+<p>$L_{reproj} &#x3D; \sum_{i}^{}||x_{i}-\tilde{\pi}_{i}(AV_{i})||_{2}$，其中 $\tilde{\pi}（*）$表示投影操作，其值是从<code>structure-from-motion</code>中获得参数</p>
+<p>$L_{mask} &#x3D; \sum_i||S_{i}-\mathcal{R}(V_{i},F,\tilde{\pi}_{i})||_{2}$，$S_{i}$表示ground-truth的Mask。</p>
+<p>$L_{cam} &#x3D; \sum_{i}||\tilde{\pi}_{i}-{\pi}_{i}||_{2}$，$\pi_{i}$表示估计的相机旋转参数，由于旋转参数是由四元数表示，那么就是利用hamilton_product来求解估计与实际的误差</p>
+<p>$L_{smooth} &#x3D; ||LV||_{2}$，$L$表示Laplacian光滑，其目的是为了最小化平均曲率</p>
+<p>$L_{def}&#x3D;||\Delta{V}||_{2}$，这个是一个正则项</p>
+<p>$L_{vert2kp} &#x3D; \frac{1}{|K|}\sum_{k}\sum_{v}-A_{k,v}logA_{k,v}$，这个是一个k*V的矩阵，每一行表示一个特征点，而每一列表示这个特征点在各个点的概率分布。初始化是，每个特征点在各个点上的概率分布是一致的，进过迭代之后，作者期望形成一个类似与one-hot的矩阵。</p>
+<p>$L_2 &#x3D; L_{texture} + L_{dt}$</p>
+<p>$L_{texture} &#x3D; \sum_{i}dist(\mathcal{S_{i}}\bigodot\mathcal{I_{i}},\mathcal{S_{i}}\bigodot\mathcal{R}(V_{i},F,\tilde{\pi_{i}},I^{uv}))$</p>
+<p>$L_{dt} &#x3D; \sum_{i}\sum_{u,v}G(\mathcal{D_{S_{i}};F_{i}}(u,v)$， $\mathcal{D_{S_{i}}}$表示对于每一个Mask的distance transform。</p>
+<p>TexturePredictor会输出一个<code>texture flow</code>，也就是$\mathcal{F} \in \mathbb{R}^{H_{uv} * W_{uv} * 2}$,其中$H_{uv}*W_{uv}$分别表示UVmap的长和宽，而$\mathcal{F}(x,y)$对应的就是input image(x,y)。最后的UVmap就是$I^{uv} &#x3D; G(I;\mathcal{F})$。而这个<code>texture flow</code>不是神经网络的直接输出产物，而神经网络直接输出的是一个表示体现了UV图和Img的对应位置的关系，而其还是会与另一个<code>UVsample</code>进行取样。而<code>UVsample</code>表示的是UV图与$\hat{V}$上各个点的一个对应关系。这两个东西结合在一起后就可以体现UVmap、$\hat{V}$、img三者之间的关系。</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/bird_net/exp.png"></p>
 ]]></content>
       <categories>
-        <category>图形学基础</category>
+        <category>论文阅读</category>
+        <category>三维动物重建</category>
       </categories>
       <tags>
-        <tag>薄板样条插值</tag>
+        <tag>三维重建</tag>
+        <tag>纹理渲染</tag>
+        <tag>深度学习</tag>
       </tags>
   </entry>
   <entry>
@@ -961,57 +1035,95 @@
       </tags>
   </entry>
   <entry>
-    <title>&lt;论文阅读&gt;(一)Learning Category-Specific Mesh Reconstruction From Image Collections</title>
-    <url>/2019/03/08/ed6ad9d5/</url>
-    <content><![CDATA[<h2 id="Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><a href="#Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections" class="headerlink" title="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections"></a>&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</h2><p><a href="https://arxiv.org/abs/1803.07549" title="Learning Category-Specific Mesh Reconstruction"><strong>论文链接</strong></a></p>
-<p><a href="https://github.com/akanazawa/cmr"><strong>Github链接</strong></a></p>
+    <title>&lt;论文阅读&gt;(五)Learning View Priors for Single-View 3D Reconstruction</title>
+    <url>/2019/08/19/54bbc8cd/</url>
+    <content><![CDATA[<h2 id="Learning-View-Priors-for-Single-view-3D-Reconstruction"><a href="#Learning-View-Priors-for-Single-view-3D-Reconstruction" class="headerlink" title="&lt;论文阅读&gt;Learning View Priors for Single-view 3D Reconstruction"></a>&lt;论文阅读&gt;Learning View Priors for Single-view 3D Reconstruction</h2><p><a href="https://arxiv.org/pdf/1811.10719.pdf">论文链接</a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
-<li>单图重建</li>
-<li>纹理渲染</li>
-<li>训练过程无需3d ground truth数据</li>
+<li>提出了新的<code>视角先验</code>方法，该方法弥补了<code>对称先验</code>的不足，虽然重建物体大多是符合对称先验的，但是在拍摄照片的那一瞬间，由于拍摄角度和物体本身发生的一些形变等原因，使得待重建的物体本身并不是对称，这样便会使得重建效果不佳。</li>
+<li>提出了<code>internal pressure</code>,即点可在与面片垂直的外方向尽可能膨胀。使得重建的物体更加饱满，看起来更加真实。</li>
 </ul>
-<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><h4 id="训练数据预处理"><a href="#训练数据预处理" class="headerlink" title="训练数据预处理"></a>训练数据预处理</h4><p>本次实验用到的数据集是<code>CUB-200-2011</code>,提供了200种鸟类，共计11788张图片。每张图片附含了15个关键点的标记（头部，背部，脚等）、一张Mask和Bounding box。<br>作者首先将这些数据导入Matlab当中，首先对每组关键点进行零均值处理，接着计算平均模型$\hat{S}$。 接着利用所有关键点进行<code>structure from motion</code>变换，得到每张图片相对于平均模型$\hat{S}$的<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数。</p>
-<h4 id="网络训练"><a href="#网络训练" class="headerlink" title="网络训练"></a>网络训练</h4><p>作者用到了三个网络来达到重建效果，分别是<code>文中所用主体网络</code>,<a href="https://arxiv.org/abs/1711.07566"><strong>Neural Mesh Render</strong></a><br>和<a href="https://arxiv.org/abs/1801.03924"><strong>Perceptual loss</strong></a>。</p>
+<h3 id="Methond"><a href="#Methond" class="headerlink" title="Methond"></a>Methond</h3><blockquote>
+<p>本文主要介绍其中的单图重建工作，方法可以很好的泛化为多图重建方法。</p>
+</blockquote>
+<p><img src="/images/paper/view_prior/single_net.jpg"></p>
 <ul>
-<li>论文中所用网络简介</li>
+<li>View prior</li>
 </ul>
-<p><img src="/images/paper/bird_net/Net_Arch.jpg"></p>
-<p>首先网络接受一张图片，经过encoder之后变为了一个200d的shape feature <code>f</code>（注：encoder是一个经过imagenet预训练的resnet-18接上两个全连接层）。之后将得到的<code>f</code>送入三个网络,分别是<code>ShapePredictor</code>,<code>CameraPredictor</code>和<code>UVMapPredictor</code>. 其中<code>ShapePredictor</code>是预测形状变化$\Delta{V}$,最后的形状预测结果就是$V &#x3D; \hat{V} + \Delta{V}$。<code>CameraPredictor</code>是预测<code>rot</code>,<code>Translation</code>和<code>Scale</code>三个参数的。值得一提的是<code>rot</code>参数,它与以前见到的旋转矩阵不同，<code>rot</code>$\in \mathbb{R}^4$,是一个<a href="https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC"><strong>四元数</strong></a>,可以用来表示三维空间中点的旋转。</p>
+<p>其核心Loss函数为：</p>
+<p>$\mathcal L_{r}(x,v) &#x3D; \sum_{i&#x3D;1}^{N_0} \mathcal L_{v}(P(R(x_{i1}),v_{i1}),x_{i1}) \tag{1}$<br>其中$R\left (* \right )$表示为重建函数，$P \left (* \right )$表示将重建好的三维物体按照$v_{i1}$视角投影会二维平面。而$\mathcal L_{v}$为衡量$x_{i1}$和$v_{i1}$视角下的重投影结果之间的误差（<code>a function that measures the difference between two views</code>）。</p>
+<p>$\mathcal L_{s_1}(x_s,\hat x_s) &#x3D; \sum_{i&#x3D;1}^{N_s}\left( 1- \frac{x^i_s \cdot \hat x^i_s}{|x^i_s||\hat x^i_s|}\right) \tag{2}$</p>
+<p>$\mathcal L_{s_2}(x_s,\hat x_s) &#x3D; 1 - \frac{|x_s \bigodot \hat x_s|_1}{|x_s+\hat x_s + x_s \bigodot \hat x_s|_1} \tag{3}$</p>
+<p>$\mathcal L_v &#x3D; \mathcal L_s + \lambda_c \mathcal L_c \tag{4}$</p>
+<p>其中$\mathcal L_c$为<code>perceptual loss</code>输入为RGB图片。$\mathcal L_s$的输入为剪影。$\mathcal L_{s_1}$是计算两个mask之间的余弦距离（可能是代表相似度？？），作者使用了多尺度mask,$N_s$代表下采样的次数。 $\mathcal L_{s_2}$为IOU（intersection over union)函数，为的是约束其剪影尽可能重叠。正如上面的$\mathcal L_r(x,v)$所介绍的那也，以上的所有函数都是为了评价两张图片($x_s,\hat x_s$)之间的相似度,其中前者为<code>ground-truth</code>图片,后者为预测的图片。在此基础上，作者使用<code>GAN</code>网络来<strong>学习训练数据集中待重建物体不同视角的先验知识</strong>,而上面这个Loss函数是用来限制生成器的，根据原图和重投影图片之间的误差不同，来更新生成器的参数，以期获得更好的重建效果。</p>
+<p><img src="/images/paper/view_prior/example.jpg"></p>
+<p>可以看到，对于椅子，使用作者提出<code>视角先验</code>的方法，重建的结果从各个视角看上去都更加符合实际情况。 基于这种情况，作者使用判别器来给生成器提供不同视角的重建信息。</p>
+<p>$\mathcal L_d(x_{ij},v_{ij}) &#x3D; -log(Dis(P(R(x_{ij}),v_{ij}),v_{ij}))-\sum_{v_u \in \mathcal V ,, v_u \neq v_{ij}} \frac{ log(1- Dis(P(R(x_{ij}),v_{u}),v_{u}))}{|\mathcal V -1|}  \tag{5}$</p>
+<p>整个网络的输入为单张RGB的图片，生成器首先依据图片重建出一个对应的三维模型，再根据这张图片所对应的<code>相机视角</code>反投影回二维平面，获得的图片可以记为$x_{gt}$。接着，在从$\mathcal V$中选取任一与之前的<code>相机视角</code>不一致的的<code>相机视角</code>，并依据此相机视角，再一次投影会二维平面。这是，第一次投影所得的$x_{gt}$就可以当做真实数据，第二次投影所得就可以当做加数据，一同送入判别器进行判断。作者在文中提到，所有的视角都是存在于训练集中的（$\mathcal V$ be the set of all viewpoints in the training dataset）。<strong>这是否意味着对于一些在训练集中不存在的视角，该网络还是难以学习到其形状？</strong></p>
 <ul>
-<li>TexturePredictor</li>
+<li>Internal Pressure</li>
 </ul>
-<p>作者提出的纹理预测思路比较巧妙。首先在数据预处理过程中的$\hat{S}$与网络训练过程的$\hat{V}$并不一致，实际上$\hat{V} &#x3D;\mathcal{P}(\hat{S})$，$\mathcal{P}$表示将一个点数为642，面片数为1280的二十面体投影至$\hat{S}$。在将二十面体投影至$\hat{S}$前，作者对二十面体的点，面做了一次<em><strong>重新排序</strong></em>，使他们的顺序按照独立点，左侧点，右侧点排列。而投影操作$\mathcal{P}$作者在代码注释中写了这么一句话：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">triangle_direction_intersection</span>(<span class="params">tri, trg</span>):</span><br><span class="line">    Finds where an origin-centered ray going <span class="keyword">in</span> direction trg intersects a triangle.</span><br><span class="line">    Args:</span><br><span class="line">        tri: <span class="number">3</span> X <span class="number">3</span> vertex locations. tri[<span class="number">0</span>, :] <span class="keyword">is</span> 0th vertex.</span><br></pre></td></tr></table></figure>
-<p><img src="/images/paper/bird_net/project.png"></p>
-<p>多边形相当于二十面体，而中间的三角形就相当于$\hat{S}$,其边就可以看作三角面片。投影操作就是求解沿着二十面体点的方法，求与三角片面的交点。</p>
-<p>有了上面的基础，作者就认为由于所有的预测3D模型都是从同一个平均模型在保持拓扑变化的基础上变化得到的原因，所以每个所预测3D模型的点语义都是一致，即编号为1的点若代表嘴巴，则所有预测模型中编号为1的点就是所预测的嘴巴那个点。那么对于所预测的纹理图片来说，只要知道了最原始的那个二十面体的UV图，便可以对预测3D模型进行渲染(rendering)。</p>
-<p><img src="/images/paper/bird_net/rendering.png"></p>
-<ul>
-<li>Loss函数介绍</li>
-</ul>
-<p>** 注1：$\mathcal{R}$（<em>）和$G$（</em>）分别表示渲染(rendering)和双线性取样(bilinear sampling),其中$\mathcal{R}$（<em>）引用自</em>*<a href="https://arxiv.org/abs/1711.07566">Hiroharu Kato, etc. Neural 3D Mesh Renderer</a></p>
-<p>** 注2：$L_{texture}$函数表示的percetual loss,较传统的pixel loss相比更能从人的感知角度来评价两幅图像的相似度 引用自**<a href="https://arxiv.org/abs/1801.03924">Zhang,R etc. The unreasonable effectiveness of deep networks as a perceptual metric. In CVPR 2018</a></p>
-<p>$L_1 &#x3D; L_{reproj} + L_{mask} + L_{cam} + L_{smooth} + L_{def} + L_{vert2kp}$</p>
-<p>$L_{reproj} &#x3D; \sum_{i}^{}||x_{i}-\tilde{\pi}_{i}(AV_{i})||_{2}$，其中 $\tilde{\pi}（*）$表示投影操作，其值是从<code>structure-from-motion</code>中获得参数</p>
-<p>$L_{mask} &#x3D; \sum_i||S_{i}-\mathcal{R}(V_{i},F,\tilde{\pi}_{i})||_{2}$，$S_{i}$表示ground-truth的Mask。</p>
-<p>$L_{cam} &#x3D; \sum_{i}||\tilde{\pi}_{i}-{\pi}_{i}||_{2}$，$\pi_{i}$表示估计的相机旋转参数，由于旋转参数是由四元数表示，那么就是利用hamilton_product来求解估计与实际的误差</p>
-<p>$L_{smooth} &#x3D; ||LV||_{2}$，$L$表示Laplacian光滑，其目的是为了最小化平均曲率</p>
-<p>$L_{def}&#x3D;||\Delta{V}||_{2}$，这个是一个正则项</p>
-<p>$L_{vert2kp} &#x3D; \frac{1}{|K|}\sum_{k}\sum_{v}-A_{k,v}logA_{k,v}$，这个是一个k*V的矩阵，每一行表示一个特征点，而每一列表示这个特征点在各个点的概率分布。初始化是，每个特征点在各个点上的概率分布是一致的，进过迭代之后，作者期望形成一个类似与one-hot的矩阵。</p>
-<p>$L_2 &#x3D; L_{texture} + L_{dt}$</p>
-<p>$L_{texture} &#x3D; \sum_{i}dist(\mathcal{S_{i}}\bigodot\mathcal{I_{i}},\mathcal{S_{i}}\bigodot\mathcal{R}(V_{i},F,\tilde{\pi_{i}},I^{uv}))$</p>
-<p>$L_{dt} &#x3D; \sum_{i}\sum_{u,v}G(\mathcal{D_{S_{i}};F_{i}}(u,v)$， $\mathcal{D_{S_{i}}}$表示对于每一个Mask的distance transform。</p>
-<p>TexturePredictor会输出一个<code>texture flow</code>，也就是$\mathcal{F} \in \mathbb{R}^{H_{uv} * W_{uv} * 2}$,其中$H_{uv}*W_{uv}$分别表示UVmap的长和宽，而$\mathcal{F}(x,y)$对应的就是input image(x,y)。最后的UVmap就是$I^{uv} &#x3D; G(I;\mathcal{F})$。而这个<code>texture flow</code>不是神经网络的直接输出产物，而神经网络直接输出的是一个表示体现了UV图和Img的对应位置的关系，而其还是会与另一个<code>UVsample</code>进行取样。而<code>UVsample</code>表示的是UV图与$\hat{V}$上各个点的一个对应关系。这两个东西结合在一起后就可以体现UVmap、$\hat{V}$、img三者之间的关系。</p>
-<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/bird_net/exp.png"></p>
+<p>这是一个较弱的先验知识，这个是受启发与<code>Visual hull</code>重建技术。通俗的来讲，就是使重建结果，在不改变投影误差的限制下，尽可能的朝着某个方向膨胀。作者采用的方法就是对每个点施加了一个沿着所在面片法向量的梯度（Concretely, we add a gradient along the normal of the face for each vertex of a triangle face. Let p i be one of the vertices of a triangle face, and n be the normal of the face）。为了实现这一效果，需要添加一个函数，该函数需要满足:<br>$\frac{\partial \mathcal L_{p}(p_i)}{\partial p_i} &#x3D; -n  \tag{6}$</p>
+<p>即关于$p_i$点的偏导等于该点所在的面片的法向量$\overrightarrow n$。文中没有提及具体的函数选择。</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/view_prior/exp1.jpg"></p>
+<p>作者在文中提到，对于手机，沙发，飞机等物体。由于其形状单一，获取的<code>多视角先验</code>可以很好的解决在不可见视角下，重建效果差的问题。但是对于灯(lamp）这类物体，由于其形状的多样性，<strong>现有的网络并不能很好解决这个问题</strong>。</p>
 ]]></content>
       <categories>
         <category>论文阅读</category>
-        <category>三维动物重建</category>
+        <category>刚性物体重建</category>
       </categories>
       <tags>
         <tag>深度学习</tag>
-        <tag>三维重建</tag>
-        <tag>纹理渲染</tag>
+        <tag>视角先验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;论文阅读&gt;(四)Canonical Surface Mapping via Geometric Cycle Consistency</title>
+    <url>/2019/08/09/6021dd11/</url>
+    <content><![CDATA[<h2 id="Canonical-Surface-Mapping-via-Geometric-Cycle-Consistency"><a href="#Canonical-Surface-Mapping-via-Geometric-Cycle-Consistency" class="headerlink" title="&lt;论文阅读&gt;Canonical Surface Mapping via Geometric Cycle Consistency"></a>&lt;论文阅读&gt;Canonical Surface Mapping via Geometric Cycle Consistency</h2><p><img src="/images/paper/CSM/example.jpg"></p>
+<p><a href="https://arxiv.org/abs/1907.10043"><strong>论文链接</strong></a></p>
+<p><a href="https://github.com/nileshkulkarni/csm"><strong>Github链接</strong></a></p>
+<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
+<li>利用三维Template做为中介，弱化了实现稠密的，准确的多张图片对其所需的监督条件。</li>
+<li>已有的图片到图片，图片到三维模型的映射关系的形成工作，不外乎依赖于人工手动标记对应点或者按照某些形变规则，将形变施加于图片A获得图片B,从而获得了A,B之间的对应关系。这些方法对于光照，角度等变量的鲁棒性较弱。</li>
+</ul>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><ul>
+<li>Preliminaries</li>
+</ul>
+<p>作者利用两个参数将三维template平面化，$\overrightarrow u(u,v)$ 其中$u \in (0,1) v \in (0,1)$ 并且定义$ \phi(\overrightarrow u) $为恢复三维$(x,y,z)$的操作。<br>作者定义$\mathcal C \equiv f_\theta(I)$ 其中$f_\theta(I)$表示网络参数，作者将网络的预测行为抽象定义为$\mathcal C$</p>
+<ul>
+<li>Geometric Cycle Consistency Loss</li>
+</ul>
+<p>$ \mathcal L_{cyc} &#x3D; \sum_{p\in I_f} ||\overline p - p ||_{2}^{2} \quad;\quad \overline p &#x3D; \pi(\phi(\mathcal {C}[p])) \tag{1}$</p>
+<p>上面这个就是作者提出的一致性Loss,很好理解，就是像素$p$先经过网络映射在三维template上，接着投影回原图，两者之间的距离要尽可能小</p>
+<ul>
+<li>Incorporating Visibility Constraints</li>
+</ul>
+<p>由于相机视角的原因，任何物体都会存在一个自遮挡的问题，而这个问题在预测图片稠密映射时就会产生一定的干扰。比方说，从正面看过去，一只鸟类的喙很有可能与其尾巴处于一条线上，所以当投影至二维像平面式，尾巴上某点就会被喙给遮挡。在这种情况下，如果映射关系预测网络将图片上的喙映射在三维template的尾巴上，最后投影回像平面计算$\mathcal L_{cyc} $的时候，依旧Loss会很小。所以作者就提出了：</p>
+<p>$\mathcal L_{vis} &#x3D; \sum_{p \in I_f}max(0,z_p - D_{\pi}[\overline p]) \tag{2}$</p>
+<p>其中$D_{\pi}[\overline p]$是三维template在对应相机参数下的深度图。</p>
+<ul>
+<li>Mask Re-projection Loss &amp; Multi-Hypothesis Pose Prediction</li>
+</ul>
+<p>作者为了彻底摆脱对基准相机参数的需求，又新增了一个网络$g_{\theta^{‘}}$ 这个网络是用来预测相机，并且为了避免<code>局部最小解(local minima)</code>，作者利用预测多个相机参数来达到这个目的。最后，作者使用一个约束来指导相机参数$\pi$的预测</p>
+<p>$ \mathcal L_{mask} &#x3D; ||f_{render}(S,\pi) - I_f||^2 \tag{3}$</p>
+<p>其中$f_{render}$是在预测相机参数下，三维template投影至二维的Mask。 正如上面提到，作者会一次性预测多个相机参数，所以有${ (\pi_i,c_i)} \equiv g_{\theta’}(I) \quad i&#x3D;1..8 $,其中$c_{i}$表示每个预测结果的概率是多少 。</p>
+<p>最后，总的约束函数为：<br>$\mathcal L_{tot} &#x3D; \mathcal L_{div}(g_{\theta’}(I)) + \sum_{i&#x3D;1}^{N_c}c_i(\mathcal L_{cyc}^i + \mathcal L_{vis}^i + \mathcal L_{mask}^i) \tag{4}$</p>
+<p><img src="/images/paper/CSM/net.jpg"></p>
+<p>网络结构如图所示，对于2D-3D的映射关系预测，作者是利用一个U-Net结构（红色标注），输出为$B*4*H*W$的特征图，其中<code>[:,:3,:,:]</code>表示的是预测的三维坐标。<code>[:,3,:,:]</code>表示的是预测的<code>mask</code>。$H,W$分布代表输入图像的长和宽。$g_{\theta’}$表示相机参数预测网络，具体上，作者首先用<code>ResNet18</code>提取图片特征，接着送入<code>FC</code>层预测相关相机参数。作者在相机参数的预测网络上，有很多设定还是十分有趣的，有兴趣可以找来看下。</p>
+<ul>
+<li>大致映射</li>
+</ul>
+<p>之所以论文里提到<code>approximate</code>这个词呢，是因为，从代码上来看，$f_{\theta’}$的输出$B<em>H</em>W*4$中关于<code>2D pixel to 3D vertex</code>的映射并不一定是在template mesh上，对于网络输出的一对UV坐标(u,v)，作者首先是找到离这对坐标最近的面片是哪一个，接着计算该点关于这个面片的重心坐标(barycentric coordinate),最后根据重心坐标和面片三个顶点的位置坐标，得到最终的3D坐标，同时也确保了这个坐标在template mesh上。可以想象一个四面体（A-BCD），网络预测的3D坐标可能是A点，那么作者就是找到A点在BCD上的对应点。</p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/CSM/exp1.jpg"><br><img src="/images/paper/CSM/exp2.jpg"></p>
+<p>咋一看结果挺好，但是不知道作者为什么没有把CMR带基准相机参数的评测结果放出来，从消融实验的结果来看，在不利用预测相机参数的情况下，CSM结果并没有比不使用预测相机参数的CMR好太多，甚至在<code>cars</code>类别上的评分还低些</p>
+]]></content>
+      <categories>
+        <category>论文阅读</category>
+        <category>Surface Mapping</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>CSM</tag>
       </tags>
   </entry>
   <entry>
@@ -1073,51 +1185,9 @@
         <category>三维人体重建</category>
       </categories>
       <tags>
-        <tag>深度学习</tag>
         <tag>三维重建</tag>
-        <tag>SMPL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>&lt;论文阅读&gt;(五)Learning View Priors for Single-View 3D Reconstruction</title>
-    <url>/2019/08/19/54bbc8cd/</url>
-    <content><![CDATA[<h2 id="Learning-View-Priors-for-Single-view-3D-Reconstruction"><a href="#Learning-View-Priors-for-Single-view-3D-Reconstruction" class="headerlink" title="&lt;论文阅读&gt;Learning View Priors for Single-view 3D Reconstruction"></a>&lt;论文阅读&gt;Learning View Priors for Single-view 3D Reconstruction</h2><p><a href="https://arxiv.org/pdf/1811.10719.pdf">论文链接</a></p>
-<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
-<li>提出了新的<code>视角先验</code>方法，该方法弥补了<code>对称先验</code>的不足，虽然重建物体大多是符合对称先验的，但是在拍摄照片的那一瞬间，由于拍摄角度和物体本身发生的一些形变等原因，使得待重建的物体本身并不是对称，这样便会使得重建效果不佳。</li>
-<li>提出了<code>internal pressure</code>,即点可在与面片垂直的外方向尽可能膨胀。使得重建的物体更加饱满，看起来更加真实。</li>
-</ul>
-<h3 id="Methond"><a href="#Methond" class="headerlink" title="Methond"></a>Methond</h3><blockquote>
-<p>本文主要介绍其中的单图重建工作，方法可以很好的泛化为多图重建方法。</p>
-</blockquote>
-<p><img src="/images/paper/view_prior/single_net.jpg"></p>
-<ul>
-<li>View prior</li>
-</ul>
-<p>其核心Loss函数为：</p>
-<p>$\mathcal L_{r}(x,v) &#x3D; \sum_{i&#x3D;1}^{N_0} \mathcal L_{v}(P(R(x_{i1}),v_{i1}),x_{i1}) \tag{1}$<br>其中$R\left (* \right )$表示为重建函数，$P \left (* \right )$表示将重建好的三维物体按照$v_{i1}$视角投影会二维平面。而$\mathcal L_{v}$为衡量$x_{i1}$和$v_{i1}$视角下的重投影结果之间的误差（<code>a function that measures the difference between two views</code>）。</p>
-<p>$\mathcal L_{s_1}(x_s,\hat x_s) &#x3D; \sum_{i&#x3D;1}^{N_s}\left( 1- \frac{x^i_s \cdot \hat x^i_s}{|x^i_s||\hat x^i_s|}\right) \tag{2}$</p>
-<p>$\mathcal L_{s_2}(x_s,\hat x_s) &#x3D; 1 - \frac{|x_s \bigodot \hat x_s|_1}{|x_s+\hat x_s + x_s \bigodot \hat x_s|_1} \tag{3}$</p>
-<p>$\mathcal L_v &#x3D; \mathcal L_s + \lambda_c \mathcal L_c \tag{4}$</p>
-<p>其中$\mathcal L_c$为<code>perceptual loss</code>输入为RGB图片。$\mathcal L_s$的输入为剪影。$\mathcal L_{s_1}$是计算两个mask之间的余弦距离（可能是代表相似度？？），作者使用了多尺度mask,$N_s$代表下采样的次数。 $\mathcal L_{s_2}$为IOU（intersection over union)函数，为的是约束其剪影尽可能重叠。正如上面的$\mathcal L_r(x,v)$所介绍的那也，以上的所有函数都是为了评价两张图片($x_s,\hat x_s$)之间的相似度,其中前者为<code>ground-truth</code>图片,后者为预测的图片。在此基础上，作者使用<code>GAN</code>网络来<strong>学习训练数据集中待重建物体不同视角的先验知识</strong>,而上面这个Loss函数是用来限制生成器的，根据原图和重投影图片之间的误差不同，来更新生成器的参数，以期获得更好的重建效果。</p>
-<p><img src="/images/paper/view_prior/example.jpg"></p>
-<p>可以看到，对于椅子，使用作者提出<code>视角先验</code>的方法，重建的结果从各个视角看上去都更加符合实际情况。 基于这种情况，作者使用判别器来给生成器提供不同视角的重建信息。</p>
-<p>$\mathcal L_d(x_{ij},v_{ij}) &#x3D; -log(Dis(P(R(x_{ij}),v_{ij}),v_{ij}))-\sum_{v_u \in \mathcal V ,, v_u \neq v_{ij}} \frac{ log(1- Dis(P(R(x_{ij}),v_{u}),v_{u}))}{|\mathcal V -1|}  \tag{5}$</p>
-<p>整个网络的输入为单张RGB的图片，生成器首先依据图片重建出一个对应的三维模型，再根据这张图片所对应的<code>相机视角</code>反投影回二维平面，获得的图片可以记为$x_{gt}$。接着，在从$\mathcal V$中选取任一与之前的<code>相机视角</code>不一致的的<code>相机视角</code>，并依据此相机视角，再一次投影会二维平面。这是，第一次投影所得的$x_{gt}$就可以当做真实数据，第二次投影所得就可以当做加数据，一同送入判别器进行判断。作者在文中提到，所有的视角都是存在于训练集中的（$\mathcal V$ be the set of all viewpoints in the training dataset）。<strong>这是否意味着对于一些在训练集中不存在的视角，该网络还是难以学习到其形状？</strong></p>
-<ul>
-<li>Internal Pressure</li>
-</ul>
-<p>这是一个较弱的先验知识，这个是受启发与<code>Visual hull</code>重建技术。通俗的来讲，就是使重建结果，在不改变投影误差的限制下，尽可能的朝着某个方向膨胀。作者采用的方法就是对每个点施加了一个沿着所在面片法向量的梯度（Concretely, we add a gradient along the normal of the face for each vertex of a triangle face. Let p i be one of the vertices of a triangle face, and n be the normal of the face）。为了实现这一效果，需要添加一个函数，该函数需要满足:<br>$\frac{\partial \mathcal L_{p}(p_i)}{\partial p_i} &#x3D; -n  \tag{6}$</p>
-<p>即关于$p_i$点的偏导等于该点所在的面片的法向量$\overrightarrow n$。文中没有提及具体的函数选择。</p>
-<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/view_prior/exp1.jpg"></p>
-<p>作者在文中提到，对于手机，沙发，飞机等物体。由于其形状单一，获取的<code>多视角先验</code>可以很好的解决在不可见视角下，重建效果差的问题。但是对于灯(lamp）这类物体，由于其形状的多样性，<strong>现有的网络并不能很好解决这个问题</strong>。</p>
-]]></content>
-      <categories>
-        <category>论文阅读</category>
-        <category>刚性物体重建</category>
-      </categories>
-      <tags>
         <tag>深度学习</tag>
-        <tag>视角先验</tag>
+        <tag>SMPL</tag>
       </tags>
   </entry>
   <entry>
@@ -1252,56 +1322,6 @@
         <tag>Marching Cubes</tag>
         <tag>函数空间</tag>
         <tag>KL散度</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>&lt;论文阅读&gt;(四)Canonical Surface Mapping via Geometric Cycle Consistency</title>
-    <url>/2019/08/09/6021dd11/</url>
-    <content><![CDATA[<h2 id="Canonical-Surface-Mapping-via-Geometric-Cycle-Consistency"><a href="#Canonical-Surface-Mapping-via-Geometric-Cycle-Consistency" class="headerlink" title="&lt;论文阅读&gt;Canonical Surface Mapping via Geometric Cycle Consistency"></a>&lt;论文阅读&gt;Canonical Surface Mapping via Geometric Cycle Consistency</h2><p><img src="/images/paper/CSM/example.jpg"></p>
-<p><a href="https://arxiv.org/abs/1907.10043"><strong>论文链接</strong></a></p>
-<p><a href="https://github.com/nileshkulkarni/csm"><strong>Github链接</strong></a></p>
-<h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
-<li>利用三维Template做为中介，弱化了实现稠密的，准确的多张图片对其所需的监督条件。</li>
-<li>已有的图片到图片，图片到三维模型的映射关系的形成工作，不外乎依赖于人工手动标记对应点或者按照某些形变规则，将形变施加于图片A获得图片B,从而获得了A,B之间的对应关系。这些方法对于光照，角度等变量的鲁棒性较弱。</li>
-</ul>
-<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><ul>
-<li>Preliminaries</li>
-</ul>
-<p>作者利用两个参数将三维template平面化，$\overrightarrow u(u,v)$ 其中$u \in (0,1) v \in (0,1)$ 并且定义$ \phi(\overrightarrow u) $为恢复三维$(x,y,z)$的操作。<br>作者定义$\mathcal C \equiv f_\theta(I)$ 其中$f_\theta(I)$表示网络参数，作者将网络的预测行为抽象定义为$\mathcal C$</p>
-<ul>
-<li>Geometric Cycle Consistency Loss</li>
-</ul>
-<p>$ \mathcal L_{cyc} &#x3D; \sum_{p\in I_f} ||\overline p - p ||_{2}^{2} \quad;\quad \overline p &#x3D; \pi(\phi(\mathcal {C}[p])) \tag{1}$</p>
-<p>上面这个就是作者提出的一致性Loss,很好理解，就是像素$p$先经过网络映射在三维template上，接着投影回原图，两者之间的距离要尽可能小</p>
-<ul>
-<li>Incorporating Visibility Constraints</li>
-</ul>
-<p>由于相机视角的原因，任何物体都会存在一个自遮挡的问题，而这个问题在预测图片稠密映射时就会产生一定的干扰。比方说，从正面看过去，一只鸟类的喙很有可能与其尾巴处于一条线上，所以当投影至二维像平面式，尾巴上某点就会被喙给遮挡。在这种情况下，如果映射关系预测网络将图片上的喙映射在三维template的尾巴上，最后投影回像平面计算$\mathcal L_{cyc} $的时候，依旧Loss会很小。所以作者就提出了：</p>
-<p>$\mathcal L_{vis} &#x3D; \sum_{p \in I_f}max(0,z_p - D_{\pi}[\overline p]) \tag{2}$</p>
-<p>其中$D_{\pi}[\overline p]$是三维template在对应相机参数下的深度图。</p>
-<ul>
-<li>Mask Re-projection Loss &amp; Multi-Hypothesis Pose Prediction</li>
-</ul>
-<p>作者为了彻底摆脱对基准相机参数的需求，又新增了一个网络$g_{\theta^{‘}}$ 这个网络是用来预测相机，并且为了避免<code>局部最小解(local minima)</code>，作者利用预测多个相机参数来达到这个目的。最后，作者使用一个约束来指导相机参数$\pi$的预测</p>
-<p>$ \mathcal L_{mask} &#x3D; ||f_{render}(S,\pi) - I_f||^2 \tag{3}$</p>
-<p>其中$f_{render}$是在预测相机参数下，三维template投影至二维的Mask。 正如上面提到，作者会一次性预测多个相机参数，所以有${ (\pi_i,c_i)} \equiv g_{\theta’}(I) \quad i&#x3D;1..8 $,其中$c_{i}$表示每个预测结果的概率是多少 。</p>
-<p>最后，总的约束函数为：<br>$\mathcal L_{tot} &#x3D; \mathcal L_{div}(g_{\theta’}(I)) + \sum_{i&#x3D;1}^{N_c}c_i(\mathcal L_{cyc}^i + \mathcal L_{vis}^i + \mathcal L_{mask}^i) \tag{4}$</p>
-<p><img src="/images/paper/CSM/net.jpg"></p>
-<p>网络结构如图所示，对于2D-3D的映射关系预测，作者是利用一个U-Net结构（红色标注），输出为$B*4*H*W$的特征图，其中<code>[:,:3,:,:]</code>表示的是预测的三维坐标。<code>[:,3,:,:]</code>表示的是预测的<code>mask</code>。$H,W$分布代表输入图像的长和宽。$g_{\theta’}$表示相机参数预测网络，具体上，作者首先用<code>ResNet18</code>提取图片特征，接着送入<code>FC</code>层预测相关相机参数。作者在相机参数的预测网络上，有很多设定还是十分有趣的，有兴趣可以找来看下。</p>
-<ul>
-<li>大致映射</li>
-</ul>
-<p>之所以论文里提到<code>approximate</code>这个词呢，是因为，从代码上来看，$f_{\theta’}$的输出$B<em>H</em>W*4$中关于<code>2D pixel to 3D vertex</code>的映射并不一定是在template mesh上，对于网络输出的一对UV坐标(u,v)，作者首先是找到离这对坐标最近的面片是哪一个，接着计算该点关于这个面片的重心坐标(barycentric coordinate),最后根据重心坐标和面片三个顶点的位置坐标，得到最终的3D坐标，同时也确保了这个坐标在template mesh上。可以想象一个四面体（A-BCD），网络预测的3D坐标可能是A点，那么作者就是找到A点在BCD上的对应点。</p>
-<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p><img src="/images/paper/CSM/exp1.jpg"><br><img src="/images/paper/CSM/exp2.jpg"></p>
-<p>咋一看结果挺好，但是不知道作者为什么没有把CMR带基准相机参数的评测结果放出来，从消融实验的结果来看，在不利用预测相机参数的情况下，CSM结果并没有比不使用预测相机参数的CMR好太多，甚至在<code>cars</code>类别上的评分还低些</p>
-]]></content>
-      <categories>
-        <category>论文阅读</category>
-        <category>Surface Mapping</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-        <tag>CSM</tag>
       </tags>
   </entry>
 </search>

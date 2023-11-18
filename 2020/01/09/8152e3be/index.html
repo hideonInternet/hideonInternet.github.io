@@ -27,16 +27,16 @@
 <meta property="og:site_name" content="Diver">
 <meta property="og:description" content="这篇文章不包含透视变换（projective&#x2F;perspective transformation），而将重点放在仿射变换（affine transformation），将介绍仿射变换所包含的各种变换，以及变换矩阵该如何理解记忆。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png">
+<meta property="og:image" content="https://hideoninternet.github.io/images/others/transform/VKWszD.png">
 <meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Cvenn.png">
 <meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Cexplanation.png">
 <meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Ccoord.png">
 <meta property="og:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5Cconclusion.png">
 <meta property="article:published_time" content="2020-01-09T04:09:53.000Z">
-<meta property="article:modified_time" content="2020-02-07T06:52:04.000Z">
+<meta property="article:modified_time" content="2023-11-18T14:39:44.718Z">
 <meta property="article:author" content="diver">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hideoninternet.github.io/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png">
+<meta name="twitter:image" content="https://hideoninternet.github.io/images/others/transform/VKWszD.png">
 
 <link rel="canonical" href="https://hideoninternet.github.io/2020/01/09/8152e3be/">
 
@@ -207,7 +207,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-07 14:52:04" itemprop="dateModified" datetime="2020-02-07T14:52:04+08:00">2020-02-07</time>
+                <time title="修改时间：2023-11-18 22:39:44" itemprop="dateModified" datetime="2023-11-18T22:39:44+08:00">2023-11-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -250,7 +250,7 @@
 
       
         <h3 id="仿射变换：平移、旋转、放缩、剪切、反射"><a href="#仿射变换：平移、旋转、放缩、剪切、反射" class="headerlink" title="仿射变换：平移、旋转、放缩、剪切、反射"></a>仿射变换：平移、旋转、放缩、剪切、反射</h3><p>仿射变换包括如下所有变换，以及这些变换任意次序次数的组合：</p>
-<p><img src="/%5Cimages%5Cothers%5Ctransform%5CVKWszD.png"></p>
+<p><img src="/images/others/transform/VKWszD.png"></p>
 <p><strong>平移</strong>（translation）和<strong>旋转</strong>（rotation）顾名思义，两者的组合称之为<strong>欧式变换</strong>（Euclidean transformation）或<strong>刚体变换</strong>（rigid transformation）</p>
 <p><strong>放缩</strong>（scaling）可进一步分为uniform scaling和non-uniform scaling，前者每个坐标轴放缩系数相同（各向同性），后者不同；如果放缩系数为负，则会叠加上<strong>反射</strong>（reflection）——reflection可以看成是特殊的scaling</p>
 <p><strong>刚体变换</strong>+uniform scaling 称之为，<strong>相似变换</strong>（similarity transformation），即平移+旋转+各向同性的放缩</p>
