@@ -33,8 +33,8 @@
 <meta property="article:published_time" content="2019-09-28T07:36:22.000Z">
 <meta property="article:modified_time" content="2020-02-17T03:16:52.000Z">
 <meta property="article:author" content="diver">
-<meta property="article:tag" content="旋转矩阵">
 <meta property="article:tag" content="欧拉角">
+<meta property="article:tag" content="旋转矩阵">
 <meta property="article:tag" content="四元数">
 <meta property="article:tag" content="轴角">
 <meta name="twitter:card" content="summary">
@@ -317,8 +317,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/" rel="tag"># 旋转矩阵</a>
               <a href="/tags/%E6%AC%A7%E6%8B%89%E8%A7%92/" rel="tag"># 欧拉角</a>
+              <a href="/tags/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5/" rel="tag"># 旋转矩阵</a>
               <a href="/tags/%E5%9B%9B%E5%85%83%E6%95%B0/" rel="tag"># 四元数</a>
               <a href="/tags/%E8%BD%B4%E8%A7%92/" rel="tag"># 轴角</a>
           </div>
@@ -426,6 +426,11 @@
       </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:shichen_sun@foxmail.com" title="E-Mail → mailto:shichen_sun@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
 
 
 
@@ -515,6 +520,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
