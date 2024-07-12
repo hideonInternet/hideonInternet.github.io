@@ -162,17 +162,17 @@
 <li><p>基于信号的真抢占机制：尽管基于协作的抢占机制能够缓解长时间 GC 导致整个程序无法工作和大多数 Goroutine 饥饿问题，但是还是有部分情况下，Go调度器有无法被抢占的情况，例如，for 循环或者垃圾回收长时间占用线程，为了解决这些问题， Go1.14 引入了基于信号的抢占式调度机制，能够解决 GC 垃圾回收和栈扫描时存在的问题。</p>
 </li>
 </ol>
-<h1 id="图解常见调度场景"><a href="#图解常见调度场景" class="headerlink" title="图解常见调度场景"></a>图解常见调度场景</h1><h2 id="创建G"><a href="#创建G" class="headerlink" title="创建G"></a>创建G</h2><p>正在 M1 上运行的P，有一个G1，通过go func() 创建 G2 后，由于<strong>局部性</strong>，G2优先放入P的本地队列；<br>![[create_g.png]]</p>
-<h2 id="超过本地队列最大长度"><a href="#超过本地队列最大长度" class="headerlink" title="超过本地队列最大长度"></a>超过本地队列最大长度</h2><p>如果 P 本地队列最多能存 4 个G（实际上是256个），正在 M1 上运行的 G2 要通过go func()创建 6 个G，那么，前 4 个G 放在 P 本地队列中，G2 创建了第 5 个 G（G7）时，P 本地队列中前一半和 G7 一起打乱顺序放入全局队列，P 本地队列剩下的 G 往前移动，G2 创建的第 6 个 G（G8）时，放入 P 本地队列中，因为还有空间；<br>![[exceed_local_limit.png]]</p>
+<h1 id="图解常见调度场景"><a href="#图解常见调度场景" class="headerlink" title="图解常见调度场景"></a>图解常见调度场景</h1><h2 id="创建G"><a href="#创建G" class="headerlink" title="创建G"></a>创建G</h2><p>正在 M1 上运行的P，有一个G1，通过go func() 创建 G2 后，由于<strong>局部性</strong>，G2优先放入P的本地队列；<br>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;create_g.png]]</p>
+<h2 id="超过本地队列最大长度"><a href="#超过本地队列最大长度" class="headerlink" title="超过本地队列最大长度"></a>超过本地队列最大长度</h2><p>如果 P 本地队列最多能存 4 个G（实际上是256个），正在 M1 上运行的 G2 要通过go func()创建 6 个G，那么，前 4 个G 放在 P 本地队列中，G2 创建了第 5 个 G（G7）时，P 本地队列中前一半和 G7 一起打乱顺序放入全局队列，P 本地队列剩下的 G 往前移动，G2 创建的第 6 个 G（G8）时，放入 P 本地队列中，因为还有空间；<br>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;exceed_local_limit.png]]</p>
 <h2 id="全局队列获取G"><a href="#全局队列获取G" class="headerlink" title="全局队列获取G"></a>全局队列获取G</h2><p>创建新的 G 时，运行的 G 会尝试唤醒其他空闲的 M 绑定 P 去执行，如果 G2 唤醒了M2，M2 绑定了一个 P2，会先运行 M2 的 G0，这时 M2 没有从 P2 的本地队列中找到 G，会进入自旋状态（spinning），自旋状态的 M2 会尝试从全局空闲线程队列里面获取 G，放到 P2 本地队列去执行，获取的数量满足公式：n &#x3D; min(len(globrunqsize)&#x2F;GOMAXPROCS + 1, len(localrunsize&#x2F;2))，含义是每个P应该从全局队列承担的 G 数量，为了提高效率，不能太多，要给其他 P 留点；</p>
-<p>![[global_fetch.png]]</p>
+<p>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;global_fetch.png]]</p>
 <h2 id="局部队列获取G"><a href="#局部队列获取G" class="headerlink" title="局部队列获取G"></a>局部队列获取G</h2><p>自旋状态的 M 会寻找可运行的 G。M优先从全局队列中寻找，如果全局队列为空，则会从其他 P 偷取 G 来执行，个数是其他 P 运行队列的一半；</p>
-<p>![[local_fetch.png]]</p>
+<p>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;local_fetch.png]]</p>
 <h2 id="发生系统调用或者执行cgo"><a href="#发生系统调用或者执行cgo" class="headerlink" title="发生系统调用或者执行cgo"></a>发生系统调用或者执行cgo</h2><p>如果 G 发生系统调度或者执行cgo，其所在的 M 也会阻塞，因为会进入内核状态等待系统资源，和 M 绑定的 P 会寻找空闲的 M 执行，这是为了提高效率，不能让 P 本地队列的 G 因所在 M 进入阻塞状态而无法执行；需要说明的是，如果是 M 上的 G 进入 Channel 阻塞，则该 M 不会一起进入阻塞，因为 Channel 数据传输涉及内存拷贝，不涉及系统资源等待；</p>
-<p>![[system_call.png]]</p>
-<h2 id="退出系统调用"><a href="#退出系统调用" class="headerlink" title="退出系统调用"></a>退出系统调用</h2><p>如果刚才进入系统调用的 G2 解除了阻塞，其所在的 M1 会寻找 P 去执行，优先找原来的 P，发现没有找到，则其上的 G2 会进入全局队列，等其他 M 获取执行，M1 进入空闲队列；<br>![[exit_call.png]]</p>
-<h2 id="运行结束"><a href="#运行结束" class="headerlink" title="运行结束"></a>运行结束</h2><p>M1 上的 G1 运行完成后（调用goexit()函数），M1 上运行的 Goroutine 会切换为 G0，G0 负责调度协程的切换（运行schedule() 函数），从 M1 上 P 的本地运行队列获取 G2 去执行（函数execute()）；注意：这里 G0 是程序启动时的线程 M（也叫M0）的系统栈表示的 G 结构体，负责 M 上 G 的调度；<br>![[finish_g.png]]</p>
-<p><a href="https://www.yuque.com/aceld/golang/ithv8f">golang修养之道</a></p>
+<p>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;system_call.png]]</p>
+<h2 id="退出系统调用"><a href="#退出系统调用" class="headerlink" title="退出系统调用"></a>退出系统调用</h2><p>如果刚才进入系统调用的 G2 解除了阻塞，其所在的 M1 会寻找 P 去执行，优先找原来的 P，发现没有找到，则其上的 G2 会进入全局队列，等其他 M 获取执行，M1 进入空闲队列；<br>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;exit_call.png]]</p>
+<h2 id="运行结束"><a href="#运行结束" class="headerlink" title="运行结束"></a>运行结束</h2><p>M1 上的 G1 运行完成后（调用goexit()函数），M1 上运行的 Goroutine 会切换为 G0，G0 负责调度协程的切换（运行schedule() 函数），从 M1 上 P 的本地运行队列获取 G2 去执行（函数execute()）；注意：这里 G0 是程序启动时的线程 M（也叫M0）的系统栈表示的 G 结构体，负责 M 上 G 的调度；<br>![[&#x2F;images&#x2F;work&#x2F;golang_schedual&#x2F;finish_g.png]]</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.yuque.com/aceld/golang/ithv8f">golang修养之道</a></p>
 ]]></content>
       <tags>
         <tag>golang基础</tag>
