@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>C++中栈和堆的区别</title>
-    <url>/blog/2019/12/24/93b6f39e/</url>
+    <url>/2019/12/24/93b6f39e/</url>
     <content><![CDATA[<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>一个由C&#x2F;C++编译的程序占用的内存分为以下几个部分</p>
 <ul>
 <li><strong>栈</strong>（stack) 由编译器自动分配释放，存放函数的参数值，局部变量的值等。其操作方式类似于数据结构中的栈</li>
@@ -51,7 +51,7 @@
   </entry>
   <entry>
     <title>Cgo实践</title>
-    <url>/blog/2024/04/18/c5b97df7/</url>
+    <url>/2024/04/18/c5b97df7/</url>
     <content><![CDATA[<h1 id="什么是cgo"><a href="#什么是cgo" class="headerlink" title="什么是cgo"></a>什么是cgo</h1><p>一句话概括，cgo是golang提供的一种能力。借用这种能力，能够使得开发者在golang代码中调用c++&#x2F;c语言的库（代码逻辑）,甚至是在c++&#x2F;c语言中调用golang的能力。</p>
 <h1 id="如何调用"><a href="#如何调用" class="headerlink" title="如何调用"></a>如何调用</h1><p>golang调用c++&#x2F;c语言的方式可以粗略分为三种：1）代码调用，2）动态编译（通过运行时动态链接）3）静态编译。下面介绍一些实战例子。</p>
 <p><a href="https://github.com/hideonInternet/cgo_playload">代码链接</a></p>
@@ -124,7 +124,7 @@
   </entry>
   <entry>
     <title>Golang调度</title>
-    <url>/blog/2024/05/13/6c3b919f/</url>
+    <url>/2024/05/13/6c3b919f/</url>
     <content><![CDATA[<h1 id="GMP调度模型演进"><a href="#GMP调度模型演进" class="headerlink" title="GMP调度模型演进"></a>GMP调度模型演进</h1><h2 id="线程、进程切换"><a href="#线程、进程切换" class="headerlink" title="线程、进程切换"></a>线程、进程切换</h2><p>最初的操作系统是单进程的，及多个进程排队执行。在这种情况，若遇到前序进程因为某些原因阻塞，则后面的进程长时间获取不到时间片，则会陷于饥饿状态。后面人们为了解决这个问题，就涉及许多调度算法，例如多级轮转队列等，来让不同的进程抢占时间片。但后面人们发现，不同进程之间的切换成本太高了（需要保存寄存器地址，和栈现场等）。于是线程概念由此诞生。</p>
 <p>相较于进程，线程有着更小的栈内存，这意味着创建、切换和销毁成本更低。但是由于线程的切换还是发生在内核态，仍然需要内核调用，切换成本包含：</p>
 <p>1）一个内核线程的大小通常达到1M，因为需要分配内存来存放用户栈和内核栈的数据；</p>
@@ -181,7 +181,7 @@
   </entry>
   <entry>
     <title>Protobuf序列化和扩展实践</title>
-    <url>/blog/2023/11/19/905b18a5/</url>
+    <url>/2023/11/19/905b18a5/</url>
     <content><![CDATA[<h1 id="Protobuffer基本介绍"><a href="#Protobuffer基本介绍" class="headerlink" title="Protobuffer基本介绍"></a>Protobuffer基本介绍</h1><h1 id="序列化方式"><a href="#序列化方式" class="headerlink" title="序列化方式"></a>序列化方式</h1><h1 id="Option扩展"><a href="#Option扩展" class="headerlink" title="Option扩展"></a>Option扩展</h1>]]></content>
       <categories>
         <category>序列化方法</category>
@@ -192,7 +192,7 @@
   </entry>
   <entry>
     <title>Hello World</title>
-    <url>/blog/2019/03/08/4a17b156/</url>
+    <url>/2019/03/08/4a17b156/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <span id="more"></span>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
@@ -211,7 +211,7 @@
   </entry>
   <entry>
     <title>C++中浅拷贝和深拷贝</title>
-    <url>/blog/2019/12/24/da5b8819/</url>
+    <url>/2019/12/24/da5b8819/</url>
     <content><![CDATA[<p>C++中类的拷贝有两种：深拷贝，浅拷贝：当出现类的等号赋值(即：a&#x3D;b)时，即会调用拷贝函数</p>
 <h3 id="深拷贝和浅拷贝的区别"><a href="#深拷贝和浅拷贝的区别" class="headerlink" title="深拷贝和浅拷贝的区别"></a>深拷贝和浅拷贝的区别</h3><ul>
 <li>在未显示定义拷贝构造函数–（默认为浅拷贝），它能够完成成员的一一复制。当数据成员中没有指针时，浅拷贝是可行的。但当数据成员中有指针时，如果采用简单的浅拷贝，则两个对象的数据成员中的指针变量将指向同一个地址。当其中一个对象结束调用时，调用析构函数，指针所指的内存被释放，但是此时另要给对象中的指针还指向那被释放的内存块，这就导致指针悬挂现象。</li>
@@ -253,7 +253,7 @@
   </entry>
   <entry>
     <title>Ubuntu18.04装机</title>
-    <url>/blog/2019/03/24/30a4c30f/</url>
+    <url>/2019/03/24/30a4c30f/</url>
     <content><![CDATA[<h2 id="MatlabR2016b"><a href="#MatlabR2016b" class="headerlink" title="MatlabR2016b##"></a>MatlabR2016b##</h2><ul>
 <li>前期准备：</li>
 </ul>
@@ -354,7 +354,7 @@
   </entry>
   <entry>
     <title>仿射变换及其变换矩阵的理解</title>
-    <url>/blog/2020/01/09/8152e3be/</url>
+    <url>/2020/01/09/8152e3be/</url>
     <content><![CDATA[<h3 id="仿射变换：平移、旋转、放缩、剪切、反射"><a href="#仿射变换：平移、旋转、放缩、剪切、反射" class="headerlink" title="仿射变换：平移、旋转、放缩、剪切、反射"></a>仿射变换：平移、旋转、放缩、剪切、反射</h3><p>仿射变换包括如下所有变换，以及这些变换任意次序次数的组合：</p>
 <p><img src="/images/others/transform/VKWszD.png"></p>
 <p><strong>平移</strong>（translation）和<strong>旋转</strong>（rotation）顾名思义，两者的组合称之为<strong>欧式变换</strong>（Euclidean transformation）或<strong>刚体变换</strong>（rigid transformation）</p>
@@ -405,7 +405,7 @@
   </entry>
   <entry>
     <title>C++-共享内存初探</title>
-    <url>/blog/2024/04/11/a96749da/</url>
+    <url>/2024/04/11/a96749da/</url>
     <content><![CDATA[<h1 id="共享内存基础"><a href="#共享内存基础" class="headerlink" title="共享内存基础"></a>共享内存基础</h1><p>维基百科对共享内存定义如下：</p>
 <pre><code>In computer science, shared memory is memory that may be simultaneously accessed by multiple programs with an intent to provide communication among them or avoid redundant copies. Shared memory is an efficient means of passing data between programs. Depending on context, programs may run on a single processor or on multiple separate processors.
 </code></pre>
@@ -428,7 +428,7 @@
   </entry>
   <entry>
     <title>分布式事务概述</title>
-    <url>/blog/2023/11/18/a71c0f42/</url>
+    <url>/2023/11/18/a71c0f42/</url>
     <content><![CDATA[<h1 id="什么是事务"><a href="#什么是事务" class="headerlink" title="什么是事务"></a>什么是事务</h1><p>事务通常被看作是一系列<strong>数据交换</strong>（例如修改数据库）操作的集合，其目的在于保证数据的一致性。在<code>mysql</code>中，可以通过</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">begin</span><br><span class="line">commit/rollback</span><br></pre></td></tr></table></figure>
 <p>来限定若干条SQL语句的执行结果：所有语句要么全部成功，要么全部失败。早起事务仅用来表达对单一数据库资源的管理，所以通常也被称为<code>本地事务</code>。但随着分布式系统的普及，<code>分布式事务</code>也频繁的出现在人们的视野里。</p>
@@ -573,7 +573,7 @@
   </entry>
   <entry>
     <title>射线相交检测</title>
-    <url>/blog/2020/03/16/b0dc2a0f/</url>
+    <url>/2020/03/16/b0dc2a0f/</url>
     <content><![CDATA[<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>我们可以将也给射线写成:$R &#x3D; O + Dt$，其中，$O$为射线的起始点，$D$为射线的方向。同时我们可以利用重心坐标公式，将一个三角面片上的点，用其三个角的坐标所表示：$P_t &#x3D; (1-u-v)V_0 + uV_1 + vV_2$</p>
 <center>
     <img style="border-radius: 0.3125em;
@@ -627,7 +627,7 @@
   </entry>
   <entry>
     <title>拉普拉斯矩阵与拉普拉斯算子的关系</title>
-    <url>/blog/2020/02/05/febd937d/</url>
+    <url>/2020/02/05/febd937d/</url>
     <content><![CDATA[<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>首先贴出一段利用拉普拉斯矩阵进行光滑处理的代码，根据<em>Learning Category-Specific Mesh Reconstruction from Image Collections</em>中的描述，拉普拉斯算子可以获得表面的平均曲率，通过最小化平均曲率，就可以使得表面变得光滑。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class LaplacianLoss(nn.Module):</span><br><span class="line">    def __init__(self, vertex, faces, average=False):</span><br><span class="line">        &#x27;&#x27;&#x27;</span><br><span class="line">			vertex: N*3</span><br><span class="line">            faces: F*3</span><br><span class="line">        &#x27;&#x27;&#x27;</span><br><span class="line">        super(LaplacianLoss, self).__init__()</span><br><span class="line">        self.nv = vertex.size(0)</span><br><span class="line">        self.nf = faces.size(0)</span><br><span class="line">        self.average = average</span><br><span class="line">        laplacian = np.zeros([self.nv, self.nv]).astype(np.float32)</span><br><span class="line"></span><br><span class="line">        laplacian[faces[:, 0], faces[:, 1]] = -1</span><br><span class="line">        laplacian[faces[:, 1], faces[:, 0]] = -1</span><br><span class="line">        laplacian[faces[:, 1], faces[:, 2]] = -1</span><br><span class="line">        laplacian[faces[:, 2], faces[:, 1]] = -1</span><br><span class="line">        laplacian[faces[:, 2], faces[:, 0]] = -1</span><br><span class="line">        laplacian[faces[:, 0], faces[:, 2]] = -1</span><br><span class="line"></span><br><span class="line">        r, c = np.diag_indices(laplacian.shape[0])</span><br><span class="line">        laplacian[r, c] = -laplacian.sum(1)</span><br><span class="line"></span><br><span class="line">        for i in range(self.nv):</span><br><span class="line">            laplacian[i, :] /= laplacian[i, i]</span><br><span class="line"></span><br><span class="line">        self.register_buffer(&#x27;laplacian&#x27;, torch.from_numpy(laplacian))</span><br><span class="line"></span><br><span class="line">    def forward(self, x):</span><br><span class="line">        batch_size = x.size(0)</span><br><span class="line">        x = torch.matmul(self.laplacian, x)</span><br><span class="line">        dims = tuple(range(x.ndimension())[1:])</span><br><span class="line">        x = x.pow(2).sum(dims)</span><br><span class="line">        if self.average:</span><br><span class="line">            return x.sum() / batch_size</span><br><span class="line">        else:</span><br><span class="line">            return x</span><br></pre></td></tr></table></figure>
 
@@ -666,7 +666,7 @@
   </entry>
   <entry>
     <title>树的遍历算法</title>
-    <url>/blog/2019/12/25/cb9a2247/</url>
+    <url>/2019/12/25/cb9a2247/</url>
     <content><![CDATA[<h3 id="层次遍历"><a href="#层次遍历" class="headerlink" title="层次遍历"></a>层次遍历</h3><h4 id="使用vector"><a href="#使用vector" class="headerlink" title="使用vector"></a>使用vector</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) &#123;</span><br><span class="line">        </span><br><span class="line">        vector&lt;TreeNode*&gt; curQue;</span><br><span class="line">        vector&lt;TreeNode*&gt; nextQue;</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; res;</span><br><span class="line">        vector&lt;int&gt; tmp;</span><br><span class="line">        int depth=0;</span><br><span class="line">        </span><br><span class="line">        if(!root) return res; </span><br><span class="line">        </span><br><span class="line">        curQue.push_back(root);</span><br><span class="line">        </span><br><span class="line">        while(!curQue.empty())&#123;</span><br><span class="line">            for(int i =0; i&lt;curQue.size(); i++)&#123;</span><br><span class="line">                if(curQue[i]-&gt;left != NULL)&#123;</span><br><span class="line">                    nextQue.push_back(curQue[i]-&gt;left);</span><br><span class="line">                &#125;</span><br><span class="line">                if(curQue[i]-&gt;right != NULL)&#123;</span><br><span class="line">                    nextQue.push_back(curQue[i]-&gt;right);</span><br><span class="line">                &#125;</span><br><span class="line">                tmp.push_back(curQue[i]-&gt;val);</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">            curQue = nextQue;</span><br><span class="line">            depth++;</span><br><span class="line">            nextQue.clear();</span><br><span class="line">            tmp.clear();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h4 id="使用双端队列"><a href="#使用双端队列" class="headerlink" title="使用双端队列"></a>使用双端队列</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) &#123;</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; res;</span><br><span class="line">        if(!root) return res;</span><br><span class="line">        vector&lt;int&gt; path;</span><br><span class="line">        deque&lt;TreeNode*&gt; cur, next;</span><br><span class="line">        cur.push_back(root);</span><br><span class="line">        while(!cur.empty())&#123;</span><br><span class="line">            TreeNode* k = cur.front();</span><br><span class="line">            cur.pop_front();</span><br><span class="line">            </span><br><span class="line">            path.push_back(k-&gt;val);</span><br><span class="line">            if(k-&gt;left) next.push_back(k-&gt;left);</span><br><span class="line">            if(k-&gt;right) next.push_back(k-&gt;right);</span><br><span class="line">            </span><br><span class="line">            if(cur.empty()) &#123;</span><br><span class="line">                res.push_back(path);</span><br><span class="line">                path.clear();</span><br><span class="line">                swap(cur, next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -707,7 +707,7 @@
   </entry>
   <entry>
     <title>常见排序算法</title>
-    <url>/blog/2019/12/05/ec44b182/</url>
+    <url>/2019/12/05/ec44b182/</url>
     <content><![CDATA[<p>2019年12月18日更新：加入归并排序的两种链表版本：top-down, bottom-up。</p>
 <p>2019年12月28日更新：加入桶排序算法</p>
 <p>2020年3月20日更新：加入堆排序，计数排序，希尔排序</p>
@@ -792,7 +792,7 @@
   </entry>
   <entry>
     <title>欧式空间的旋转表示(三)-旋转矩阵</title>
-    <url>/blog/2020/02/18/ca04af5a/</url>
+    <url>/2020/02/18/ca04af5a/</url>
     <content><![CDATA[<h3 id="什么是旋转矩阵"><a href="#什么是旋转矩阵" class="headerlink" title="什么是旋转矩阵"></a>什么是旋转矩阵</h3><p>旋转矩阵被用来在欧式空间进行旋转变换. 例如矩阵$R &#x3D; \begin{bmatrix} \cos{\theta} &amp; -\sin{\theta} \\ \sin{\theta} &amp; \cos{\theta}\end{bmatrix}$，就是将二维平面上的<strong>某点逆时针</strong>旋转$\theta$度。</p>
 <p>如果将向量（为了方便计算，这里将点表示为向量）和坐标系两者分离开，向量是独立于坐标系存在的。我们就可以将选择单独看作是坐标系的旋转，而旋转矩阵$R&#x3D;[X_1, Y_1, Z_1]$中的<strong>每一列就表示原始坐标系的坐标轴在新坐标系下的投影长度</strong>。我们有两个坐标系$C_{new}$和$C_{old}$，且$X_{1} &#x3D; \begin{bmatrix} \cos{\theta} &amp; \sin{\theta} &amp; 0 \end{bmatrix}^{T}$，则如下图所示：</p>
 <p><img src="/images/others/rotation/rota_demo1.png"></p>
@@ -821,7 +821,7 @@
   </entry>
   <entry>
     <title>欧式空间的旋转表示(二）-欧拉角</title>
-    <url>/blog/2020/02/17/36f31d81/</url>
+    <url>/2020/02/17/36f31d81/</url>
     <content><![CDATA[<h3 id="什么是欧拉角"><a href="#什么是欧拉角" class="headerlink" title="什么是欧拉角"></a>什么是欧拉角</h3><p>欧拉角被用来描述一个物体绕某个坐标系旋转的角度，坐标系可以分解为三个相互正交的坐标轴构造。欧拉角的定义由三个部分组成：</p>
 <ul>
 <li><p><strong>顺规</strong>：欧拉角具有两大类的顺规表示方式：1）Proper Euler angles: (z-x-z, x-y-x, y-z-y, z-y-z, x-z-x, y-x-y); 2) Tait-Bryan angles：(x-y-z, y-z-x, z-x-y, x-z-y, <strong>z-y-x</strong>, y-x-z)。一般，我们也可以用yaw, pitch, roll来分别指代$z$轴，$y$轴, $x$轴的旋转。我们将其简称为$rpy$角</p>
@@ -873,7 +873,7 @@
   </entry>
   <entry>
     <title>欧式空间的旋转表示(一)</title>
-    <url>/blog/2019/09/28/4767f891/</url>
+    <url>/2019/09/28/4767f891/</url>
     <content><![CDATA[<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念##"></a>基本概念##</h2><h3 id="刚体变换"><a href="#刚体变换" class="headerlink" title="刚体变换###"></a>刚体变换###</h3><p>刚体变换也被称为欧氏变换，它在变化当中保持了向量的长度和相互之间的夹角大小，相当于我们把一个刚体原封不同的进行了移动或旋转，不改变它自身的样子。</p>
 <h3 id="点与向量的关系"><a href="#点与向量的关系" class="headerlink" title="点与向量的关系###"></a>点与向量的关系###</h3><p>点和向量两者并不是等价的关系。向量$\overrightarrow{a}$是一个空间上的抽象概念，只有当我们将其与某个坐标系联系起来的时候，它就具象化为了坐标点。<br>$\begin{align}\overrightarrow{a} &#x3D;<br>\begin{bmatrix} e_1&amp;e_2&amp;e_3 \end{bmatrix} \begin{bmatrix}a_1\\a_2\\a_3\end{bmatrix}<br>&#x3D; a_1e_1 + a_2e_2 + a_3e_3 \end{align}$</p>
 <p>这里$e_i$为列向量，代表了空间当中坐标系的一组基。</p>
@@ -945,7 +945,7 @@
   </entry>
   <entry>
     <title>薄板样条插值</title>
-    <url>/blog/2019/11/06/d3c15ac3/</url>
+    <url>/2019/11/06/d3c15ac3/</url>
     <content><![CDATA[<h3 id="Thin-Plate"><a href="#Thin-Plate" class="headerlink" title="Thin Plate"></a>Thin Plate</h3><p>薄板样条插值可以为一组对应的控制点提供<strong>光滑</strong>的插值结果，通过一组控制点，可以得到一个“平面”（不一定是二维平面），穿过这组控制点，并使得“平面”的弯曲能量（bending energy)最小。</p>
 <center>
     <img style="border-radius: 0.3125em;
@@ -1007,7 +1007,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(一)Learning Category-Specific Mesh Reconstruction From Image Collections</title>
-    <url>/blog/2019/03/08/ed6ad9d5/</url>
+    <url>/2019/03/08/ed6ad9d5/</url>
     <content><![CDATA[<h2 id="Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections"><a href="#Learning-Category-Specific-Mesh-Reconstruction-from-Image-Collections" class="headerlink" title="&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections"></a>&lt;论文阅读&gt;Learning Category-Specific Mesh Reconstruction from Image Collections</h2><p><a href="https://arxiv.org/abs/1803.07549" title="Learning Category-Specific Mesh Reconstruction"><strong>论文链接</strong></a></p>
 <p><a href="https://github.com/akanazawa/cmr"><strong>Github链接</strong></a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
@@ -1061,7 +1061,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(七)Conditional Single-View Shape Generation for Multi-View Stereo Reconstruction</title>
-    <url>/blog/2019/09/09/dc749c90/</url>
+    <url>/2019/09/09/dc749c90/</url>
     <content><![CDATA[<h2 id="Conditional-Single-view-Shape-Generation-for-Multi-view-Stereo-Reconstruction"><a href="#Conditional-Single-view-Shape-Generation-for-Multi-view-Stereo-Reconstruction" class="headerlink" title="&lt;论文阅读&gt;Conditional Single-view Shape Generation for Multi-view Stereo Reconstruction"></a>&lt;论文阅读&gt;Conditional Single-view Shape Generation for Multi-view Stereo Reconstruction</h2><p><a href="https://arxiv.org/pdf/1904.06699.pdf">论文链接</a></p>
 <p><a href="https://github.com/weiyithu/OptimizeMVS">github</a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution###"></a>Contribution###</h3><ul>
@@ -1109,7 +1109,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(二)End-to-End Recovery of Human Shape and Pose</title>
-    <url>/blog/2019/03/09/e6413cd/</url>
+    <url>/2019/03/09/e6413cd/</url>
     <content><![CDATA[<h2 id="End-to-end-Recovery-of-Human-Shape-and-Pose"><a href="#End-to-end-Recovery-of-Human-Shape-and-Pose" class="headerlink" title="&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose"></a>&lt;论文阅读&gt;End-to-end Recovery of Human Shape and Pose</h2><p><a href="https://arxiv.org/pdf/1712.06584.pdf" title="Learning Category-Specific Mesh Reconstruction"><strong>论文链接</strong></a></p>
 <p><a href="https://github.com/akanazawa/hmr"><strong>Github链接</strong></a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
@@ -1173,7 +1173,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(五)Learning View Priors for Single-View 3D Reconstruction</title>
-    <url>/blog/2019/08/19/54bbc8cd/</url>
+    <url>/2019/08/19/54bbc8cd/</url>
     <content><![CDATA[<h2 id="Learning-View-Priors-for-Single-view-3D-Reconstruction"><a href="#Learning-View-Priors-for-Single-view-3D-Reconstruction" class="headerlink" title="&lt;论文阅读&gt;Learning View Priors for Single-view 3D Reconstruction"></a>&lt;论文阅读&gt;Learning View Priors for Single-view 3D Reconstruction</h2><p><a href="https://arxiv.org/pdf/1811.10719.pdf">论文链接</a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution"></a>Contribution</h3><ul>
 <li>提出了新的<code>视角先验</code>方法，该方法弥补了<code>对称先验</code>的不足，虽然重建物体大多是符合对称先验的，但是在拍摄照片的那一瞬间，由于拍摄角度和物体本身发生的一些形变等原因，使得待重建的物体本身并不是对称，这样便会使得重建效果不佳。</li>
@@ -1215,7 +1215,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(九)Deep Marching Cubes Learning Explicit Surface Representations</title>
-    <url>/blog/2020/01/06/a18afe7a/</url>
+    <url>/2020/01/06/a18afe7a/</url>
     <content><![CDATA[<h2 id="Deep-Marching-Cubes-Learning-Explicit-Surface-Representations"><a href="#Deep-Marching-Cubes-Learning-Explicit-Surface-Representations" class="headerlink" title="Deep Marching Cubes: Learning Explicit Surface Representations"></a>Deep Marching Cubes: Learning Explicit Surface Representations</h2><h3 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h3><h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>Marching Cubes 常被用来从一个隐函数(比方说：$f(x,y,z) &#x3D; 0$)中恢复Mesh. 通过迭代式的对函数空间上的立方体进行匹配，来获取Mesh的点和拓扑结构。如果8个点全部为正数或负数，那么这8个点全部在物体外部或内部。所有的可能情况如下图所示。</p>
 <p><img src="/images/paper/dmc/MarchingCubesCases.png"></p>
 <p> 函数 $x^2 + y^2 + z^2 - 1 &#x3D; 0$ 表示一个单位球体. 其利用marching cubes 来得到的mesh如下图所示:</p>
@@ -1256,7 +1256,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(三)Paperset:how to Extract Geometric Features From Spatial Layout of Points</title>
-    <url>/blog/2019/06/06/a24b1b46/</url>
+    <url>/2019/06/06/a24b1b46/</url>
     <content><![CDATA[<h2 id="Paper-set-how-to-extract-geometric-features-from-spatial-layout-of-points"><a href="#Paper-set-how-to-extract-geometric-features-from-spatial-layout-of-points" class="headerlink" title="&lt;论文阅读&gt;Paper set: how to extract geometric features from spatial layout of points"></a>&lt;论文阅读&gt;Paper set: how to extract geometric features from spatial layout of points</h2><ul>
 <li>   [1]<a href="https://arxiv.org/pdf/1801.07829.pdf">TOG2018 Dynamic Graph CNN for Learning on Point Clouds</a></li>
 <li>   [2]<a href="https://arxiv.org/pdf/1712.06760.pdf">CVPR2018Mining Point Cloud Local Structures by Kernel Correlation and Graph Pooling</a></li>
@@ -1440,7 +1440,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(八)Occupancy Networks Learning 3D Reconstruction in Function Sapce</title>
-    <url>/blog/2019/12/21/b040bbb5/</url>
+    <url>/2019/12/21/b040bbb5/</url>
     <content><![CDATA[<h2 id="Occupancy-Networks-Learning-3D-Reconstruction-in-Function-Sapce"><a href="#Occupancy-Networks-Learning-3D-Reconstruction-in-Function-Sapce" class="headerlink" title="&lt;论文阅读&gt;Occupancy Networks: Learning 3D Reconstruction in Function Sapce"></a>&lt;论文阅读&gt;Occupancy Networks: Learning 3D Reconstruction in Function Sapce</h2><p><a href="https://arxiv.org/pdf/1812.03828.pdf">论文链接</a></p>
 <p><a href="https://github.com/autonomousvision/occupancy_networks">github</a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution###"></a>Contribution###</h3><ul>
@@ -1505,7 +1505,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(六)Three-D Safari Learning to Estimate Zebra Pose, Shape, and Texture From Images “In the Wild”</title>
-    <url>/blog/2019/08/23/8f9285bb/</url>
+    <url>/2019/08/23/8f9285bb/</url>
     <content><![CDATA[<h2 id="六-Three-D-Safari-Learning-to-Estimate-Zebra-Pose-Shape-and-Texture-from-Images-“In-the-Wild”"><a href="#六-Three-D-Safari-Learning-to-Estimate-Zebra-Pose-Shape-and-Texture-from-Images-“In-the-Wild”" class="headerlink" title="&lt;论文阅读&gt;(六)Three-D Safari: Learning to Estimate Zebra Pose, Shape, and Texture from Images “In the Wild”"></a>&lt;论文阅读&gt;(六)Three-D Safari: Learning to Estimate Zebra Pose, Shape, and Texture from Images “In the Wild”</h2><p><a href="https://128.84.21.199/pdf/1908.07201.pdf">论文链接</a></p>
 <p><a href="https://github.com/silviazuffi/smalst">Github</a></p>
 <h3 id="Contribution"><a href="#Contribution" class="headerlink" title="Contribution###"></a>Contribution###</h3><ul>
@@ -1574,7 +1574,7 @@
   </entry>
   <entry>
     <title>&lt;论文阅读&gt;(四)Canonical Surface Mapping via Geometric Cycle Consistency</title>
-    <url>/blog/2019/08/09/6021dd11/</url>
+    <url>/2019/08/09/6021dd11/</url>
     <content><![CDATA[<h2 id="Canonical-Surface-Mapping-via-Geometric-Cycle-Consistency"><a href="#Canonical-Surface-Mapping-via-Geometric-Cycle-Consistency" class="headerlink" title="&lt;论文阅读&gt;Canonical Surface Mapping via Geometric Cycle Consistency"></a>&lt;论文阅读&gt;Canonical Surface Mapping via Geometric Cycle Consistency</h2><p><img src="/images/paper/CSM/example.jpg"></p>
 <p><a href="https://arxiv.org/abs/1907.10043"><strong>论文链接</strong></a></p>
 <p><a href="https://github.com/nileshkulkarni/csm"><strong>Github链接</strong></a></p>
@@ -1624,7 +1624,7 @@
   </entry>
   <entry>
     <title>时间轮解析</title>
-    <url>/blog/2024/09/21/d28246fd/</url>
+    <url>/2024/09/21/d28246fd/</url>
     <content><![CDATA[<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="PriorityQueue"><a href="#PriorityQueue" class="headerlink" title="PriorityQueue"></a>PriorityQueue</h3><p>首先作者巧妙地利用<code>golang</code>自带heap接口实现一个优先队列（priority_queue）。</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// The Interface type describes the requirements</span></span><br><span class="line"><span class="comment">// for a type using the routines in this package.</span></span><br><span class="line"><span class="comment">// Any type that implements it may be used as a</span></span><br><span class="line"><span class="comment">// min-heap with the following invariants (established after</span></span><br><span class="line"><span class="comment">// Init has been called or if the data is empty or sorted):</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// !h.Less(j, i) for 0 &lt;= i &lt; h.Len() and 2*i+1 &lt;= j &lt;= 2*i+2 and j &lt; h.Len()</span></span><br><span class="line"><span class="comment">// Note that Push and Pop in this interface are for package heap&#x27;s</span></span><br><span class="line"><span class="comment">// implementation to call. To add and remove things from the heap,</span></span><br><span class="line"><span class="comment">// use heap.Push and heap.Pop.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Interface <span class="keyword">interface</span> &#123;</span><br><span class="line">	sort.Interface</span><br><span class="line">	Push(x any) <span class="comment">// add x as element Len()</span></span><br><span class="line">	Pop() any <span class="comment">// remove and return element Len() - 1.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
